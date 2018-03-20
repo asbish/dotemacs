@@ -1,0 +1,32 @@
+[submodule "packages/zscript-mode"]
+	path = packages/zscript-mode
+	url = https://github.com/asbish/zscript-mode
+	ignore = dirty
+[submodule "packages/PG"]
+	path = packages/PG
+	url = https://github.com/ProofGeneral/PG
+	ignore = dirty
+[submodule "packages/distel"]
+	path = packages/distel
+	url = https://github.com/massemanet/distel
+	ignore = dirty
+[submodule "packages/bison-mode"]
+	path = packages/bison-mode
+	url = https://github.com/Wilfred/bison-mode
+	ignore = dirty
+[submodule "packages/forth-mode"]
+	path = packages/forth-mode
+	url = https://github.com/larsbrinkhoff/forth-mode
+	ignore = dirty
+[submodule "packages/emacs-mips-mode"]
+	path = packages/emacs-mips-mode
+	url = https://github.com/hlissner/emacs-mips-mode
+	ignore = dirty
+[submodule "packages/haskell-mode"]
+	path = packages/haskell-mode
+	url = https://github.com/haskell/haskell-mode
+	ignore = dirty
+[submodule "packages/intero"]
+	path = packages/intero
+	url = https://github.com/commercialhaskell/intero
+	ignore = dirty

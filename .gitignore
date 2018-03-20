@@ -1,0 +1,12 @@
+*
+!.gitignore
+!.gitmodules
+!.dir-locals.el
+!Makefile
+!README.md
+!Cask
+!init.el
+!rc/
+!rc/*.el
+!packages/
+!packages/*
