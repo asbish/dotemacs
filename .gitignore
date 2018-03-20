@@ -10,3 +10,4 @@
 !rc/*.el
 !packages/
 !packages/*
+!packages/asbish/*.el
