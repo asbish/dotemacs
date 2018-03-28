@@ -11,8 +11,8 @@
         ("melpa" . 0)))
 
 (package-initialize)
-
 (unless package-archive-contents (package-refresh-contents))
+
 (mapc (lambda (x) (unless (package-installed-p x) (package-install x)))
       '(f
         ag

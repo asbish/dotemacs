@@ -26,12 +26,9 @@
       tab-stop-list (number-sequence 4 120 4)
       read-file-name-completion-ignore-case t
       browse-url-browser-function 'eww-browse-url
-      custom-file (locate-user-emacs-file ".custom.el"))
-
-(setq backup-directory-alist
-      `((".*" . ,(expand-file-name "backup" user-emacs-directory))))
-(setq auto-save-file-name-transforms
-      `((".*" ,(expand-file-name "backup/" user-emacs-directory) t)))
+      custom-file (locate-user-emacs-file ".custom.el")
+      backup-directory-alist `((".*" . ,(expand-file-name "backup" user-emacs-directory)))
+      auto-save-file-name-transforms `((".*" ,(expand-file-name "backup/" user-emacs-directory) t)))
 
 (setq-default tab-width 4
               tab-always-indent 'nil
