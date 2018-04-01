@@ -1327,12 +1327,14 @@
   (let ((filename (expand-file-name (buffer-file-name))))
     (comint-send-string (get-buffer-process "*nodejs*") ".break\n")))
 
+(add-to-list 'load-path (locate-user-emacs-file "packages/js2-mode"))
 (use-package js2-mode
-  :ensure t
+  :defer t
   :init
   (setq-default js2-mirror-mode nil)
   (custom-set-faces
-   '(js2-function-param ((t (:inherit font-lock-variable-name-face)))))
+   '(js2-function-param ((t (:inherit font-lock-variable-name-face))))
+   '(js2-type-annotation ((t (:inherit font-lock-type-face)))))
   (custom-set-variables
    '(js2-additional-externs nil t)
    '(js2-concat-multiline-strings 'eol)

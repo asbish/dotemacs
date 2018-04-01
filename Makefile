@@ -4,7 +4,8 @@ CASK ?= cask
 MAKE_PKG := packages/PG \
 			packages/distel \
 			packages/forth-mode \
-			packages/haskell-mode
+			packages/haskell-mode \
+			packages/js2-mode
 
 BYTE_COMPILE_PKG := packages/asbish/*.el \
 					packages/bison-mode/*.el \

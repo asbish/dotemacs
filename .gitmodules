@@ -30,3 +30,7 @@
 	path = packages/intero
 	url = https://github.com/commercialhaskell/intero
 	ignore = dirty
+[submodule "packages/js2-mode"]
+	path = packages/js2-mode
+	url = https://github.com/HairyRabbit/js2-mode
+	ignore = dirty
