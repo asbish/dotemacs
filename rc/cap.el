@@ -1333,8 +1333,7 @@
   :init
   (setq-default js2-mirror-mode nil)
   (custom-set-faces
-   '(js2-function-param ((t (:inherit font-lock-variable-name-face))))
-   '(js2-type-annotation ((t (:inherit font-lock-type-face)))))
+   '(js2-function-param ((t (:inherit font-lock-variable-name-face)))))
   (custom-set-variables
    '(js2-additional-externs nil t)
    '(js2-concat-multiline-strings 'eol)
