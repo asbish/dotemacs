@@ -1379,10 +1379,17 @@
   (asbish/rebind-keys rjsx-mode-map
     '(:from "C-c C-r" :to "C-c M-RET" :bind rjsx-rename-tag-at-point))
   (defun my/flow-setup ()
-    (let ((flow-bin (asbish/find-executable-node_modules
-                     (concat "flow-bin/*" asbish/os "*/flow") t)))
-      (setq-local company-flow-executable flow-bin)
-      (setq-local flycheck-javascript-flow-executable flow-bin)))
+    (when (save-excursion
+            (goto-char (point-min))
+            (ignore-errors
+              ;; TODO: need work
+              (string-match-p "\/[\/|\*][\s\t]?+@flow[\s\t]?+"
+                              (thing-at-point 'line t))))
+      (let ((flow-bin (asbish/find-executable-node_modules
+                       (concat "flow-bin/*" asbish/os "*/flow") t)))
+        (setq-local company-flow-executable flow-bin)
+        (setq-local flycheck-javascript-flow-executable flow-bin)
+        (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))))
   (add-hook 'rjsx-mode-hook
             (lambda ()
               (hs-minor-mode 1)
