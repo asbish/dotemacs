@@ -589,8 +589,8 @@
         f90-beginning-ampersand nil)
   (define-key f90-mode-map (kbd "C-c A") 'f90-indent-subprogram)
   (asbish/rebind-keys f90-mode-map
-    '(:from "C-c C-a" :to "C-c C-p" f90-previous-block)
-    '(:from "C-c C-e" :to "C-c C-n" f90-next-block)))
+    '(:from "C-c C-a" :to "C-c C-p" :bind f90-previous-block)
+    '(:from "C-c C-e" :to "C-c C-n" :bind f90-next-block)))
 
 (use-package rust-mode
   :ensure t
