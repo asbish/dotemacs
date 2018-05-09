@@ -1,8 +1,15 @@
 My Emacs configuration
 
-25.2+ (build depends [Cask](http://cask.readthedocs.io/en/latest/) and [Gforth](https://savannah.gnu.org/projects/gforth/))
+`>= 25.2, < 27`
+
+build depends
+* [Cask](http://cask.readthedocs.io/en/latest/)
+* [Gforth](https://savannah.gnu.org/projects/gforth/)
+* [Erlang/OTP](https://www.erlang.org/)
+
 ```sh
 git submodule update --init --recursive
+cask
 make
 emacs
 ```

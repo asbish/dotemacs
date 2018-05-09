@@ -8,6 +8,9 @@ MAKE_PKG := packages/PG \
 			packages/js2-mode
 
 BYTE_COMPILE_PKG := packages/asbish/*.el \
+					packages/j-mode/j-help.el \
+					packages/j-mode/j-console.el \
+					packages/j-mode/j-font-lock.el \
 					packages/bison-mode/*.el \
 					packages/emacs-mips-mode/*.el \
 					packages/intero/elisp/intero.el \
@@ -22,7 +25,6 @@ all: setup $(MAKE_PKG) $(BYTE_COMPILE_TARGET)
 
 setup:
 	@mkdir -p backup
-	$(CASK)
 
 $(MAKE_PKG):
 	@printf "\n* $@ \n"

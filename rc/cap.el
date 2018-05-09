@@ -648,7 +648,6 @@
               (hs-minor-mode 1)
               (flycheck-mode 1))))
 
-
 (use-package sbt-mode
   :ensure t
   :config
@@ -728,10 +727,9 @@
 (add-to-list 'load-path (locate-user-emacs-file "packages/distel/elisp"))
 (require 'distel)
 (use-package erlang
-  :ensure t
   :init
   (let ((run (asbish/shell-command-to-string "kerl path")))
-    (when (= 0 (car run))) (setq erlang-root-dir (string-trim (cadr run))))
+    (when (= 0 (car run)) (setq erlang-root-dir (string-trim (cadr run)))))
   :config
   (use-package company-distel :ensure t)
   (setq-default inferior-erlang-prompt-timeout t
@@ -749,8 +747,9 @@
                           (cons 'company-distel my/company-backends))
               (flycheck-mode 1))))
 
+(add-to-list 'load-path (locate-user-emacs-file "packages/j-mode"))
 (use-package j-mode
-  :ensure t
+  :defer t
   :config
   (setq j-console-cmd "ijconsole")
   (asbish/rebind-keys j-mode-map
@@ -946,6 +945,7 @@
   (asbish/rebind-keys sml-mode-map
     '(:from "C-c C-c" :to "C-c C-k" :bind sml-prog-proc-compile)))
 
+;; TODO: skip load if files not exists
 (let ((run (asbish/shell-command-to-string "opam config var share")))
   (when (= 0 (car run))
     (add-to-list 'load-path

@@ -34,3 +34,7 @@
 	path = packages/js2-mode
 	url = https://github.com/HairyRabbit/js2-mode
 	ignore = dirty
+[submodule "packages/j-mode"]
+	path = packages/j-mode
+	url = https://github.com/zellio/j-mode
+	ignore = dirty
