@@ -368,8 +368,6 @@
       (gdb-restore-windows)))
   (call-interactively 'gdb))
 
-(define-key c-mode-base-map (kbd "<f6>") 'my/gdb-start)
-
 (use-package realgud
   :defer t
   :init
@@ -448,6 +446,14 @@
     '(:from "C-c C-h p" :to "C-c C-d P" :bind cperl-perldoc)
     '(:from "C-c C-h v" :to "C-c C-d v" :bind cperl-get-help)))
 
+(require 'asm-mode)
+(define-key asm-mode-map (kbd "<f6>") 'my/gdb-start)
+(define-key asm-mode-map (kbd "RET") 'newline)
+(add-hook 'asm-mode-hook
+          (lambda ()
+            (setq fill-prefix nil)
+            (electric-indent-local-mode -1)))
+
 (require 'cc-mode)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.mm\\'" . objc-mode))
@@ -459,6 +465,7 @@
 (define-key c-mode-base-map (kbd "C-c C-w") nil) ;; c-subword-mode
 (define-key c-mode-base-map (kbd "C-M-j") nil) ;; c-indent-new-comment-line
 (define-key c-mode-base-map (kbd "C-M-;") 'comment-or-uncomment-region)
+(define-key c-mode-base-map (kbd "<f6>") 'my/gdb-start)
 
 (use-package google-c-style :ensure t)
 
