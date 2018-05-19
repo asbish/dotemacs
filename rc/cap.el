@@ -952,7 +952,6 @@
   (asbish/rebind-keys sml-mode-map
     '(:from "C-c C-c" :to "C-c C-k" :bind sml-prog-proc-compile)))
 
-;; TODO: skip load if files not exists
 (let ((run (asbish/shell-command-to-string "opam config var share")))
   (when (= 0 (car run))
     (add-to-list 'load-path

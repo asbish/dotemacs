@@ -9,7 +9,7 @@ build depends
 
 ```sh
 git submodule update --init --recursive
-cask
+cask install
 make
 emacs
 ```
