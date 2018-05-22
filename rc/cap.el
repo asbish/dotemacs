@@ -447,8 +447,9 @@
     '(:from "C-c C-h v" :to "C-c C-d v" :bind cperl-get-help)))
 
 (require 'asm-mode)
-(define-key asm-mode-map (kbd "<f6>") 'my/gdb-start)
+(define-key asm-mode-map (kbd ":") nil)
 (define-key asm-mode-map (kbd "RET") 'newline)
+(define-key asm-mode-map (kbd "<f6>") 'my/gdb-start)
 (add-hook 'asm-mode-hook
           (lambda ()
             (setq fill-prefix nil)
