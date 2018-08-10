@@ -535,7 +535,6 @@
     (setq-local company-backends my/cc-mode-company-backends)
     (flycheck-irony-setup)
     (flycheck-mode 1)
-    (flymake-mode 1)
     (ggtags-mode 1)
     (when (fboundp 'rtags-start-process-unless-running)
       (rtags-start-process-unless-running))
