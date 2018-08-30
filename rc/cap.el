@@ -1371,6 +1371,7 @@
   :ensure t
   :init
   (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
+  (add-to-list 'auto-mode-alist '("\\.mjs\\'" . rjsx-mode))
   :functions my/flow-setup
   :config
   (use-package tern :ensure t :diminish tern-mode)
@@ -1425,11 +1426,13 @@
             (lambda ()
               (tide-setup)
               (eldoc-mode 1)
+              (hs-minor-mode 1)
               (setq-local company-backends
                           (cons 'company-tide my/company-backends))
               (setq-local flycheck-typescript-tslint-executable
                           (asbish/find-executable-node_modules
                            "tslint/bin/tslint"))
+              (flycheck-add-next-checker 'typescript-tide 'typescript-tslint)
               (flycheck-mode 1))))
 
 (use-package php-mode
@@ -1457,6 +1460,7 @@
   (add-to-list 'auto-mode-alist '("\\.ctp\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
