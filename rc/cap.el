@@ -1459,25 +1459,35 @@
   (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.ctp\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.pug\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.twig\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.xml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.vue\\'" . web-mode))
   :config
   (use-package company-web :ensure t)
   (define-key web-mode-map (kbd "C-c C-w") nil)
   (add-hook 'web-mode-hook
             (lambda ()
+              (hs-minor-mode 1)
               (toggle-truncate-lines)
               (setq web-mode-markup-indent-offset 2
                     web-mode-enable-auto-closing t)
               (setq-local company-backends
                           (cons 'company-web-html my/company-backends)))))
+
+(use-package nxml-mode
+  :init
+  (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
+  :config
+  (setq nxml-child-indent 4)
+  (setq nxml-outline-child-indent 4)
+  (setq nxml-auto-insert-xml-declaration-flag t))
 
 (use-package jade-mode
   :ensure t
