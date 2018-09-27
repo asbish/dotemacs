@@ -647,6 +647,41 @@
               (go-eldoc-setup)
               (flycheck-mode 1))))
 
+(use-package autodisass-java-bytecode
+  :ensure t
+  :defer t)
+
+(use-package meghanada
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'java-mode-hook
+            (lambda ()
+              (hs-minor-mode 1)
+              (meghanada-mode t)
+              (flycheck-mode 1)))
+  :config
+  (setq meghanada-maven-path "mvn")
+  (setq meghanada-server-remote-debug t)
+  (setq meghanada-javac-xlint "-Xlint:all,-processing")
+  (define-key meghanada-mode-map (kbd "C-c b t") 'meghanada-switch-testcase)
+  (define-key meghanada-mode-map (kbd "M-RET") 'meghanada-local-variable)
+  (define-key meghanada-mode-map (kbd "C-c M-i") 'meghanada-reference)
+  (define-key meghanada-mode-map (kbd "C-c M-t") 'meghanada-typeinfo)
+  :commands
+  (meghanada-mode))
+
+(use-package groovy-imports :ensure t)
+(use-package groovy-mode
+  :ensure t
+  :init
+  (add-hook 'groovy-mode-hook
+            (lambda ()
+                (hs-minor-mode 1)
+                (flycheck-mode 1)))
+  :config
+  (setq groovy-highlight-assignments t))
+
 (use-package scala-mode
   :ensure t
   :init
