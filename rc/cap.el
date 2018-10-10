@@ -546,6 +546,9 @@
           (lambda () (setq-local flycheck-gcc-language-standard "c++11")))
 (add-hook 'objc-mode-hook #'my/cc-mode-setup t)
 
+(use-package protobuf-mode
+  :ensure t)
+
 (use-package bison-mode
   :defer t
   :load-path "packages/bison-mode")
