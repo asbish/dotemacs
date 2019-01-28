@@ -128,7 +128,9 @@
   (add-hook 'zscript-mode-hook #'enable-paredit-mode)
   :config
   (define-key paredit-mode-map (kbd "M-?") nil)
-  (define-key paredit-mode-map (kbd "M-r") nil))
+  (define-key paredit-mode-map (kbd "M-r") nil)
+  (define-key paredit-mode-map (kbd "<C-left>") nil)
+  (define-key paredit-mode-map (kbd "<C-right>") nil))
 
 (use-package multiple-cursors
   :ensure t
