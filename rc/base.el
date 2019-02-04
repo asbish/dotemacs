@@ -91,8 +91,6 @@
   (lambda () (interactive) (other-window -1)))
 (define-key global-map (kbd "<C-left>")
   (lambda () (interactive) (other-window -1)))
-(define-key global-map (kbd "C-.") 'open-line)
-(global-unset-key "\C-o")
 
 (global-set-key (kbd "M-o") 'occur)
 (add-hook 'occur-hook (lambda () (switch-to-buffer-other-window "*Occur*")))
