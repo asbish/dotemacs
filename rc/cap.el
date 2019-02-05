@@ -93,6 +93,11 @@
                                 (completion-list-mode :noselect t)))))
 (popwin-mode 1)
 
+(unless (package-installed-p 'prettier)
+  (package-install-file
+   (locate-user-emacs-file "packages/prettier.el/prettier-0.4.1.tar")))
+(add-hook 'after-init-hook #'global-prettier-mode)
+
 (use-package ddskk
   :ensure t
   :bind (("C-c o" . skk-mode))

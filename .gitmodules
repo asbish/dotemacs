@@ -38,3 +38,8 @@
 	path = packages/j-mode
 	url = https://github.com/zellio/j-mode
 	ignore = dirty
+[submodule "packages/prettier.el"]
+	path = packages/prettier.el
+	url = https://github.com/asbish/prettier.el
+	branch = base64-options-for-linux
+	ignore = dirty
