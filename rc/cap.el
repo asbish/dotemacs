@@ -93,11 +93,6 @@
                                 (completion-list-mode :noselect t)))))
 (popwin-mode 1)
 
-(unless (package-installed-p 'prettier)
-  (package-install-file
-   (locate-user-emacs-file "packages/prettier.el/prettier-0.4.1.tar")))
-(add-hook 'after-init-hook #'global-prettier-mode)
-
 (use-package ddskk
   :ensure t
   :bind (("C-c o" . skk-mode))
@@ -246,6 +241,14 @@
   '(:from "C-c @ C-M-s" :to "C-c @ S" :bind hs-show-all))
 
 (setq-default tags-revert-without-query 1)
+
+(defun my/prettier-mode-ignore ()
+  (or (and buffer-file-name
+           (string-match "/\\(node_modules\\|flow-typed\\)/" buffer-file-name))
+      (not (local-variable-p 'my/prettier-on))))
+(custom-set-variables
+ '(prettier-mode-ignore-buffer-function #'my/prettier-mode-ignore))
+(add-hook 'after-init-hook #'global-prettier-mode)
 
 (use-package dumb-jump
   :ensure t
