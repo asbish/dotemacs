@@ -126,6 +126,18 @@
            do (when (string-match regex (buffer-name buffer))
                 (cl-return buffer))))
 
+(defun asbish/jq-file (file-path arg)
+  (with-temp-buffer
+    (insert-file-contents file-path)
+    (and
+     (equal 0 (call-shell-region
+               (point-min)
+               (point-max)
+               (mapconcat #'shell-quote-argument (list "jq" arg) " ")
+               t
+               t))
+     (buffer-string))))
+
 (defvar asbish/--once-hash-table
   (make-hash-table :test 'eq :size 10 :weakness t))
 
