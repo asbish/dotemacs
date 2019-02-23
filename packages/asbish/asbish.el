@@ -214,71 +214,93 @@
           (find-file (concat root (ido-completing-read prompt idolist))))
       (error "find error"))))
 
-(defvar asbish/dir-locals-alist-cc-mode
-  '(("gnu"
-     (c-file-style . "\"GNU\"")
-     (flycheck-clang-include-path . nil)
-     (flycheck-gcc-include-path . nil))
-    ("gnu-tab"
-     (c-file-style . "\"GNU\"")
-     (indent-tabs-mode . t)
-     (eval asbish/whitespace-tab-toggle)
-     (flycheck-clang-include-path . nil)
-     (flycheck-gcc-include-path . nil))
-    ("linux"
-     (c-file-style . "\"linux\"")
-     (c-basic-offset . 4)
-     (flycheck-clang-include-path . nil)
-     (flycheck-gcc-include-path . nil))
-    ("linux-tab"
-     (c-file-style . "\"linux\"")
-     (indent-tabs-mode . t)
-     (c-basic-offset . 4)
-     (eval asbish/whitespace-tab-toggle)
-     (flycheck-clang-include-path . nil)
-     (flycheck-gcc-include-path . nil))
-    ("google"
-     (eval google-set-c-style)
-     (flycheck-clang-include-path . nil)
-     (flycheck-gcc-include-path . nil))))
+(defun asbish/fmt-alist (l s)
+  (if l (mapconcat (lambda (x) (format "(%s . %s)" (car x) (cdr x))) l s) ""))
 
-(defun asbish/add-dir-locals-flycheck-disabled-checkers-cc-mode ()
-  (let* ((input (split-string
-                 (read-from-minibuffer "flycheck-disabled-checkers: ")))
-         (vs-short '("clang" "gcc" "cppcheck"))
-         (vs (append vs-short
-                     '("irony" "c/c++-clang" "c/c++-gcc" "c/c++-cppcheck")))
+(defun asbish/out-file-path (file-name &optional clobber)
+  (let ((path (concat
+               (ido-read-directory-name
+                (concat "Where to generate `" file-name "' ?: ")
+                default-directory)
+               file-name)))
+    (if (and (or clobber (not (file-exists-p path)))
+             (file-writable-p path))
+        path
+      (error (concat "Abort. `" file-name "' already exists or readonly.")))))
+
+(defun asbish/gen-dir-locals--preset ()
+  (let* ((presets '(("cc-gnu"
+                     (c-file-style . "\"GNU\""))
+                    ("cc-gnu-tab"
+                     (c-file-style . "\"GNU\"")
+                     (indent-tabs-mode . t))
+                    ("cc-linux"
+                     (c-file-style . "\"linux\"")
+                     (c-basic-offset . 4))
+                    ("cc-linux-tab"
+                     (c-file-style . "\"linux\"")
+                     (indent-tabs-mode . t)
+                     (c-basic-offset . 4))
+                    ("none")))
+         (presets-lis (mapcar #'car presets)))
+    (cdr (assoc
+          (ido-completing-read "Preset?: " presets-lis nil nil nil nil "none")
+          presets))))
+
+(defun asbish/gen-dir-locals--flycheck-disable ()
+  (let* ((checkers '("irony"))
+         (checkers-prefix-c/c++ '("clang" "gcc" "cppcheck"))
+         (inputs (split-string
+                  (read-from-minibuffer
+                   (concat "Disable checkers {"
+                           (mapconcat 'identity
+                                      (append checkers checkers-prefix-c/c++)
+                                      ", ")
+                           "}: "))))
          (lis (seq-reduce
                (lambda (a b)
-                 (if (member b vs)
-                     (if (member b vs-short)
-                         (cons (make-symbol (concat "c/c++-" b)) a)
-                       (cons (make-symbol b) a))
-                   a))
-               (reverse input)
+                 (if (member b checkers)
+                     (cons (make-symbol b) a)
+                   (if (member b checkers-prefix-c/c++)
+                       (cons (make-symbol (concat "c/c++-" b)) a)
+                     a)))
+               (reverse inputs)
                nil)))
-    (when lis `(flycheck-disabled-checkers . ,lis))))
+    (list `(flycheck-disabled-checkers . ,lis))))
 
-(defun asbish/add-dir-locals-variable-cc-mode (style)
-  (interactive "sstyle?: ")
-  (let ((x (assoc style asbish/dir-locals-alist-cc-mode)))
-    (if (not x)
-        (error (format "Could not find style %s" style))
-      (let* ((fc-vs (asbish/add-dir-locals-flycheck-disabled-checkers-cc-mode))
-             (dir (ido-read-directory-name
-                   "Where to generate .dir-locals.el?: "
-                   default-directory))
-             (file (concat dir ".dir-locals.el")))
-        (if (and (not (file-exists-p file))
-                 (file-writable-p file))
-            (let ((vs (if fc-vs (append (cdr x) (list fc-vs)) (cdr x))))
-              (with-temp-file file
-                (setq buffer-file-coding-system 'utf-8)
-                (insert
-                 (format "%s" `(,(cons 'c-mode vs)
-                                ,(cons 'c++-mode vs)
-                                ,(cons 'objc-mode vs))))))
-          (error "Abort. `.dir-locals.el' already exists."))))))
+(defun asbish/gen-dir-locals--flycheck-include-path ()
+  (let ((lis (list)))
+    (while (let* ((default-dir (expand-file-name default-directory))
+                  (dir (ido-read-directory-name
+                        "Include path:"
+                        default-directory))
+                  (dir-str (format "\"%s\"" dir)))
+             (if (equal dir default-dir)
+                 (progn
+                   (when (and (not (cl-member dir-str lis))
+                              (y-or-n-p "Include path: add? \".\" "))
+                     (setq lis (cl-adjoin dir-str lis)))
+                   (not (y-or-n-p "Include path: end? ")))
+               (setq lis (cl-adjoin dir-str lis))
+               t)))
+    (list `(flycheck-gcc-include-path . ,lis)
+          `(flycheck-clang-include-path . ,lis))))
+
+(defun asbish/gen-dir-locals ()
+  (interactive)
+  (let* ((indent "\n         ")
+         (path (asbish/out-file-path ".dir-locals.el"))
+         (preset (asbish/gen-dir-locals--preset))
+         (fc-disabled (asbish/gen-dir-locals--flycheck-disable))
+         (fc-include-path (asbish/gen-dir-locals--flycheck-include-path))
+         (result (remove nil (list preset fc-disabled fc-include-path))))
+    (with-temp-file path
+      (setq buffer-file-coding-system 'utf-8)
+      (insert (format
+               "((nil . (%s)))"
+               (mapconcat (lambda (x) (asbish/fmt-alist x indent))
+                          result
+                          indent))))))
 
 (defvar asbish/whitespace-background (face-attribute 'default :background))
 

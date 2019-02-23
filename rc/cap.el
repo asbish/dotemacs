@@ -480,7 +480,10 @@
 (define-key c-mode-base-map (kbd "C-M-;") 'comment-or-uncomment-region)
 (define-key c-mode-base-map (kbd "<f6>") 'my/gdb-start)
 
-(use-package google-c-style :ensure t)
+(use-package google-c-style
+  :ensure t
+  :init
+  (add-hook 'c-mode-common-hook #'google-set-c-style))
 
 (use-package company-c-headers :ensure t)
 
