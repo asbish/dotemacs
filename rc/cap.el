@@ -243,9 +243,10 @@
 (setq-default tags-revert-without-query 1)
 
 (defun my/prettier-mode-ignore ()
-  (or (and buffer-file-name
-           (string-match "/\\(node_modules\\|flow-typed\\)/" buffer-file-name))
-      (not (local-variable-p 'my/prettier-on))))
+  (and buffer-file-name
+       (or
+        (string-match "/\\(node_modules\\|flow-typed\\)/" buffer-file-name)
+        (not (local-variable-p 'my/prettier-on)))))
 (custom-set-variables
  '(prettier-mode-ignore-buffer-function #'my/prettier-mode-ignore))
 (add-hook 'after-init-hook #'global-prettier-mode)
