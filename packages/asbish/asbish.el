@@ -138,7 +138,7 @@
                t))
      (buffer-string))))
 
-(defvar asbish/--once-hash-table
+(defconst asbish/--once-hash-table
   (make-hash-table :test 'eq :size 10 :weakness t))
 
 (defun asbish/once (fun)
@@ -147,13 +147,13 @@
      (puthash key t asbish/--once-hash-table)
      (funcall fun))))
 
-(defvar asbish/os
+(defconst asbish/os
   (pcase system-type
     ('darwin "osx")
     ('gnu/linux "linux")
     (_ "")))
 
-(defvar asbish/find-cmd
+(defconst asbish/find-cmd
   (if (eq system-type 'gnu/linux) "find" "gfind"))
 
 (defvar asbish/proj-root nil)
@@ -302,7 +302,7 @@
                           result
                           indent))))))
 
-(defvar asbish/whitespace-background (face-attribute 'default :background))
+(defconst asbish/whitespace-background (face-attribute 'default :background))
 
 (defun asbish/whitespace-tab-toggle ()
   (interactive)
