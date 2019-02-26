@@ -21,16 +21,16 @@
         smex
         hydra
         iter2
-        popwin
         erlang
+        popwin
         realgud
         diminish
         which-key
         imenu-list
         levenshtein
+        use-package
         slime-company
         virtualenvwrapper
-        use-package
         exec-path-from-shell))
 
 (mapc (lambda (x)
