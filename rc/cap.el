@@ -107,8 +107,18 @@
 
 (use-package magit
   :ensure t
-  :bind (("<f12>" . magit-status)
-         ("<C-f2>" . magit-blame)))
+  :bind (("<C-f2>" . magit-blame)))
+
+(use-package monky
+  :ensure t)
+
+(global-set-key
+ (kbd "<f12>")
+ (lambda ()
+   (interactive)
+   (if (locate-dominating-file default-directory ".hg")
+       (call-interactively 'monky-status)
+     (call-interactively 'magit-status))))
 
 (use-package comment-dwim-2
   :ensure t
