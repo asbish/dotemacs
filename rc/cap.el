@@ -638,10 +638,10 @@
   (add-hook 'racer-mode-hook
             (lambda ()
               (eldoc-mode 1)
+              (setq-local company-backends my/company-backends)
               (company-mode 1)))
   (add-hook 'rust-mode-hook
             (lambda ()
-              (setq-local company-backends my/company-backends)
               (racer-mode 1)
               (flycheck-mode 1)
               (flycheck-rust-setup))))
