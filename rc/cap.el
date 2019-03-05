@@ -112,6 +112,9 @@
 (use-package monky
   :ensure t)
 
+(use-package lsp-mode
+  :ensure t)
+
 (global-set-key
  (kbd "<f12>")
  (lambda ()
@@ -218,6 +221,7 @@
 (defvar my/company-backends nil)
 (use-package company
   :ensure t
+  :pin melpa-stable
   :diminish company-mode
   :bind (("C-c /" . company-complete-common)
          :map company-active-map
@@ -627,25 +631,27 @@
     '(:from "C-c C-a" :to "C-c C-p" :bind f90-previous-block)
     '(:from "C-c C-e" :to "C-c C-n" :bind f90-next-block)))
 
-(use-package rust-mode
+(use-package racer
   :ensure t
   :config
-  (use-package racer :ensure t)
-  (use-package flycheck-rust :ensure t)
-  (setq rust-format-on-save t)
-  (asbish/rebind-keys rust-mode-map
-    '(:from "C-c C-f" :to "C-c A" :bind rust-format-buffer))
-  (define-key rust-mode-map (kbd "<f6>") 'my/gdb-start)
+  ;; Remove `rust-mode' hook
+  (when (assoc "\\.rs\\'" auto-mode-alist)
+    (cl-delete "\\.rs\\'" auto-mode-alist :test #'equal :key #'car))
   (add-hook 'racer-mode-hook
             (lambda ()
               (eldoc-mode 1)
               (setq-local company-backends my/company-backends)
-              (company-mode 1)))
-  (add-hook 'rust-mode-hook
+              (company-mode 1))))
+
+(use-package rustic
+  :ensure t
+  :init
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rustic-mode))
+  :config
+  (define-key rustic-mode-map (kbd "<f6>") 'my/gdb-start)
+  (add-hook 'rustic-mode-hook
             (lambda ()
-              (racer-mode 1)
-              (flycheck-mode 1)
-              (flycheck-rust-setup))))
+              (racer-mode 1))))
 
 (use-package flycheck-gometalinter
   :ensure t
