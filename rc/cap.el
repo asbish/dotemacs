@@ -635,6 +635,7 @@
   (setq rust-format-on-save t)
   (asbish/rebind-keys rust-mode-map
     '(:from "C-c C-f" :to "C-c A" :bind rust-format-buffer))
+  (define-key rust-mode-map (kbd "<f6>") 'my/gdb-start)
   (add-hook 'racer-mode-hook
             (lambda ()
               (eldoc-mode 1)
