@@ -107,6 +107,7 @@
 
 (use-package magit
   :ensure t
+  :pin melpa-stable
   :bind (("<C-f2>" . magit-blame)))
 
 (use-package monky
@@ -125,10 +126,12 @@
 
 (use-package comment-dwim-2
   :ensure t
+  :pin melpa-stable
   :bind (("M-;" . comment-dwim-2)))
 
 (use-package paredit
   :ensure t
+  :pin melpa-stable
   :diminish paredit-mode
   :init
   (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
@@ -147,6 +150,7 @@
 
 (use-package multiple-cursors
   :ensure t
+  :pin melpa-stable
   :bind (("C->" . mc/mark-next-like-this)
          ("C-<" . mc/mark-previous-like-this))
   :config
@@ -157,6 +161,7 @@
 
 (use-package expand-region
   :ensure t
+  :pin melpa-stable
   :bind (("C-+" . er/expand-region)))
 
 (use-package whitespace
@@ -184,6 +189,7 @@
 
 (use-package editorconfig
   :ensure t
+  :pin melpa-stable
   :diminish editorconfig-mode
   :config
   (editorconfig-mode 1))
@@ -216,6 +222,7 @@
 
 (use-package yasnippet
   :ensure t
+  :pin melpa-stable
   :diminish yas-minor-mode)
 
 (defvar my/company-backends nil)
@@ -268,6 +275,7 @@
 
 (use-package dumb-jump
   :ensure t
+  :pin melpa-stable
   :config
   (setq dumb-jump-prefer-searcher 'ag)
   (asbish/rebind-keys dumb-jump-mode-map
@@ -281,6 +289,7 @@
 
 (use-package ggtags
   :ensure t
+  :pin melpa-stable
   :config
   (define-key ggtags-mode-map (kbd "C-c M-k") nil)
   (define-key ggtags-mode-map (kbd "C-c M-b") nil)
@@ -340,6 +349,7 @@
 
 (use-package srefactor
   :ensure t
+  :pin melpa-stable
   :config
   (define-key c-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
   (define-key c++-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
@@ -357,12 +367,11 @@
   '(:from "C-c C-\\" :to "C-c M-\\" :bind makefile-backslash-region))
 (add-hook 'makefile-mode-hook
           (lambda ()
-            (setq-local company-backends
-                        (cons 'company-files my/company-backends))
             (asbish/whitespace-tab-toggle)))
 
 (use-package cmake-mode
   :ensure t
+  :pin melpa-stable
   :init
   (add-hook 'cmake-mode-hook
             (lambda ()
@@ -371,6 +380,7 @@
 
 (use-package ninja-mode
   :ensure t
+  :pin melpa-stable
   :init
   (add-hook 'ninja-mode-hook
             (lambda ()
@@ -396,6 +406,7 @@
 
 (use-package realgud
   :defer t
+  :pin melpa-stable
   :init
   (custom-set-variables
    '(realgud-populate-common-fn-keys-function nil)))
@@ -499,10 +510,12 @@
   :init
   (add-hook 'c-mode-common-hook #'google-set-c-style))
 
-(use-package company-c-headers :ensure t)
+(use-package company-c-headers
+  :ensure t)
 
 (use-package irony
   :ensure t
+  :pin melpa-stable
   :diminish irony-mode
   :init
   (add-hook 'irony-mode-hook #'irony-cdb-autosetup-compile-options)
@@ -510,9 +523,13 @@
   (define-key irony-mode-map (kbd "C-c i") 'irony-cdb-menu)
   (define-key irony-mode-map (kbd "C-c C-t") 'irony-get-type))
 
-(use-package company-irony :ensure t)
+(use-package company-irony
+  :ensure t
+  :pin melpa-stable)
 
-(use-package flycheck-irony :ensure t)
+(use-package flycheck-irony
+  :ensure t
+  :pin melpa-stable)
 
 (defvar my/cc-mode-company-backends
   (append '(company-irony company-c-headers company-clang company-semantic)
@@ -576,7 +593,8 @@
 (add-hook 'objc-mode-hook #'my/cc-mode-setup t)
 
 (use-package protobuf-mode
-  :ensure t)
+  :ensure t
+  :pin melpa-stable)
 
 (use-package bison-mode
   :defer t
@@ -600,7 +618,8 @@
                 (setq-local company-backends
                             (cons 'company-glsl my/company-backends))))))
 
-(use-package cmm-mode :ensure t)
+(use-package cmm-mode
+  :ensure t)
 
 (use-package lua-mode
   :ensure t
@@ -658,6 +677,7 @@
 
 (use-package flycheck-gometalinter
   :ensure t
+  :pin melpa-stable
   :config
   (setq flycheck-gometalinter-vendor t
         flycheck-gometalinter-tests t
@@ -667,6 +687,7 @@
 
 (use-package go-mode
   :ensure t
+  :pin melpa-stable
   :config
   (use-package company-go :ensure t)
   (use-package go-eldoc :ensure t)
@@ -687,11 +708,13 @@
 
 (use-package autodisass-java-bytecode
   :ensure t
-  :defer t)
+  :defer t
+  :pin melpa-stable)
 
 (use-package meghanada
   :ensure t
   :defer t
+  :pin melpa-stable
   :init
   (add-hook 'java-mode-hook
             (lambda ()
@@ -709,7 +732,10 @@
   :commands
   (meghanada-mode))
 
-(use-package groovy-imports :ensure t)
+(use-package groovy-imports
+  :ensure t
+  :pin melpa-stable)
+
 (use-package groovy-mode
   :ensure t
   :init
@@ -722,6 +748,7 @@
 
 (use-package scala-mode
   :ensure t
+  :pin melpa-stable
   :init
   (add-hook 'scala-mode
             (lambda ()
@@ -730,6 +757,7 @@
 
 (use-package sbt-mode
   :ensure t
+  :pin melpa-stable
   :config
   (setq sbt:scroll-to-bottom-on-output t
         sbt:clear-buffer-before-command nil)
@@ -739,6 +767,7 @@
 
 (use-package ensime
   :ensure t
+  :pin melpa-stable
   :init
   (setq-default ensime-startup-snapshot-notification nil)
   (custom-set-faces
@@ -807,6 +836,7 @@
 (add-to-list 'load-path (locate-user-emacs-file "packages/distel/elisp"))
 (require 'distel)
 (use-package erlang
+  :pin melpa-stable
   :init
   (let ((run (asbish/shell-command-to-string "kerl path")))
     (when (= 0 (car run)) (setq erlang-root-dir (string-trim (cadr run)))))
@@ -845,11 +875,13 @@
    '(j-other-face ((t (:foreground "#bcbcbc"))))))
 
 (use-package rbenv
-  :ensure t)
+  :ensure t
+  :pin melpa-stable)
 
 (require 'ruby-mode)
 (use-package robe
   :ensure t
+  :pin melpa-stable
   :init
   (setq-default rspec-key-command-prefix (kbd "C-c r")
                 inf-ruby-default-implementation "pry")
@@ -930,9 +962,13 @@
 
 (add-hook 'python-mode-hook #'my/python-venv-direnv)
 
-(use-package jedi-core :ensure t)
+(use-package jedi-core
+  :ensure t
+  :pin melpa-stable)
+
 (use-package company-jedi
   :ensure t
+  :pin melpa-stable
   :config
   (add-hook 'python-mode-hook
             (lambda ()
@@ -966,6 +1002,7 @@
 
 (use-package slime
   :ensure t
+  :pin melpa-stable
   :init
   (asbish/load-file-if-exists "~/quicklisp/slime-helper.el")
   :config
@@ -1018,6 +1055,7 @@
 
 (use-package sml-mode
   :ensure t
+  :pin gnu
   :interpreter "sml"
   :init
   (add-hook 'sml-mode-hook (lambda () (electric-indent-local-mode -1)))
@@ -1283,6 +1321,7 @@
 
 (use-package company-coq
   :ensure t
+  :pin melpa-stable
   :config
   (add-hook 'coq-mode-hook
             (lambda ()
@@ -1291,6 +1330,7 @@
 
 (use-package ess
   :ensure t
+  :pin melpa-stable
   :functions ess-toggle-underscore
   :config
   (defun my/ess-eval-line-strip (&optional vis)
@@ -1349,6 +1389,7 @@
 
 (use-package markdown-mode
   :ensure t
+  :pin melpa-stable
   :init
   (add-hook 'markdown-mode-hook
             (lambda () (my/whitespace-trailing-space-remap)))
@@ -1360,6 +1401,7 @@
 
 (use-package json-mode
   :ensure t
+  :pin melpa-stable
   :init
   (add-to-list 'auto-mode-alist '("\\.babelrc\\'" . json-mode))
   (add-to-list 'auto-mode-alist '("\\.tern-project\\'" . json-mode))
@@ -1370,16 +1412,24 @@
   (define-key json-mode-map (kbd "C-c C-f") nil)
   (define-key json-mode-map (kbd "C-c A") 'json-mode-beautify))
 
-(use-package yaml-mode :ensure t)
-(use-package toml-mode :ensure t)
+(use-package yaml-mode
+  :ensure t
+  :pin melpa-stable)
+
+(use-package toml-mode
+  :ensure t
+)
+
 (use-package csv-mode
   :ensure t
+  :pin gnu
   :config
   (asbish/rebind-keys csv-mode-map
     '(:from "C-c C-a" :to "C-c A" :bind csv-align-fields)))
 
 (use-package simple-httpd
   :ensure t
+  :pin melpa-stable
   :config
   (custom-set-variables
    '(httpd-port 8888)
@@ -1442,6 +1492,7 @@
 
 (use-package rjsx-mode
   :ensure t
+  :pin melpa-stable
   :init
   (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
   (add-to-list 'auto-mode-alist '("\\.mjs\\'" . rjsx-mode))
@@ -1487,6 +1538,7 @@
 
 (use-package typescript-mode
   :ensure t
+  :pin melpa-stable
   :init
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
   :config
@@ -1510,6 +1562,7 @@
 
 (use-package php-mode
   :ensure t
+  :pin melpa-stable
   :config
   (use-package ac-php :ensure t)
   (use-package company-php :ensure t)
@@ -1528,6 +1581,7 @@
 
 (use-package web-mode
   :ensure t
+  :pin melpa-stable
   :init
   (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.ctp\\'" . web-mode))
@@ -1564,6 +1618,7 @@
 
 (use-package jade-mode
   :ensure t
+  :pin melpa-stable
   :init
   (add-hook 'jade-mode-hook
             (lambda ()
@@ -1573,6 +1628,7 @@
 
 (use-package slim-mode
   :ensure t
+  :pin melpa-stable
   :init
   (add-hook 'slim-mode-hook
             (lambda ()
@@ -1596,6 +1652,7 @@
 
 (use-package scss-mode
   :ensure t
+  :pin melpa-stable
   :init
   (define-key scss-mode-map (kbd "C-c C-c") nil)
   (add-hook 'scss-mode-hook
@@ -1611,6 +1668,7 @@
 
 (use-package sass-mode
   :ensure t
+  :pin melpa-stable
   :init
   (add-hook 'sass-mode-hook
             (lambda ()

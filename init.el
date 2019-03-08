@@ -7,8 +7,8 @@
 
 (setq package-archive-priorities
       '(("melpa-stable" . 20)
-        ("gnu" . 10)
-        ("melpa" . 0)))
+        ("melpa" . 20)
+        ("gnu" . 10)))
 
 (package-initialize)
 (unless package-archive-contents (package-refresh-contents))
