@@ -649,6 +649,9 @@
   (add-to-list 'auto-mode-alist '("\\.rs\\'" . rustic-mode))
   :config
   (define-key rustic-mode-map (kbd "<f6>") 'my/gdb-start)
+  (custom-set-faces
+   '(rustic-builtin-formatting-macro-face
+     ((t (:inherit font-lock-preprocessor-face)))))
   (add-hook 'rustic-mode-hook
             (lambda ()
               (racer-mode 1))))
