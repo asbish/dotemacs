@@ -9,6 +9,7 @@
 
 (require 'diminish)
 (diminish 'abbrev-mode)
+(diminish 'eldoc-mode)
 
 (require 'ido)
 (setq ido-enable-regexp t
@@ -114,7 +115,12 @@
   :ensure t)
 
 (use-package lsp-mode
-  :ensure t)
+  :ensure t
+  :diminish
+  :init
+  (custom-set-variables
+   '(lsp-response-timeout 5)
+   '(lsp-links-check-internal 0.5)))
 
 (global-set-key
  (kbd "<f12>")
@@ -165,6 +171,7 @@
   :bind (("C-+" . er/expand-region)))
 
 (use-package whitespace
+  :diminish global-whitespace-mode
   :config
   (setq whitespace-style
         '(empty face spaces space-mark tabs tab-mark trailing))
@@ -200,6 +207,8 @@
   :init
   (custom-set-variables
    '(flymake-gui-warnings-enabled nil)
+   '(flymake-start-syntax-check-on-newline nil)
+   '(flymake-start-syntax-check-on-newline nil)
    '(flymake-master-file-dirs (quote ("." "./src"))))
   (defun my/flymake-mode-setup ()
     (local-set-key (kbd "C-c `") 'flymake-goto-next-error)
@@ -652,10 +661,8 @@
 
 (use-package racer
   :ensure t
-  :config
-  ;; Remove `rust-mode' hook
-  (when (assoc "\\.rs\\'" auto-mode-alist)
-    (cl-delete "\\.rs\\'" auto-mode-alist :test #'equal :key #'car))
+  :diminish
+  :init
   (add-hook 'racer-mode-hook
             (lambda ()
               (eldoc-mode 1)
@@ -665,15 +672,33 @@
 (use-package rustic
   :ensure t
   :init
-  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rustic-mode))
-  :config
-  (define-key rustic-mode-map (kbd "<f6>") 'my/gdb-start)
+  (custom-set-variables
+   '(rustic-display-spinner nil))
   (custom-set-faces
    '(rustic-builtin-formatting-macro-face
      ((t (:inherit font-lock-preprocessor-face)))))
+  :config
+  (define-key rustic-mode-map (kbd "<f6>") 'my/gdb-start)
   (add-hook 'rustic-mode-hook
+            (lambda () (racer-mode 1))))
+
+(use-package rust-mode
+  :requires (racer rustic)
+  :ensure t
+  :init
+  ;; Remove `rustic-mode'
+  (when (assoc "\\.rs\\'" auto-mode-alist)
+    (cl-delete "\\.rs\\'" auto-mode-alist :test #'equal :key #'car))
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
+  (custom-set-variables
+   '(rust-format-on-save nil))
+  :config
+  (define-key rust-mode-map (kbd "<f6>") 'my/gdb-start)
+  (add-hook 'rust-mode-hook
             (lambda ()
-              (racer-mode 1))))
+              (if (asbish/read-only-mode "/\\(\\.rustup\\|target\\)/")
+                  (racer-mode 1)
+                (rustic-mode)))))
 
 (use-package flycheck-gometalinter
   :ensure t

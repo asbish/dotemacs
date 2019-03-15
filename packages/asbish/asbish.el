@@ -81,6 +81,13 @@
         (run (asbish/shell-command-to-string cmd)))
     (when (= 0 (car run)) (asbish/load-file-if-exists (cadr run) msg))))
 
+(defun asbish/read-only-mode (reg)
+  "Returns 't if read-only-mode enabled"
+  (and buffer-file-name
+       (string-match reg buffer-file-name)
+       (read-only-mode)
+       't))
+
 (defun asbish/find-in (dir path &optional wildcards)
   (let* ((file-dir (file-name-directory (buffer-file-name)))
          (root (locate-dominating-file file-dir dir))
