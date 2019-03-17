@@ -696,7 +696,7 @@
   (define-key rust-mode-map (kbd "<f6>") 'my/gdb-start)
   (add-hook 'rust-mode-hook
             (lambda ()
-              (if (asbish/read-only-mode "/\\(\\.rustup\\|target\\)/")
+              (if (asbish/read-only-mode "/\\(\\.rustup\\|\\.cargo\\|target\\)/")
                   (racer-mode 1)
                 (rustic-mode)))))
 
