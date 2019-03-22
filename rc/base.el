@@ -23,6 +23,7 @@
       delete-old-versions t
       kept-new-versions 2
       kept-old-versions 2
+      vc-handled-backends ()
       tab-stop-list (number-sequence 4 120 4)
       read-file-name-completion-ignore-case t
       browse-url-browser-function 'eww-browse-url
