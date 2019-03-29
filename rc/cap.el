@@ -7,35 +7,33 @@
 (define-key mode-specific-map (kbd "f") 'asbish/proj-find-file)
 (add-hook 'ediff-mode-hook (lambda () (asbish/quick-window-set nil)))
 
-(require 'diminish)
-(diminish 'abbrev-mode)
-(diminish 'eldoc-mode)
-
 (require 'ido)
 (setq ido-enable-regexp t
       ido-enable-flex-matching t)
 (ido-everywhere 1)
 (ido-mode 1)
 
-(require 'smex)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-(setq smex-save-file (locate-user-emacs-file ".smex-items"))
+(use-package smex
+  :ensure t
+  :config
+  (global-set-key (kbd "M-x") 'smex)
+  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+  (setq smex-save-file (locate-user-emacs-file ".smex-items")))
 
-(require 'imenu-list)
-(setq imenu-list-position 'below
-      imenu-list-focus-after-activation t)
-
-(defun my/imenu-list-after-jump ()
-  (if imenu-list-minor-mode
-      (imenu-list-minor-mode -1)
-    (message "Notice: `imenu-list-minor-mode' is not active.")
-    (let ((win (get-buffer-window "*Ilist*")))
-      (when win (quit-restore-window win 'bury)))))
-(setq imenu-list-after-jump-hook '(my/imenu-list-after-jump))
-
-(global-set-key (kbd "<f8>") 'imenu-list-smart-toggle)
-(define-key mode-specific-map (kbd "I") 'imenu-list-smart-toggle)
+(use-package imenu-list
+  :ensure t
+  :config
+  (setq imenu-list-position 'below
+        imenu-list-focus-after-activation t)
+  (defun my/imenu-list-after-jump ()
+    (if imenu-list-minor-mode
+        (imenu-list-minor-mode -1)
+      (message "Notice: `imenu-list-minor-mode' is not active.")
+      (let ((win (get-buffer-window "*Ilist*")))
+        (when win (quit-restore-window win 'bury)))))
+  (setq imenu-list-after-jump-hook '(my/imenu-list-after-jump))
+  (global-set-key (kbd "<f8>") 'imenu-list-smart-toggle)
+  (define-key mode-specific-map (kbd "I") 'imenu-list-smart-toggle))
 
 (require 'comint)
 (setq comint-input-ignoredups t
@@ -58,30 +56,18 @@
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
 (recentf-mode 1)
 
-(require 'which-key)
-(diminish 'which-key-mode)
-(setq which-key-idle-delay 1.5)
-(which-key-mode 1)
-
 (require 'hydra)
-(defhydra hydra-zoom (global-map "<f2>")
-  ("g" text-scale-increase "in")
-  ("l" text-scale-decrease "out"))
-
-(require 'winner)
 (defhydra hydra-winner (global-map "<f10>")
   ("<left>" winner-undo "undo")
   ("<right>" winner-redo "redo"))
 
+(require 'winner)
+(defhydra hydra-zoom (global-map "<f2>")
+  ("g" text-scale-increase "in")
+  ("l" text-scale-decrease "out"))
+
 (global-set-key (kbd "<f10> <f10>") 'asbish/quick-window)
 (global-set-key (kbd "<f10> s") 'asbish/quick-window-set)
-
-(require 'ag)
-(setq ag-highlight-search t
-      ag-reuse-buffers t)
-(global-set-key (kbd "M-?") 'ag)
-(add-hook 'ag-search-finished-hook
-          (lambda () (switch-to-buffer "*ag search*")))
 
 (require 'popwin)
 (setq popwin:special-display-config
@@ -93,6 +79,32 @@
                                 (compilation-mode :noselect t)
                                 (completion-list-mode :noselect t)))))
 (popwin-mode 1)
+
+(use-package delight
+  :ensure t
+  :pin gnu)
+
+(use-package diminish
+  :ensure t
+  :config
+  (diminish 'abbrev-mode)
+  (diminish 'eldoc-mode))
+
+(use-package which-key
+  :ensure t
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 1.5)
+  (which-key-mode 1))
+
+(use-package ag
+  :ensure t
+  :config
+  (setq ag-highlight-search t
+        ag-reuse-buffers t)
+  (global-set-key (kbd "M-?") 'ag)
+  (add-hook 'ag-search-finished-hook
+            (lambda () (switch-to-buffer "*ag search*"))))
 
 (use-package ddskk
   :ensure t
@@ -114,6 +126,14 @@
 (use-package monky
   :ensure t)
 
+(global-set-key
+ (kbd "<f12>")
+ (lambda ()
+   (interactive)
+   (if (locate-dominating-file default-directory ".hg")
+       (call-interactively 'monky-status)
+     (call-interactively 'magit-status))))
+
 (use-package lsp-mode
   :ensure t
   :diminish
@@ -122,13 +142,8 @@
    '(lsp-response-timeout 5)
    '(lsp-links-check-internal 0.5)))
 
-(global-set-key
- (kbd "<f12>")
- (lambda ()
-   (interactive)
-   (if (locate-dominating-file default-directory ".hg")
-       (call-interactively 'monky-status)
-     (call-interactively 'magit-status))))
+(use-package iter2
+  :ensure t)
 
 (use-package comment-dwim-2
   :ensure t
@@ -248,7 +263,7 @@
   (add-hook 'after-init-hook #'global-company-mode)
   :config
   (setq company-tooltip-align-annotations t)
-  (setq my/company-backends ;; remove no need backends
+  (setq my/company-backends
         (cl-set-difference company-backends
                            '(company-bbdb
                              company-clang
@@ -272,11 +287,15 @@
 
 (setq-default tags-revert-without-query 1)
 
+(use-package nvm
+  :ensure t)
 (add-to-list 'safe-local-variable-values '(my/prettier-on . t))
 (defun my/prettier-mode-ignore ()
   (and buffer-file-name
        (or
-        (string-match "/\\(node_modules\\|flow-typed\\)/" buffer-file-name)
+        (string-match
+         "/\\(node_modules\\|flow-typed\\|\\package.json\\)/"
+         buffer-file-name)
         (not (local-variable-p 'my/prettier-on)))))
 (custom-set-variables
  '(prettier-mode-ignore-buffer-function #'my/prettier-mode-ignore))
@@ -1010,6 +1029,17 @@
 (add-hook 'emacs-lisp-mode-hook #'hs-minor-mode)
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 
+(use-package nim-mode
+  :ensure t
+  :config
+  (setq nimsuggest-path "~/.nimble/bin/nimsuggest")
+  (add-hook 'nimsuggest-mode-hook #'flycheck-mode)
+  (add-hook 'nim-mode-hook (lambda () (nimsuggest-mode 1))))
+
+(use-package ob-nim
+  :ensure t
+  :defer t)
+
 (use-package racket-mode
   :ensure t
   :init
@@ -1373,6 +1403,15 @@
 (use-package gnuplot-mode
   :ensure t)
 
+(use-package lean-mode
+  :ensure t
+  :config
+  (use-package company-lean :ensure t)
+  (add-hook 'lean-mode-hook
+            (lambda ()
+              (setq-local company-backends
+                          (cons 'company-lean my/company-backends)))))
+
 (add-to-list 'load-path (locate-user-emacs-file "packages/zscript-mode"))
 (require 'zscript-mode)
 (define-key zscript-mode-map (kbd "C-c C-d") 'zscript-browse-command)
@@ -1564,10 +1603,14 @@
 (use-package typescript-mode
   :ensure t
   :pin melpa-stable
+  :delight
+  (typescript-mode "TS")
   :init
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
   :config
-  (use-package tide :ensure t)
+  (use-package tide
+    :ensure t
+    :diminish tide-mode)
   (setq typescript-indent-level 2)
   (define-key tide-mode-map (kbd "C-c A") 'tide-format)
   (define-key tide-mode-map (kbd "M-RET") 'tide-rename-symbol)

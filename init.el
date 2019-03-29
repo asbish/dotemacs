@@ -14,20 +14,9 @@
 (unless package-archive-contents (package-refresh-contents))
 
 (mapc (lambda (x) (unless (package-installed-p x) (package-install x)))
-      '(f
-        ag
-        nvm
-        dash
-        smex
-        hydra
-        iter2
+      '(hydra
         erlang
         popwin
-        realgud
-        diminish
-        which-key
-        imenu-list
-        levenshtein
         use-package
         slime-company
         virtualenvwrapper
