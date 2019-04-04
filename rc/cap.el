@@ -294,7 +294,7 @@
   (and buffer-file-name
        (or
         (string-match
-         "/\\(node_modules\\|flow-typed\\|\\package.json\\)/"
+         "/\\(node_modules/\\|flow-typed/\\|package\\.json\\)"
          buffer-file-name)
         (not (local-variable-p 'my/prettier-on)))))
 (custom-set-variables
