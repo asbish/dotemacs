@@ -134,15 +134,11 @@
  '(ediff-fine-diff-C ((t (:background "#d0d0d0" :foreground "black")))))
 (global-font-lock-mode 1)
 
-(defun w-split-1 ()
-  (interactive)
-  (split-window (selected-window) 80 t))
-
 (defun w-split ()
   (interactive)
-  (w-split-1)
+  (split-window (selected-window) 80 'right)
   (other-window 1)
-  (w-split-1))
+  (split-window (selected-window) 80 'right))
 
 (defun xsel-naive-copy ()
   (interactive)

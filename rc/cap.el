@@ -35,6 +35,34 @@
   (global-set-key (kbd "<f8>") 'imenu-list-smart-toggle)
   (define-key mode-specific-map (kbd "I") 'imenu-list-smart-toggle))
 
+(use-package treemacs
+  :ensure t
+  :config
+  (setq
+   treemacs-tag-follow-mode nil
+   treemacs-filewatch-mode nil
+   treemacs-eldoc-display nil
+   treemacs-fringe-indicator-mode nil
+   treemacs-no-png-images t
+   treemacs-indentation 1)
+  (custom-set-faces
+   '(treemacs-root-face ((t (:inherit font-lock-type-face :underline t)))))
+  (defun w-split-treemacs (&optional w)
+    (interactive (list 82))
+    (delete-other-windows)
+    (when (eq (treemacs-current-visibility) 'visible) (treemacs))
+    (let ((c 0) (tw (window-body-width)))
+      (while (> tw w) (setq c (+ c 1)) (setq tw (- tw w)))
+      (if (or (< tw 10) (= c 2))
+          (progn
+            (message "Too small window width. Skip `treemacs`")
+            (w-split))
+        (setq treemacs-width tw)
+        (treemacs)
+        (dotimes (i (- c 1))
+          (other-window 1)
+          (split-window (selected-window) w 'right))))))
+
 (require 'comint)
 (setq comint-input-ignoredups t
       comint-input-ring-size 1000)
@@ -69,17 +97,6 @@
 (global-set-key (kbd "<f10> <f10>") 'asbish/quick-window)
 (global-set-key (kbd "<f10> s") 'asbish/quick-window-set)
 
-(require 'popwin)
-(setq popwin:special-display-config
-      (append '(("*xref*" :position bottom)
-                ("*ag search*" :position bottom))
-              (seq-difference popwin:special-display-config
-                              '(help-mode
-                                (occur-mode :noselect t)
-                                (compilation-mode :noselect t)
-                                (completion-list-mode :noselect t)))))
-(popwin-mode 1)
-
 (use-package delight
   :ensure t
   :pin gnu)
@@ -102,9 +119,7 @@
   :config
   (setq ag-highlight-search t
         ag-reuse-buffers t)
-  (global-set-key (kbd "M-?") 'ag)
-  (add-hook 'ag-search-finished-hook
-            (lambda () (switch-to-buffer "*ag search*"))))
+  (global-set-key (kbd "M-?") 'ag))
 
 (use-package ddskk
   :ensure t

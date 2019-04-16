@@ -16,7 +16,6 @@
 (mapc (lambda (x) (unless (package-installed-p x) (package-install x)))
       '(hydra
         erlang
-        popwin
         use-package
         slime-company
         virtualenvwrapper
