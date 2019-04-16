@@ -3,7 +3,7 @@
 (menu-bar-mode -1)
 
 (fset 'yes-or-no-p #'y-or-n-p)
-(set-language-environment "Japanese")
+(set-language-environment "English")
 (prefer-coding-system 'utf-8)
 
 (setq default-directory "~/"
