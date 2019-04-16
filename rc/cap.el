@@ -1615,6 +1615,7 @@
   (define-key tide-mode-map (kbd "C-c A") 'tide-format)
   (define-key tide-mode-map (kbd "M-RET") 'tide-rename-symbol)
   (define-key tide-mode-map (kbd "C-c C-d") 'tide-documentation-at-point)
+  (flycheck-add-mode 'javascript-eslint 'typescript-mode)
   (add-hook 'typescript-mode-hook
             (lambda ()
               (tide-setup)
@@ -1625,7 +1626,11 @@
               (setq-local flycheck-typescript-tslint-executable
                           (asbish/find-executable-node_modules
                            "tslint/bin/tslint"))
+              (setq-local flycheck-javascript-eslint-executable
+                          (asbish/find-executable-node_modules
+                           "eslint/bin/eslint.js"))
               (flycheck-add-next-checker 'typescript-tide 'typescript-tslint)
+              (flycheck-add-next-checker 'typescript-tslint 'javascript-eslint)
               (flycheck-mode 1))))
 
 (use-package php-mode
