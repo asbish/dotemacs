@@ -1519,23 +1519,6 @@
     (setq httpd-root root)
     (message (format "set 'httpd-root \"%s\"" httpd-root))))
 
-(setenv "NODE_NO_READLINE" "1")
-
-(defun my/run-nodejs ()
-  (interactive)
-  (pop-to-buffer (make-comint "nodejs" "node" nil "--interactive")))
-
-(defun my/nodejs-loadfile ()
-  (interactive)
-  (let ((filename (expand-file-name (buffer-file-name))))
-    (comint-send-string (get-buffer-process "*nodejs*")
-                        (concat ".load " filename "\n"))))
-
-(defun my/nodejs-break ()
-  (interactive)
-  (let ((filename (expand-file-name (buffer-file-name))))
-    (comint-send-string (get-buffer-process "*nodejs*") ".break\n")))
-
 (add-to-list 'load-path (locate-user-emacs-file "packages/js2-mode"))
 (use-package js2-mode
   :defer t
