@@ -47,10 +47,13 @@
    treemacs-indentation 1)
   (custom-set-faces
    '(treemacs-root-face ((t (:inherit font-lock-type-face :underline t)))))
+  (declare-function w-split "base.el" nil)
   (defun w-split-treemacs (&optional w)
     (interactive (list 82))
     (delete-other-windows)
-    (when (eq (treemacs-current-visibility) 'visible) (treemacs))
+    (when (and (fboundp 'treemacs-get-local-window)
+               (treemacs-get-local-window))
+      (treemacs))
     (let ((c 0) (tw (window-body-width)))
       (while (> tw w) (setq c (+ c 1)) (setq tw (- tw w)))
       (if (or (< tw 10) (= c 2))
@@ -81,7 +84,6 @@
 (setq recentf-max-menu-items 30
       recentf-max-saved-items 30)
 (global-set-key (kbd "<f9>") 'recentf-open-files)
-(global-set-key (kbd "C-x C-r") 'recentf-open-files)
 (recentf-mode 1)
 
 (require 'hydra)
@@ -1228,16 +1230,15 @@
           (delete-file file-list))
       (error "Could not generate input file."))))
 
-(use-package intero
-  :load-path "packages/intero/elisp"
-  :init
-  (add-to-list 'recentf-exclude ".*/.stack-work/intero/intero-script.*")
-  :config
-  (asbish/rebind-keys intero-mode-map
-    '(:from "M-." :to "C-c ." :bind intero-goto-definition)
-    '(:from "C-c C-i" :to "C-c C-d" :bind intero-info)
-    '(:from "C-c C-c" :to "C-c C-r" :bind intero-repl-eval-region)
-    '(:from "C-c C-r" :to "M-RET a" :bind intero-apply-suggestions)))
+
+(add-to-list 'load-path (locate-user-emacs-file "packages/intero/elisp"))
+(require 'intero)
+(add-to-list 'recentf-exclude ".*/.stack-work/intero/intero-script.*")
+(asbish/rebind-keys intero-mode-map
+  '(:from "M-." :to "C-c ." :bind intero-goto-definition)
+  '(:from "C-c C-i" :to "C-c C-d" :bind intero-info)
+  '(:from "C-c C-c" :to "C-c C-r" :bind intero-repl-eval-region)
+  '(:from "C-c C-r" :to "M-RET a" :bind intero-apply-suggestions))
 
 (defun my/use-intero ()
   (interactive)
@@ -1249,6 +1250,7 @@
 (defvar interactive-haskell-mode-map)
 (add-to-list 'load-path (locate-user-emacs-file "packages/haskell-mode/"))
 (require 'haskell-mode-autoloads)
+(require 'haskell-cabal)
 (add-to-list 'Info-default-directory-list
              (locate-user-emacs-file "packages/haskell-mode/"))
 
@@ -1496,8 +1498,7 @@
   :pin melpa-stable)
 
 (use-package toml-mode
-  :ensure t
-)
+  :ensure t)
 
 (use-package csv-mode
   :ensure t
