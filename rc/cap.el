@@ -1539,9 +1539,6 @@
    '(js2-strict-missing-semi-warning nil)
    '(js2-strict-trainling-comma-warning nil))
   :config
-  (define-key js2-mode-map (kbd "C-c C-x") 'my/run-nodejs)
-  (define-key js2-mode-map (kbd "C-c C-l") 'my/nodejs-loadfile)
-  (define-key js2-mode-map (kbd "C-c C") 'my/nodejs-break)
   (define-key js2-mode-map (kbd "C-c C-a") nil)
   (define-key js2-mode-map (kbd "C-c C-e") nil)
   (define-key js2-mode-map (kbd "C-c C-f") nil)

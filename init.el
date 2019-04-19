@@ -38,9 +38,9 @@
 (unless (server-running-p) (server-start))
 
 (require 'exec-path-from-shell)
-(when (display-graphic-p)
+(when (memq window-system '(mac ns x))
   (let ((zsh (executable-find "zsh")))
-    (setenv "SHELL" zsh))
+    (when zsh (setenv "SHELL" zsh)))
   (exec-path-from-shell-initialize))
 
 (let ((rc (file-name-as-directory
