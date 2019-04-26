@@ -296,7 +296,7 @@
 (require 'hideshow)
 (diminish 'hs-minor-mode)
 (asbish/rebind-keys hs-minor-mode-map
-  '(:from "C-c @ C-c" :to "M-`" :bind hs-toggle-hiding) ;; hide menubar
+  '(:from "C-c @ C-c" :to "C-c f" :bind hs-toggle-hiding) ;; hide menubar
   '(:from "C-c @ C-h" :to "C-c @ h" :bind hs-hide-block)
   '(:from "C-c @ C-s" :to "C-c @ s" :bind hs-show-block)
   '(:from "C-c @ C-M-h" :to "C-c @ H" :bind hs-hide-all)
@@ -1296,7 +1296,7 @@
   (diminish 'haskell-collapse-mode)
   (define-key haskell-collapse-mode-map (kbd "C-c @ C-M-c") nil)
   (asbish/rebind-keys haskell-collapse-mode-map
-    '(:from "C-c @ C-c" :to "M-`" :bind haskell-hide-toggle)
+    '(:from "C-c @ C-c" :to "C-c f" :bind haskell-hide-toggle)
     '(:from "C-c @ C-M-h" :to "C-c @ H" :bind haskell-hide-toggle-all)
     '(:from "C-c @ C-M-s" :to "C-c @ S" :bind haskell-hide-toggle-all)))
 
