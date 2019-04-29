@@ -1,17 +1,23 @@
 (add-to-list 'load-path (locate-user-emacs-file "packages/asbish"))
 (require 'asbish)
 
-(global-unset-key (kbd "C-x C-z"))
-(global-set-key (kbd "<f5>") 'revert-buffer)
-(define-key mode-specific-map (kbd "C-c") 'compile)
-(define-key mode-specific-map (kbd "f") 'asbish/proj-find-file)
+(declare-function w-split "base.el" nil)
+(declare-function my/set-key-other-window "base.el" nil)
+
 (add-hook 'ediff-mode-hook (lambda () (asbish/quick-window-set nil)))
 
-(require 'ido)
-(setq ido-enable-regexp t
-      ido-enable-flex-matching t)
-(ido-everywhere 1)
-(ido-mode 1)
+(require 'hydra)
+(defhydra hydra-winner (global-map "<f10>")
+  ("<left>" winner-undo "undo")
+  ("<right>" winner-redo "redo"))
+
+(require 'winner)
+(defhydra hydra-zoom (global-map "<f2>")
+  ("g" text-scale-increase "in")
+  ("l" text-scale-decrease "out"))
+
+(global-set-key (kbd "<f10> <f10>") 'asbish/quick-window)
+(global-set-key (kbd "<f10> s") 'asbish/quick-window-set)
 
 (use-package smex
   :ensure t
@@ -47,7 +53,6 @@
    treemacs-indentation 1)
   (custom-set-faces
    '(treemacs-root-face ((t (:inherit font-lock-type-face :underline t)))))
-  (declare-function w-split "base.el" nil)
   (defun w-split-treemacs (&optional w)
     (interactive (list 82))
     (delete-other-windows)
@@ -65,39 +70,6 @@
         (dotimes (i (- c 1))
           (other-window 1)
           (split-window (selected-window) w 'right))))))
-
-(require 'comint)
-(setq comint-input-ignoredups t
-      comint-input-ring-size 1000)
-
-(defun my/set-key-other-window ()
-  (local-set-key (kbd "C-M-l") 'other-window))
-(add-hook 'comint-mode-hook #'my/set-key-other-window)
-(add-hook 'eshell-mode-hook #'my/set-key-other-window)
-
-(require 'dired)
-(setq dired-auto-revert-buffer t
-      dired-recursive-copies 'always
-      dired-listing-switches "-lah")
-
-(require 'recentf)
-(setq recentf-max-menu-items 30
-      recentf-max-saved-items 30)
-(global-set-key (kbd "<f9>") 'recentf-open-files)
-(recentf-mode 1)
-
-(require 'hydra)
-(defhydra hydra-winner (global-map "<f10>")
-  ("<left>" winner-undo "undo")
-  ("<right>" winner-redo "redo"))
-
-(require 'winner)
-(defhydra hydra-zoom (global-map "<f2>")
-  ("g" text-scale-increase "in")
-  ("l" text-scale-decrease "out"))
-
-(global-set-key (kbd "<f10> <f10>") 'asbish/quick-window)
-(global-set-key (kbd "<f10> s") 'asbish/quick-window-set)
 
 (use-package delight
   :ensure t

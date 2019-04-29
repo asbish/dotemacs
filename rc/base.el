@@ -134,6 +134,32 @@
  '(ediff-fine-diff-C ((t (:background "#d0d0d0" :foreground "black")))))
 (global-font-lock-mode 1)
 
+(defun my/set-key-other-window ()
+  (local-set-key (kbd "C-M-l") 'other-window))
+
+(require 'ido)
+(setq ido-enable-regexp t
+      ido-enable-flex-matching t)
+(ido-everywhere 1)
+(ido-mode 1)
+
+(require 'comint)
+(setq comint-input-ignoredups t
+      comint-input-ring-size 1000)
+(add-hook 'comint-mode-hook #'my/set-key-other-window)
+(add-hook 'eshell-mode-hook #'my/set-key-other-window)
+
+(require 'dired)
+(setq dired-auto-revert-buffer t
+      dired-recursive-copies 'always
+      dired-listing-switches "-lah")
+
+(require 'recentf)
+(setq recentf-max-menu-items 30
+      recentf-max-saved-items 30)
+(global-set-key (kbd "<f9>") 'recentf-open-files)
+(recentf-mode 1)
+
 (defun w-split ()
   (interactive)
   (split-window (selected-window) 80 'right)
@@ -155,6 +181,10 @@
          (point-min) (point-max) "xsel" nil 0 nil "-ib")))))
 
 (define-key global-map (kbd "C-c w") 'xsel-naive-copy)
+
+(global-unset-key (kbd "C-x C-z"))
+(global-set-key (kbd "<f5>") 'revert-buffer)
+(define-key mode-specific-map (kbd "C-c") 'compile)
 
 (when (display-graphic-p)
   (menu-bar-mode 1)
