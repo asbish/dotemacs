@@ -404,6 +404,10 @@
               (setq tab-width 2
                     indent-line-function 'insert-tab))))
 
+(use-package bazel-mode
+  :ensure t
+  :pin melpa-stable)
+
 (require 'gud)
 (require 'gdb-mi)
 (setq-default gdb-many-windows t
