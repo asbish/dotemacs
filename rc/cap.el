@@ -974,14 +974,18 @@
   '(:from "C-c C-t w" :to "C-c C-i w" :bind python-skeleton-while))
 
 (require 'virtualenvwrapper)
-(defvar my/python-venv-default "python-3.6")
+(defvar my/python-venv-default "py3")
 (defvar my/python-venv-location nil)
 (let* ((dir "~/.virtualenvs/")
-       (env (when (file-directory-p dir) (venv-get-candidates-dir dir)))
-       (loc (mapcar (lambda (x) (expand-file-name (concat dir x))) env)))
+       (envs (when (file-directory-p dir) (venv-get-candidates-dir dir)))
+       (loc (mapcar (lambda (x) (expand-file-name (concat dir x))) envs))
+       (env-default (car (member my/python-venv-default envs))))
   (setq venv-location loc
         my/python-venv-location loc
-        my/python-venv-default (car (member my/python-venv-default env))))
+        my/python-venv-default env-default)
+  (when my/python-venv-default (venv-workon env-default))
+  (setq-default mode-line-format
+                (cons '(:exec venv-current-name) mode-line-format)))
 
 (defun my/python-venv-reset (&optional loc force)
   (interactive (list nil t))
