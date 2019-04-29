@@ -1,20 +1,20 @@
-(add-to-list 'load-path (locate-user-emacs-file "packages/asbish"))
-(require 'asbish)
-
 (declare-function w-split "base.el" nil)
 (declare-function my/set-key-other-window "base.el" nil)
+
+(add-to-list 'load-path (locate-user-emacs-file "packages/asbish"))
+(require 'asbish)
 
 (add-hook 'ediff-mode-hook (lambda () (asbish/quick-window-set nil)))
 
 (require 'hydra)
-(defhydra hydra-winner (global-map "<f10>")
-  ("<left>" winner-undo "undo")
-  ("<right>" winner-redo "redo"))
-
-(require 'winner)
 (defhydra hydra-zoom (global-map "<f2>")
   ("g" text-scale-increase "in")
   ("l" text-scale-decrease "out"))
+
+(require 'winner)
+(defhydra hydra-winner (global-map "<f10>")
+  ("<left>" winner-undo "undo")
+  ("<right>" winner-redo "redo"))
 
 (global-set-key (kbd "<f10> <f10>") 'asbish/quick-window)
 (global-set-key (kbd "<f10> s") 'asbish/quick-window-set)
@@ -40,6 +40,21 @@
   (setq imenu-list-after-jump-hook '(my/imenu-list-after-jump))
   (global-set-key (kbd "<f8>") 'imenu-list-smart-toggle)
   (define-key mode-specific-map (kbd "I") 'imenu-list-smart-toggle))
+
+(use-package projectile
+  :ensure t
+  :pin melpa-stable
+  :diminish projectile-mode
+  :config
+  (setq
+   projectile-enable-caching t
+   projectile-file-exists-remote-cache-expire nil
+   projectile-indexing-method 'alien
+   projectile-dynamic-mode-line nil
+   projectile-mode-line-function (lambda () "")
+   projectile-sort-order 'recentf)
+  (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
+  (projectile-mode 1))
 
 (use-package treemacs
   :ensure t
