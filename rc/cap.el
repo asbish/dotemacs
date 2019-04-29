@@ -1,3 +1,4 @@
+(require 'recentf)
 (declare-function w-split "base.el" nil)
 (declare-function my/set-key-other-window "base.el" nil)
 
@@ -318,7 +319,6 @@
   (define-key dumb-jump-mode-map (kbd "C-c d .") 'dumb-jump-go-other-window))
 
 (defvar my/gtags (executable-find "gtags"))
-
 (use-package ggtags
   :ensure t
   :pin melpa-stable
@@ -351,23 +351,19 @@
         global-semantic-idle-scheduler-mode
         global-semantic-idle-summary-mode))
 (setq-default semantic-idle-scheduler-idle-time 2)
-
 (setq semantic-new-buffer-setup-functions
       (seq-difference semantic-new-buffer-setup-functions
                       '((scheme-mode . semantic-default-scheme-setup)
                         (js-mode . wisent-javascript-setup-parser)
                         (html-mode . semantic-default-html-setup))))
-
 (when my/gtags
   (semanticdb-enable-gnu-global-databases 'c-mode)
   (semanticdb-enable-gnu-global-databases 'c++-mode))
-
 (defun my/locate-gpath (orig-fun)
   (let ((exist (and my/gtags
                     (locate-dominating-file default-directory "GPATH"))))
     (if exist exist (funcall orig-fun))))
 (advice-add 'semantic-symref-calculate-rootdir :around #'my/locate-gpath)
-
 (asbish/rebind-keys semantic-mode-map
   '(:from "C-c , n" :to "C-c , >" :bind senator-next-tag)
   '(:from "C-c , p" :to "C-c , <" :bind senator-previous-tag)
@@ -376,7 +372,6 @@
   '(:from "C-c , J" :to "C-c , ." :bind semantic-complete-jump)
   '(:from "C-c , l" :to "C-c , /" :bind semantic-analyze-possible-completions)
   '(:from "C-c , SPC" :to "C-c , M-/" :bind semantic-complete-analyze-inline))
-
 (semantic-mode 1)
 
 (use-package srefactor
@@ -445,23 +440,22 @@
   :pin melpa-stable
   :init
   (custom-set-variables
-   '(realgud-populate-common-fn-keys-function nil)))
-
-(defvar my/realgud-alist
-  '((python-mode (realgud:pdb . "^\\*pdb"))))
-
-(defun my/realgud-start ()
-  (interactive)
-  (when (not (symbol-value 'realgud-short-key-mode))
-    (let ((debugger (cadr (assoc major-mode my/realgud-alist))))
-      (when debugger
-        (asbish/quick-window-set nil)
-        (let ((source-buffer (current-buffer)))
-          (call-interactively (car debugger))
-          (delete-other-windows)
-          (set-window-buffer (selected-window) source-buffer)
-          (set-window-buffer (split-window-horizontally)
-                             (asbish/find-buffer (cdr debugger))))))))
+   '(realgud-populate-common-fn-keys-function nil))
+  :config
+  (defvar my/realgud-alist
+    '((python-mode (realgud:pdb . "^\\*pdb"))))
+  (defun my/realgud-start ()
+    (interactive)
+    (when (not (symbol-value 'realgud-short-key-mode))
+      (let ((debugger (cadr (assoc major-mode my/realgud-alist))))
+        (when debugger
+          (asbish/quick-window-set nil)
+          (let ((source-buffer (current-buffer)))
+            (call-interactively (car debugger))
+            (delete-other-windows)
+            (set-window-buffer (selected-window) source-buffer)
+            (set-window-buffer (split-window-horizontally)
+                               (asbish/find-buffer (cdr debugger)))))))))
 
 (use-package sh-script
   :defer t
@@ -954,7 +948,6 @@
 (require 'python)
 (setq python-shell-interpreter "ipython"
       python-shell-interpreter-args "--simple-prompt --pprint")
-
 (define-key python-mode-map (kbd "C-c C-j") nil) ;; imenu
 (define-key python-mode-map (kbd "<f6>") 'my/realgud-start)
 (asbish/rebind-keys python-mode-map
@@ -1322,7 +1315,7 @@
   (diminish 'hindent-mode)
   (add-hook 'haskell-mode-hook #'hindent-mode))
 
-(when (display-graphic-p) (asbish/load-file-shell-command "agda-mode locate"))
+(asbish/load-file-shell-command "agda-mode locate")
 (with-eval-after-load 'agda2-mode
   (custom-set-faces
    '(agda2-highlight-keyword-face ((t (:inherit font-lock-keyword-face))))
@@ -1345,10 +1338,8 @@
 (load (locate-user-emacs-file "packages/PG/generic/proof-site"))
 (require 'pg-vars)
 (require 'proof-script)
-
 (custom-set-variables
  '(proof-splash-enable nil))
-
 (custom-set-faces
  '(proof-active-area-face ((t (:background "brightblack"))))
  '(proof-eager-annotation-face ((t (:foreground "#ff8700"))))
@@ -1360,7 +1351,6 @@
    ((t (:background "#bcbcbc" :slant italic))))
  '(proof-script-highlight-error-face
    ((t (:inherit font-lock-warning-face :underline t)))))
-
 (defun my/proof-layout-windows ()
   "favorite layout"
   (interactive)
@@ -1375,7 +1365,6 @@
                 (split-window-vertically (- goals-win-height 5)))))
       (set-window-buffer goals-win goals)
       (set-window-buffer response-win response))))
-
 (define-key proof-mode-map (kbd "<f6>") 'my/proof-layout-windows)
 
 (with-eval-after-load 'proof
