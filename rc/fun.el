@@ -1,9 +1,9 @@
 (add-to-list 'load-path (locate-user-emacs-file "packages/asbish"))
 (require 'asbish)
 
-(use-package f :ensure t)
-(use-package dash :ensure t)
-(use-package levenshtein :ensure t)
+(require 'f)
+(require 'dash)
+(require 'levenshtein)
 
 (defun my/delete-window ()
   (interactive)

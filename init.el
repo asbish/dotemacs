@@ -14,8 +14,11 @@
 (unless package-archive-contents (package-refresh-contents))
 
 (mapc (lambda (x) (unless (package-installed-p x) (package-install x)))
-      '(hydra
+      '(f
+        dash
+        hydra
         erlang
+        levenshtein
         use-package
         slime-company
         virtualenvwrapper
