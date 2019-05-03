@@ -1441,10 +1441,12 @@
     (turn-on-reftex))
   (add-hook 'LaTeX-mode-hook #'my/LaTeX-mode-setup))
 
+(require 'rst)
+
 (use-package flycheck-vale
   :requires flycheck
   :ensure t
-  :function flycheck-buffer
+  :functions flycheck-buffer
   :config
   (flycheck-vale-setup)
   (setq-default flycheck-vale-enabled nil)
