@@ -206,10 +206,9 @@
                       :weight 'bold
                       :foreground "red"
                       :background asbish/whitespace-background)
-  (global-set-key (kbd "<f11>") 'global-whitespace-mode)
+  (global-set-key (kbd "<f7> <f7>") 'global-whitespace-mode)
+  (global-set-key (kbd "<f7> t") 'asbish/whitespace-tab-toggle)
   (global-whitespace-mode 1))
-
-(global-set-key (kbd "<f7>") #'asbish/whitespace-tab-toggle)
 
 (defun my/whitespace-trailing-space-remap ()
   (face-remap-add-relative 'whitespace-trailing '((:background "#585858"))))
