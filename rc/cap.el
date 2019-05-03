@@ -246,7 +246,8 @@
     ;; overhead!
     (defun my/flycheck-error (str &rest args)
       (if (and flycheck-mode (flycheck-overlays-at (point))) t nil))
-    (advice-add eldoc-message-function :before-until #'my/flycheck-error)))
+    (advice-add eldoc-message-function :before-until #'my/flycheck-error))
+  (global-flycheck-mode))
 
 (use-package yasnippet
   :ensure t
@@ -283,7 +284,7 @@
 (require 'hideshow)
 (diminish 'hs-minor-mode)
 (asbish/rebind-keys hs-minor-mode-map
-  '(:from "C-c @ C-c" :to "C-c f" :bind hs-toggle-hiding) ;; hide menubar
+  '(:from "C-c @ C-c" :to "C-c f" :bind hs-toggle-hiding)
   '(:from "C-c @ C-h" :to "C-c @ h" :bind hs-hide-block)
   '(:from "C-c @ C-s" :to "C-c @ s" :bind hs-show-block)
   '(:from "C-c @ C-M-h" :to "C-c @ H" :bind hs-hide-all)
@@ -558,7 +559,9 @@
 
 (use-package flycheck-irony
   :ensure t
-  :pin melpa-stable)
+  :pin melpa-stable
+  :config
+  (flycheck-irony-setup))
 
 (defvar my/cc-mode-company-backends
   (append '(company-irony company-c-headers company-clang company-semantic)
@@ -608,8 +611,6 @@
   (hs-minor-mode 1)
   (when (memq major-mode '(c-mode c++-mode objc-mode))
     (setq-local company-backends my/cc-mode-company-backends)
-    (flycheck-irony-setup)
-    (flycheck-mode 1)
     (ggtags-mode 1)
     (when (fboundp 'rtags-start-process-unless-running)
       (rtags-start-process-unless-running))
@@ -658,8 +659,7 @@
             (lambda ()
               (ggtags-mode 1)
               (setq-local company-backends
-                          (cons 'company-lua my/company-backends))
-              (flycheck-mode 1))))
+                          (cons 'company-lua my/company-backends)))))
 
 (use-package f90
   :defer t
@@ -748,8 +748,7 @@
               (asbish/whitespace-tab-toggle)
               (setq-local company-backends
                           (cons 'company-go my/company-backends))
-              (go-eldoc-setup)
-              (flycheck-mode 1))))
+              (go-eldoc-setup))))
 
 (use-package autodisass-java-bytecode
   :ensure t
@@ -764,8 +763,7 @@
   (add-hook 'java-mode-hook
             (lambda ()
               (hs-minor-mode 1)
-              (meghanada-mode t)
-              (flycheck-mode 1)))
+              (meghanada-mode t)))
   :config
   (setq meghanada-maven-path "mvn")
   (setq meghanada-server-remote-debug t)
@@ -786,8 +784,7 @@
   :init
   (add-hook 'groovy-mode-hook
             (lambda ()
-                (hs-minor-mode 1)
-                (flycheck-mode 1)))
+                (hs-minor-mode 1)))
   :config
   (setq groovy-highlight-assignments t))
 
@@ -796,9 +793,7 @@
   :pin melpa-stable
   :init
   (add-hook 'scala-mode
-            (lambda ()
-              (hs-minor-mode 1)
-              (flycheck-mode 1))))
+            (lambda () (hs-minor-mode 1))))
 
 (use-package sbt-mode
   :ensure t
@@ -899,8 +894,7 @@
   (add-hook 'erlang-mode-hook
             (lambda ()
               (setq-local company-backends
-                          (cons 'company-distel my/company-backends))
-              (flycheck-mode 1))))
+                          (cons 'company-distel my/company-backends)))))
 
 (add-to-list 'load-path (locate-user-emacs-file "packages/j-mode"))
 (use-package j-mode
@@ -941,8 +935,7 @@
               (setq-local company-backends
                           (cons 'company-robe my/company-backends))
               (robe-mode 1)
-              (setq-default flycheck-disabled-checkers '(ruby-rubylint))
-              (flycheck-mode 1))))
+              (setq-default flycheck-disabled-checkers '(ruby-rubylint)))))
 
 (require 'python)
 (setq python-shell-interpreter "ipython"
@@ -1025,19 +1018,16 @@
               (setq imenu-create-index-function 'python-imenu-create-index)
               (setq-local company-backends
                           (cons 'company-jedi my/company-backends))
-              (setq-default flycheck-disabled-checkers '(python-pylint))
-              (flycheck-mode 1))
+              (setq-default flycheck-disabled-checkers '(python-pylint)))
             t))
 
 (define-key emacs-lisp-mode-map (kbd "C-c C-z") 'ielm)
 (add-hook 'emacs-lisp-mode-hook #'hs-minor-mode)
-(add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 
 (use-package nim-mode
   :ensure t
   :config
   (setq nimsuggest-path "~/.nimble/bin/nimsuggest")
-  (add-hook 'nimsuggest-mode-hook #'flycheck-mode)
   (add-hook 'nim-mode-hook (lambda () (nimsuggest-mode 1))))
 
 (use-package ob-nim
@@ -1451,6 +1441,22 @@
     (turn-on-reftex))
   (add-hook 'LaTeX-mode-hook #'my/LaTeX-mode-setup))
 
+(use-package flycheck-vale
+  :requires flycheck
+  :ensure t
+  :function flycheck-buffer
+  :config
+  (flycheck-vale-setup)
+  (setq-default flycheck-vale-enabled nil)
+  (defun my/vale-toggle ()
+    (interactive)
+    (flycheck-vale-toggle-enabled)
+    (flycheck-buffer))
+  (define-key rst-mode-map (kbd "C-c l") 'my/vale-toggle)
+  (define-key org-mode-map (kbd "C-c l") 'my/vale-toggle)
+  (define-key text-mode-map (kbd "C-c l") 'my/vale-toggle)
+  (define-key markdown-mode-map (kbd "C-c l") 'my/vale-toggle))
+
 (use-package markdown-mode
   :ensure t
   :pin melpa-stable
@@ -1576,8 +1582,7 @@
               (setq-local flycheck-javascript-eslint-executable
                           (asbish/find-executable-node_modules
                            "eslint/bin/eslint.js"))
-              (my/flow-setup)
-              (flycheck-mode 1))))
+              (my/flow-setup))))
 
 (use-package typescript-mode
   :ensure t
@@ -1609,8 +1614,7 @@
                           (asbish/find-executable-node_modules
                            "eslint/bin/eslint.js"))
               (flycheck-add-next-checker 'typescript-tide 'typescript-tslint)
-              (flycheck-add-next-checker 'typescript-tslint 'javascript-eslint)
-              (flycheck-mode 1))))
+              (flycheck-add-next-checker 'typescript-tslint 'javascript-eslint))))
 
 (use-package php-mode
   :ensure t
@@ -1628,8 +1632,7 @@
             (lambda ()
               (ac-php-core-eldoc-setup)
               (setq-local company-backends
-                          (cons 'company-ac-php-backend my/company-backends))
-              (flycheck-mode 1))))
+                          (cons 'company-ac-php-backend my/company-backends)))))
 
 (use-package web-mode
   :ensure t
@@ -1699,8 +1702,7 @@
               (setq-default flycheck-disabled-checkers '(css-css-lint))
               (setq-local flycheck-css-stylelint-executable
                           (asbish/find-executable-node_modules
-                           "stylelint/bin/stylelint.js"))
-              (flycheck-mode 1))))
+                           "stylelint/bin/stylelint.js")))))
 
 (use-package scss-mode
   :ensure t
@@ -1715,8 +1717,7 @@
               (setq-default flycheck-disabled-checkers '(scss))
               (setq-local flycheck-scss-stylelint-executable
                           (asbish/find-executable-node_modules
-                           "stylelint/bin/stylelint.js"))
-              (flycheck-mode 1))))
+                           "stylelint/bin/stylelint.js")))))
 
 (use-package sass-mode
   :ensure t
@@ -1729,5 +1730,4 @@
               (setq-default flycheck-disabled-checkers '(sass))
               (setq-local flycheck-sass/scss-sass-lint-executable
                           (asbish/find-executable-node_modules
-                           "sass-lint/bin/sass-lint.js"))
-              (flycheck-mode 1))))
+                           "sass-lint/bin/sass-lint.js")))))
