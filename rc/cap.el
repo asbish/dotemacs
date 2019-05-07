@@ -61,6 +61,7 @@
   :ensure t
   :config
   (setq
+   treemacs-position 'right
    treemacs-tag-follow-mode nil
    treemacs-filewatch-mode nil
    treemacs-eldoc-display nil
