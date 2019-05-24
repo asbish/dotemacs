@@ -61,7 +61,7 @@
   :ensure t
   :config
   (setq
-   treemacs-position 'right
+   treemacs-position 'left
    treemacs-tag-follow-mode nil
    treemacs-filewatch-mode nil
    treemacs-eldoc-display nil
@@ -86,7 +86,9 @@
         (treemacs)
         (dotimes (i (- c 1))
           (other-window 1)
-          (split-window (selected-window) w 'right))))))
+          (split-window (selected-window) w 'right))
+        (select-window
+         (get-buffer-window (asbish/find-buffer "treemacs")))))))
 
 (use-package delight
   :ensure t
