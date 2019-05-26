@@ -556,6 +556,8 @@
   :init
   (add-hook 'irony-mode-hook #'irony-cdb-autosetup-compile-options)
   :config
+  (custom-set-variables
+   '(irony-cdb-search-directory-list '("." "_build" "build" "builddir")))
   (define-key irony-mode-map (kbd "C-c i") 'irony-cdb-menu)
   (define-key irony-mode-map (kbd "C-c C-t") 'irony-get-type))
 
