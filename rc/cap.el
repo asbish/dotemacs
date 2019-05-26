@@ -408,6 +408,9 @@
               (setq-local company-backends
                           (cons 'company-cmake my/company-backends)))))
 
+(use-package meson-mode
+  :ensure t)
+
 (use-package ninja-mode
   :ensure t
   :pin melpa-stable
