@@ -1736,3 +1736,18 @@
               (setq-local flycheck-sass/scss-sass-lint-executable
                           (asbish/find-executable-node_modules
                            "sass-lint/bin/sass-lint.js")))))
+
+(use-package emms
+  :config
+  (require 'emms-setup)
+  (require 'emms-mode-line)
+  (require 'emms-playing-time)
+  (require 'emms-player-simple)
+  (require 'emms-source-file)
+  (require 'emms-source-playlist)
+  (emms-all)
+  (emms-default-players)
+  (setq emms-player-list '(emms-player-mpg321
+                           emms-player-ogg123
+                           emms-player-mplayer
+                           emms-player-vlc)))
