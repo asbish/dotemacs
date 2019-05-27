@@ -565,12 +565,6 @@
   :ensure t
   :pin melpa-stable)
 
-(use-package flycheck-irony
-  :ensure t
-  :pin melpa-stable
-  :config
-  (flycheck-irony-setup))
-
 (defvar my/cc-mode-company-backends
   (append '(company-irony company-c-headers company-clang company-semantic)
           my/company-backends))
@@ -581,6 +575,8 @@
  do (when (file-directory-p path)
       (add-to-list 'load-path path)
       (require 'rtags)
+      (require 'company-rtags)
+      (require 'flycheck-rtags)
       (setq-default rtags-autostart-diagnostics t
                     rtags-completions-enabled t
                     rtags-popup-results-buffer nil)
@@ -608,9 +604,10 @@
         (define-key map (kbd "C-c . e") 'rtags-print-enum-value-at-point)
         (define-key map (kbd "C-c . U") 'rtags-restart-process)
         (define-key map (kbd "C-c . C-p") 'rtags-preprocess-file)
-        (define-key map (kbd "C-c . C-k") 'rtags-compile-file)
+        (define-key map (kbd "C-c . C-c") 'rtags-compile-file)
         (define-key map (kbd "C-c . RET") 'rtags-rename-symbol))
       (custom-set-faces '(rtags-skippedline ((t (:background "#1c1c1c")))))
+      (cons 'company-rtags my/cc-mode-company-backends)
       (cl-return t)))
 
 (defun my/cc-mode-setup ()
@@ -621,8 +618,9 @@
     (setq-local company-backends my/cc-mode-company-backends)
     (ggtags-mode 1)
     (when (fboundp 'rtags-start-process-unless-running)
-      (rtags-start-process-unless-running))
-    (irony-mode 1)))
+      (rtags-start-process-unless-running)
+      (flycheck-add-next-checker 'rtags 'c/c++-clang)
+      (flycheck-add-next-checker 'c/c++-clang 'c/c++-gcc))))
 
 (add-hook 'c-mode-hook #'my/cc-mode-setup t)
 (add-hook 'c++-mode-hook #'my/cc-mode-setup t)
