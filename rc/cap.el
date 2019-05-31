@@ -610,6 +610,7 @@
       (cons 'company-rtags my/cc-mode-company-backends)
       (cl-return t)))
 
+(declare-function flycheck-add-next-checker "flycheck")
 (defun my/cc-mode-setup ()
   (c-set-style "linux")
   (setq-local c-basic-offset 4)
@@ -1741,6 +1742,8 @@
                            "sass-lint/bin/sass-lint.js")))))
 
 (use-package emms
+  :ensure t
+  :defer t
   :config
   (require 'emms-setup)
   (require 'emms-mode-line)
