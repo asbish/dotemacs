@@ -1,10 +1,10 @@
-(require 'recentf)
 (declare-function w-split "base.el" nil)
 (declare-function my/set-key-other-window "base.el" nil)
 
 (add-to-list 'load-path (locate-user-emacs-file "packages/asbish"))
 (require 'asbish)
 
+(require 'recentf)
 (add-hook 'ediff-mode-hook (lambda () (asbish/quick-window-set nil)))
 
 (require 'hydra)
@@ -70,6 +70,7 @@
    treemacs-indentation 1)
   (custom-set-faces
    '(treemacs-root-face ((t (:inherit font-lock-type-face :underline t)))))
+  (add-to-list 'recentf-exclude "treemacs-persist")
   (defun w-split-treemacs (&optional w)
     (interactive (list 82))
     (delete-other-windows)
