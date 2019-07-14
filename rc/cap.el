@@ -728,15 +728,10 @@
                   (racer-mode 1)
                 (rustic-mode)))))
 
-(use-package flycheck-gometalinter
+(use-package flycheck-golangci-lint
   :ensure t
-  :pin melpa-stable
-  :config
-  (setq flycheck-gometalinter-vendor t
-        flycheck-gometalinter-tests t
-        flycheck-gometalinter-fast t
-        flycheck-gometalinter-disable-linters '("gotype" "gocyclo"))
-  (flycheck-gometalinter-setup))
+  :hook (go-mode . flycheck-golangci-lint-setup)
+)
 
 (use-package go-mode
   :ensure t
