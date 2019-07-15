@@ -297,7 +297,8 @@
    '(treemacs-root-face ((t (:inherit font-lock-type-face :underline t)))))
   (add-to-list 'recentf-exclude "treemacs-persist")
   (defun w-split-treemacs (&optional w)
-    (interactive (list 82))
+    (interactive)
+    (or w (setq w 82))
     (delete-other-windows)
     (when (and (fboundp 'treemacs-get-local-window)
                (treemacs-get-local-window))
@@ -314,7 +315,8 @@
           (other-window 1)
           (split-window (selected-window) w 'right))
         (select-window
-         (get-buffer-window (asbish/find-buffer "treemacs")))))))
+         (get-buffer-window (asbish/find-buffer "treemacs"))))))
+  (add-hook 'after-init-hook #'w-split-treemacs))
 
 (require 'hideshow)
 (diminish 'hs-minor-mode)
