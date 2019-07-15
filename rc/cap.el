@@ -42,55 +42,6 @@
   (global-set-key (kbd "<f8>") 'imenu-list-smart-toggle)
   (define-key mode-specific-map (kbd "I") 'imenu-list-smart-toggle))
 
-(use-package projectile
-  :ensure t
-  :pin melpa-stable
-  :diminish projectile-mode
-  :config
-  (setq
-   projectile-enable-caching t
-   projectile-file-exists-remote-cache-expire nil
-   projectile-indexing-method 'alien
-   projectile-dynamic-mode-line nil
-   projectile-mode-line-function (lambda () "")
-   projectile-sort-order 'recentf)
-  (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
-  (projectile-mode 1))
-
-(use-package treemacs
-  :ensure t
-  :config
-  (setq
-   treemacs-position 'left
-   treemacs-tag-follow-mode nil
-   treemacs-filewatch-mode nil
-   treemacs-eldoc-display nil
-   treemacs-fringe-indicator-mode nil
-   treemacs-no-png-images t
-   treemacs-indentation 1)
-  (custom-set-faces
-   '(treemacs-root-face ((t (:inherit font-lock-type-face :underline t)))))
-  (add-to-list 'recentf-exclude "treemacs-persist")
-  (defun w-split-treemacs (&optional w)
-    (interactive (list 82))
-    (delete-other-windows)
-    (when (and (fboundp 'treemacs-get-local-window)
-               (treemacs-get-local-window))
-      (treemacs))
-    (let ((c 0) (tw (window-body-width)))
-      (while (> tw w) (setq c (+ c 1)) (setq tw (- tw w)))
-      (if (or (< tw 10) (= c 2))
-          (progn
-            (message "Too small window width. Skip `treemacs`")
-            (w-split))
-        (setq treemacs-width tw)
-        (treemacs)
-        (dotimes (i (- c 1))
-          (other-window 1)
-          (split-window (selected-window) w 'right))
-        (select-window
-         (get-buffer-window (asbish/find-buffer "treemacs")))))))
-
 (use-package delight
   :ensure t
   :pin gnu)
@@ -113,7 +64,7 @@
   :config
   (setq ag-highlight-search t
         ag-reuse-buffers t)
-  (global-set-key (kbd "M-?") 'ag))
+  (global-set-key (kbd "<f11>") 'ag))
 
 (use-package ddskk
   :ensure t
@@ -142,14 +93,6 @@
    (if (locate-dominating-file default-directory ".hg")
        (call-interactively 'monky-status)
      (call-interactively 'magit-status))))
-
-(use-package lsp-mode
-  :ensure t
-  :diminish
-  :init
-  (custom-set-variables
-   '(lsp-response-timeout 5)
-   '(lsp-links-check-internal 0.5)))
 
 (use-package iter2
   :ensure t)
@@ -258,10 +201,40 @@
   :pin melpa-stable
   :diminish yas-minor-mode)
 
+(use-package lsp-ui
+  :ensure t
+  :pin melpa-stable
+  :config
+  (define-key lsp-ui-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map (kbd "M-?") 'lsp-ui-peek-find-references)
+  (custom-set-variables
+   '(lsp-ui-doc-enable t)
+   '(lsp-ui-doc-header t)
+   '(lsp-ui-flycheck-enable nil)
+   '(lsp-ui-doc-position 'bottom)
+   '(lsp-enable-eldoc nil))
+  (custom-set-faces
+    '(lsp-ui-doc-background ((t (:background "brightblack"))))))
+
+(use-package lsp-mode
+  :ensure t
+  :pin melpa-stable
+  :requires lsp-ui
+  :diminish
+  :init
+  (custom-set-variables
+   '(lsp-response-timeout 5)
+   '(lsp-links-check-internal 0.5))
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+(use-package company-lsp
+  :ensure t)
+
 (defvar my/company-backends nil)
 (use-package company
   :ensure t
   :pin melpa-stable
+  :requires company-lsp
   :diminish company-mode
   :bind (("C-c /" . company-complete-common)
          :map company-active-map
@@ -282,8 +255,58 @@
                              company-eclim
                              company-semantic
                              company-oddmuse
-                             company-xcode)))
+                             company-xcode
+                             company-lsp)))
   (setq company-backends my/company-backends))
+
+(use-package projectile
+  :ensure t
+  :pin melpa-stable
+  :diminish projectile-mode
+  :config
+  (setq
+   projectile-enable-caching t
+   projectile-file-exists-remote-cache-expire nil
+   projectile-indexing-method 'alien
+   projectile-dynamic-mode-line nil
+   projectile-mode-line-function (lambda () "")
+   projectile-sort-order 'recentf)
+  (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
+  (projectile-mode 1))
+
+(use-package treemacs
+  :ensure t
+  :config
+  (setq
+   treemacs-position 'left
+   treemacs-tag-follow-mode nil
+   treemacs-filewatch-mode nil
+   treemacs-eldoc-display nil
+   treemacs-fringe-indicator-mode nil
+   treemacs-no-png-images t
+   treemacs-indentation 1)
+  (custom-set-faces
+   '(treemacs-root-face ((t (:inherit font-lock-type-face :underline t)))))
+  (add-to-list 'recentf-exclude "treemacs-persist")
+  (defun w-split-treemacs (&optional w)
+    (interactive (list 82))
+    (delete-other-windows)
+    (when (and (fboundp 'treemacs-get-local-window)
+               (treemacs-get-local-window))
+      (treemacs))
+    (let ((c 0) (tw (window-body-width)))
+      (while (> tw w) (setq c (+ c 1)) (setq tw (- tw w)))
+      (if (or (< tw 10) (= c 2))
+          (progn
+            (message "Too small window width. Skip `treemacs`")
+            (w-split))
+        (setq treemacs-width tw)
+        (treemacs)
+        (dotimes (i (- c 1))
+          (other-window 1)
+          (split-window (selected-window) w 'right))
+        (select-window
+         (get-buffer-window (asbish/find-buffer "treemacs")))))))
 
 (require 'hideshow)
 (diminish 'hs-minor-mode)
@@ -737,21 +760,18 @@
   :ensure t
   :pin melpa-stable
   :config
-  (use-package company-go :ensure t)
-  (use-package go-eldoc :ensure t)
+  (use-package go-tag :ensure t)
+  (use-package go-add-tags :ensure t)
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save)
   (define-key go-mode-map (kbd "C-c A") 'gofmt)
   (define-key go-mode-map (kbd "<f6>") 'my/gdb-start)
   (asbish/rebind-keys go-mode-map
-    '(:from "C-c C-j" :to "M-." :bind godef-jump)
     '(:from "C-x 4 C-c C-j" :to "C-x 4 M-." :bind godef-jump-other-window))
   (add-hook 'go-mode-hook
             (lambda ()
               (asbish/whitespace-tab-toggle)
-              (setq-local company-backends
-                          (cons 'company-go my/company-backends))
-              (go-eldoc-setup))))
+              (lsp-deferred))))
 
 (use-package autodisass-java-bytecode
   :ensure t
