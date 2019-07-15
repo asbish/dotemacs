@@ -210,11 +210,18 @@
   (custom-set-variables
    '(lsp-ui-doc-enable t)
    '(lsp-ui-doc-header t)
-   '(lsp-ui-flycheck-enable nil)
+   '(lsp-ui-doc-max-width 80)
    '(lsp-ui-doc-position 'bottom)
-   '(lsp-enable-eldoc nil))
+   '(lsp-ui-doc-include-signature t)
+   '(lsp-ui-flycheck-enable t)
+   '(lsp-ui-peek-enable t)
+   '(lsp-ui-peek-list-width 60)
+   '(lsp-ui-sideline-enable nil))
   (custom-set-faces
-    '(lsp-ui-doc-background ((t (:background "brightblack"))))))
+   '(lsp-ui-doc-background
+     ((t (:background "brightblack"))))
+   '(lsp-ui-sideline-code-action
+     ((t (:background "brightblack" :foreground "yellow"))))))
 
 (use-package lsp-mode
   :ensure t
@@ -224,7 +231,8 @@
   :init
   (custom-set-variables
    '(lsp-response-timeout 5)
-   '(lsp-links-check-internal 0.5))
+   '(lsp-links-check-internal 0.5)
+   '(lsp-prefer-flymake nil))
   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
 (use-package company-lsp
