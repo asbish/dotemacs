@@ -284,6 +284,7 @@
 
 (use-package treemacs
   :ensure t
+  :functions w-split-treemacs
   :config
   (setq
    treemacs-position 'left
@@ -1601,7 +1602,7 @@
               (string-match-p "\/[\/|\*][\s\t]?+@flow[\s\t]?+"
                               (thing-at-point 'line t))))
       (let ((flow-bin (asbish/find-executable-node_modules
-                       (concat "flow-bin/*" asbish/os "*/flow") t)))
+                       (concat "flow-bin/*" asbish/os "*/flow"))))
         (setq-local company-flow-executable flow-bin)
         (setq-local flycheck-javascript-flow-executable flow-bin)
         (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))))
