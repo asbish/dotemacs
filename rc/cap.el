@@ -332,7 +332,10 @@
 
 (use-package nvm
   :ensure t)
+
 (add-to-list 'safe-local-variable-values '(my/prettier-on . t))
+(add-to-list 'safe-local-variable-values '(my/prettier-on . nil))
+
 (defun my/prettier-mode-ignore ()
   (and buffer-file-name
        (or
