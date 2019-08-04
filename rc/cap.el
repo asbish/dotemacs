@@ -462,6 +462,10 @@
   :ensure t
   :pin melpa-stable)
 
+(use-package nix-mode
+  :ensure t
+  :mode "\\.nix\\'")
+
 (require 'gud)
 (require 'gdb-mi)
 (setq-default gdb-many-windows t
@@ -767,8 +771,7 @@
 
 (use-package flycheck-golangci-lint
   :ensure t
-  :hook (go-mode . flycheck-golangci-lint-setup)
-)
+  :hook (go-mode . flycheck-golangci-lint-setup))
 
 (use-package go-mode
   :ensure t
