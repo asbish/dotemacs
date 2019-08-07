@@ -1275,7 +1275,6 @@
  '(haskell-stylish-on-save nil)
  '(haskell-tags-on-save nil)
  '(haskell-process-log t)
- '(haskell-process-type 'stack-ghci)
  '(haskell-process-auto-import-loaded-modules t)
  '(haskell-process-reload-with-fbytecode nil)
  '(haskell-process-use-presentation-mode nil)
@@ -1329,6 +1328,11 @@
     '(:from "C-c v c" :to "C-c C-f c" :bind haskell-cabal-visit-file)))
 
 (defun my/haskell-mode-setup ()
+  (if (locate-dominating-file
+       (file-name-directory (buffer-file-name))
+       "stack.yaml")
+      (setq haskell-process-type 'stack-ghci)
+    (setq flycheck-disabled-checkers '(haskell-stack-ghc)))
   (setq-local company-backends
               (append '((company-capf company-dabbrev-code))
                       my/company-backends))
