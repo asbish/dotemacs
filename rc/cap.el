@@ -216,7 +216,8 @@
    '(lsp-ui-flycheck-enable t)
    '(lsp-ui-peek-enable t)
    '(lsp-ui-peek-list-width 60)
-   '(lsp-ui-sideline-enable nil))
+   '(lsp-ui-sideline-enable nil)
+   '(lsp-document-sync-method 'full))
   (custom-set-faces
    '(lsp-ui-doc-background
      ((t (:background "brightblack"))))
@@ -336,7 +337,6 @@ company-backends
   :ensure t)
 
 (add-to-list 'safe-local-variable-values '(my/prettier-on . t))
-(add-to-list 'safe-local-variable-values '(my/prettier-on . nil))
 
 (defun my/prettier-mode-ignore ()
   (and buffer-file-name
@@ -1330,7 +1330,11 @@ company-backends
     '(:from "C-c v c" :to "C-c C-f c" :bind haskell-cabal-visit-file)))
 
 (use-package lsp-haskell
-  :ensure t)
+  :ensure t
+  ;; TODO: Add nix integration. `lsp-haskell-process-wrapper-function`
+  )
+
+(add-to-list 'safe-local-variable-values '(my/lsp-haskell-on . t))
 
 (defun my/haskell-mode-setup ()
   (if (locate-dominating-file
@@ -1343,7 +1347,10 @@ company-backends
   (haskell-collapse-mode 1)
   (asbish/once #'my/haskell-collapse-mode-setup)
   (haskell-decl-scan-mode 1)
-  (lsp-deferred))
+  (add-hook 'hack-local-variables-hook
+            (lambda ()
+              (when (local-variable-p 'my/lsp-haskell-on) (lsp-deferred)))
+            nil t))
 
 (add-hook 'haskell-mode-hook #'my/haskell-mode-setup)
 
