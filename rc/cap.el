@@ -254,18 +254,20 @@
   :config
   (setq company-tooltip-align-annotations t)
   (setq my/company-backends
-        (cl-set-difference company-backends
-                           '(company-bbdb
-                             company-clang
-                             company-cmake
-                             company-css
-                             company-nxml
-                             company-eclim
-                             company-semantic
-                             company-oddmuse
-                             company-xcode
-                             company-lsp)))
+        (cons 'company-lsp
+              (cl-set-difference company-backends
+                                 '(company-bbdb
+                                   company-clang
+                                   company-cmake
+                                   company-css
+                                   company-nxml
+                                   company-eclim
+                                   company-semantic
+                                   company-oddmuse
+                                   company-xcode))))
   (setq company-backends my/company-backends))
+
+company-backends
 
 (use-package projectile
   :ensure t
@@ -1327,20 +1329,21 @@
     '(:from "C-c C-x" :to "C-c C-k" :bind haskell-process-cabal)
     '(:from "C-c v c" :to "C-c C-f c" :bind haskell-cabal-visit-file)))
 
+(use-package lsp-haskell
+  :ensure t)
+
 (defun my/haskell-mode-setup ()
   (if (locate-dominating-file
        (file-name-directory (buffer-file-name))
        "stack.yaml")
       (setq haskell-process-type 'stack-ghci)
     (setq flycheck-disabled-checkers '(haskell-stack-ghc)))
-  (setq-local company-backends
-              (append '((company-capf company-dabbrev-code))
-                      my/company-backends))
   (interactive-haskell-mode 1)
   (asbish/once #'my/interactive-haskell-mode-setup)
   (haskell-collapse-mode 1)
   (asbish/once #'my/haskell-collapse-mode-setup)
-  (haskell-decl-scan-mode 1))
+  (haskell-decl-scan-mode 1)
+  (lsp-deferred))
 
 (add-hook 'haskell-mode-hook #'my/haskell-mode-setup)
 
