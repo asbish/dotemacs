@@ -268,8 +268,6 @@
                                    company-xcode))))
   (setq company-backends my/company-backends))
 
-company-backends
-
 (use-package projectile
   :ensure t
   :pin melpa-stable
