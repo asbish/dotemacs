@@ -728,16 +728,6 @@
     '(:from "C-c C-a" :to "C-c C-p" :bind f90-previous-block)
     '(:from "C-c C-e" :to "C-c C-n" :bind f90-next-block)))
 
-(use-package racer
-  :ensure t
-  :diminish
-  :init
-  (add-hook 'racer-mode-hook
-            (lambda ()
-              (eldoc-mode 1)
-              (setq-local company-backends my/company-backends)
-              (company-mode 1))))
-
 (use-package rustic
   :ensure t
   :init
@@ -747,12 +737,10 @@
    '(rustic-builtin-formatting-macro-face
      ((t (:inherit font-lock-preprocessor-face)))))
   :config
-  (define-key rustic-mode-map (kbd "<f6>") 'my/gdb-start)
-  (add-hook 'rustic-mode-hook
-            (lambda () (racer-mode 1))))
+  (define-key rustic-mode-map (kbd "<f6>") 'my/gdb-start))
 
 (use-package rust-mode
-  :requires (racer rustic)
+  :requires rustic
   :ensure t
   :init
   ;; Remove `rustic-mode'
@@ -765,8 +753,7 @@
   (define-key rust-mode-map (kbd "<f6>") 'my/gdb-start)
   (add-hook 'rust-mode-hook
             (lambda ()
-              (if (asbish/read-only-mode "/\\(\\.rustup\\|\\.cargo\\|target\\)/")
-                  (racer-mode 1)
+              (unless (asbish/read-only-mode "/\\(\\.rustup\\|\\.cargo\\|target\\)/")
                 (rustic-mode)))))
 
 (use-package flycheck-golangci-lint
@@ -1328,6 +1315,7 @@
     '(:from "C-c v c" :to "C-c C-f c" :bind haskell-cabal-visit-file)))
 
 (use-package lsp-haskell
+  :defer t
   :ensure t
   ;; TODO: Add nix integration. `lsp-haskell-process-wrapper-function`
   )
