@@ -208,7 +208,7 @@
   (define-key lsp-ui-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions)
   (define-key lsp-ui-mode-map (kbd "M-?") 'lsp-ui-peek-find-references)
   (custom-set-variables
-   '(lsp-ui-doc-enable t)
+   '(lsp-ui-doc-enable nil)
    '(lsp-ui-doc-header t)
    '(lsp-ui-doc-max-width 80)
    '(lsp-ui-doc-position 'bottom)
