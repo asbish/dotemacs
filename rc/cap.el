@@ -732,11 +732,13 @@
   :ensure t
   :init
   (custom-set-variables
+   '(rustic-format-on-save nil)
    '(rustic-display-spinner nil))
   (custom-set-faces
    '(rustic-builtin-formatting-macro-face
      ((t (:inherit font-lock-preprocessor-face)))))
   :config
+  (define-key rustic-mode-map (kbd "C-c A") 'rustic-format-buffer)
   (define-key rustic-mode-map (kbd "<f6>") 'my/gdb-start))
 
 (use-package rust-mode
