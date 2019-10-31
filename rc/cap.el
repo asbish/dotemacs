@@ -476,7 +476,7 @@
 (defun my/gdb-start ()
   (interactive)
   ;; TODO: better way to check gdb-many-windows layout
-  (let ((gdb-layout (= 6 (length (window-list))))
+  (let ((gdb-layout (<= 6 (length (window-list))))
         (buffer (asbish/find-buffer "^\\*gud")))
     (unless gdb-layout (asbish/quick-window-set nil))
     (when (and (not gdb-layout) buffer (get-buffer-process buffer))
