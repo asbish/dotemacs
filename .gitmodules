@@ -42,3 +42,6 @@
 	path = packages/prettier.el
 	url = https://github.com/asbish/prettier.el
 	ignore = dirty
+[submodule "packages/rtags"]
+	path = packages/rtags
+	url = https://github.com/Andersbakken/rtags.git
