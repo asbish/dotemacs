@@ -369,14 +369,15 @@
   (define-key ggtags-mode-map (kbd "C-c M-i") nil)
   (define-key ggtags-mode-map (kbd "C-c M-?") nil)
   (define-key ggtags-mode-map (kbd "C-c M-DEL") nil)
-  (define-key ggtags-mode-map (kbd "C-c U") 'ggtags-update-tags)
   (asbish/rebind-keys ggtags-mode-map
-    '(:from "M-]" :to "C-c M-." :bind ggtags-find-reference)
-    '(:from "C-c %" :to "C-c M-RET" :bind ggtags-query-replace)
+    '(:from "M-." :to "C-c g ." :bind ggtags-find-tag-dwim)
+    '(:from "M-]" :to "C-c g M-." :bind ggtags-find-reference)
+    '(:from "C-c %" :to "C-c g RET" :bind ggtags-query-replace)
+    '(:from "C-c U" :to "C-c g U" :bind ggtags-update-tags)
     '(:from "C-M-." :to "C-c g r" :bind ggtags-find-tag-regexp)
-    '(:from "C-c M-p" :to "C-c <" :bind ggtags-prev-mark)
-    '(:from "C-c M-n" :to "C-c >" :bind ggtags-next-mark)
-    '(:from "C-c M-%" :to "C-c %" :bind ggtags-query-replace)
+    '(:from "C-c M-p" :to "C-c g <" :bind ggtags-prev-mark)
+    '(:from "C-c M-n" :to "C-c g >" :bind ggtags-next-mark)
+    '(:from "C-c M-%" :to "C-c g %" :bind ggtags-query-replace)
     '(:from "C-c M-g" :to "C-c g g" :bind ggtags-grep)
     '(:from "C-c M-f" :to "C-c g f" :bind ggtags-find-file)
     '(:from "C-c M-o" :to "C-c g o" :bind ggtags-find-other-symbol)
@@ -591,66 +592,55 @@
 (use-package company-c-headers
   :ensure t)
 
-(use-package irony
-  :ensure t
-  :pin melpa-stable
-  :diminish irony-mode
-  :init
-  (add-hook 'irony-mode-hook #'irony-cdb-autosetup-compile-options)
-  :config
-  (custom-set-variables
-   '(irony-cdb-search-directory-list '("." "_build" "build" "builddir")))
-  (define-key irony-mode-map (kbd "C-c i") 'irony-cdb-menu)
-  (define-key irony-mode-map (kbd "C-c C-t") 'irony-get-type))
+(add-to-list 'load-path "~/opt/rtags/share/emacs/site-lisp/rtags")
+(require 'rtags)
+(require 'company-rtags)
+(require 'flycheck-rtags)
+(setq-default rtags-autostart-diagnostics t
+              rtags-completions-enabled t
+              rtags-popup-results-buffer nil)
+(custom-set-faces '(rtags-skippedline ((t (:background "#1c1c1c")))))
 
-(use-package company-irony
-  :ensure t
-  :pin melpa-stable)
+(defun rtags/tags-find-symbol-at-point (&optional prefix)
+  (interactive "P")
+  (and (not (rtags-find-symbol-at-point prefix))
+          rtags-last-request-not-indexed))
 
-(defvar my/cc-mode-company-backends
-  (append '(company-irony company-c-headers company-clang company-semantic)
-          my/company-backends))
+(defun rtags/tags-find-references-at-point (&optional prefix)
+  (interactive "P")
+  (and (not (rtags-find-references-at-point prefix))
+          rtags-last-request-not-indexed))
 
-(cl-loop
- for path in '("~/opt/rtags/share/emacs/site-lisp/rtags"
-               "/usr/local/share/emacs/site-lisp/rtags")
- do (when (file-directory-p path)
-      (add-to-list 'load-path path)
-      (require 'rtags)
-      (require 'company-rtags)
-      (require 'flycheck-rtags)
-      (setq-default rtags-autostart-diagnostics t
-                    rtags-completions-enabled t
-                    rtags-popup-results-buffer nil)
-      (let ((map c-mode-base-map))
-        (define-key map (kbd "C-c . .") 'rtags-find-references-at-point)
-        (define-key map (kbd "C-c . ,") 'rtags-find-symbol-at-point)
-        (define-key map (kbd "C-c . M-.") 'rtags-find-references)
-        (define-key map (kbd "C-c . M-,") 'rtags-find-symbol)
-        (define-key map (kbd "C-c . ;") 'rtags-find-all-references-at-point)
-        (define-key map (kbd "C-c . v") 'rtags-find-virtuals-at-point)
-        (define-key map (kbd "C-c . <") 'rtags-location-stack-back)
-        (define-key map (kbd "C-c . >") 'rtags-location-stack-forward)
-        (define-key map (kbd "C-c . h") 'rtags-location-stack-visualize)
-        (define-key map (kbd "C-c . I") 'rtags-imenu)
-        (define-key map (kbd "C-c . f") 'rtags-find-file)
-        (define-key map (kbd "C-c . b") 'rtags-list-results)
-        (define-key map (kbd "C-c . i") 'rtags-symbol-info)
-        (define-key map (kbd "C-c . t") 'rtags-symbol-type)
-        (define-key map (kbd "C-c . l") 'rtags-diagnostics)
-        (define-key map (kbd "C-c . /") 'rtags-display-summary)
-        (define-key map (kbd "C-c . d") 'rtags-dependency-tree)
-        (define-key map (kbd "C-c . D") 'rtags-dependency-tree-all)
-        (define-key map (kbd "C-c . c") 'rtags-print-class-hierarchy)
-        (define-key map (kbd "C-c . a") 'rtags-print-source-arguments)
-        (define-key map (kbd "C-c . e") 'rtags-print-enum-value-at-point)
-        (define-key map (kbd "C-c . U") 'rtags-restart-process)
-        (define-key map (kbd "C-c . C-p") 'rtags-preprocess-file)
-        (define-key map (kbd "C-c . C-c") 'rtags-compile-file)
-        (define-key map (kbd "C-c . RET") 'rtags-rename-symbol))
-      (custom-set-faces '(rtags-skippedline ((t (:background "#1c1c1c")))))
-      (cons 'company-rtags my/cc-mode-company-backends)
-      (cl-return t)))
+(let ((map c-mode-base-map))
+  (define-key map (kbd "M-.") 'rtags/tags-find-symbol-at-point)
+  (define-key map (kbd "M-,") 'rtags/tags-find-references-at-point)
+  (define-key map (kbd "C-.") 'rtags-find-symbol)
+  (define-key map (kbd "C-,") 'rtags-find-references)
+  (define-key map (kbd "C-c . .") 'rtags-find-references-at-point)
+  (define-key map (kbd "C-c . ,") 'rtags-find-symbol-at-point)
+  (define-key map (kbd "C-c . M-.") 'rtags-find-references)
+  (define-key map (kbd "C-c . M-,") 'rtags-find-symbol)
+  (define-key map (kbd "C-c . ;") 'rtags-find-all-references-at-point)
+  (define-key map (kbd "C-c . v") 'rtags-find-virtuals-at-point)
+  (define-key map (kbd "C-c . <") 'rtags-location-stack-back)
+  (define-key map (kbd "C-c . >") 'rtags-location-stack-forward)
+  (define-key map (kbd "C-c . h") 'rtags-location-stack-visualize)
+  (define-key map (kbd "C-c . I") 'rtags-imenu)
+  (define-key map (kbd "C-c . f") 'rtags-find-file)
+  (define-key map (kbd "C-c . b") 'rtags-list-results)
+  (define-key map (kbd "C-c . i") 'rtags-symbol-info)
+  (define-key map (kbd "C-c . t") 'rtags-symbol-type)
+  (define-key map (kbd "C-c . l") 'rtags-diagnostics)
+  (define-key map (kbd "C-c . /") 'rtags-display-summary)
+  (define-key map (kbd "C-c . d") 'rtags-dependency-tree)
+  (define-key map (kbd "C-c . D") 'rtags-dependency-tree-all)
+  (define-key map (kbd "C-c . c") 'rtags-print-class-hierarchy)
+  (define-key map (kbd "C-c . a") 'rtags-print-source-arguments)
+  (define-key map (kbd "C-c . e") 'rtags-print-enum-value-at-point)
+  (define-key map (kbd "C-c . U") 'rtags-restart-process)
+  (define-key map (kbd "C-c . C-p") 'rtags-preprocess-file)
+  (define-key map (kbd "C-c . C-c") 'rtags-compile-file)
+  (define-key map (kbd "C-c . RET") 'rtags-rename-symbol))
 
 (declare-function flycheck-add-next-checker "flycheck")
 (defun my/cc-mode-setup ()
@@ -658,7 +648,12 @@
   (setq-local c-basic-offset 4)
   (hs-minor-mode 1)
   (when (memq major-mode '(c-mode c++-mode objc-mode))
-    (setq-local company-backends my/cc-mode-company-backends)
+    (setq-local company-backends
+                (append '(company-rtags
+                          company-c-headers
+                          company-clang
+                          company-semantic)
+                        my/company-backends))
     (ggtags-mode 1)
     (when (fboundp 'rtags-start-process-unless-running)
       (rtags-start-process-unless-running)
