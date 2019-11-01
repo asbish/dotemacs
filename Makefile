@@ -7,7 +7,8 @@ MAKE_PKG := \
 	packages/forth-mode \
 	packages/haskell-mode \
 	packages/js2-mode \
-	packages/prettier.el
+	packages/prettier.el \
+	packages/rtags/_build
 
 BYTE_COMPILE_PKG := \
 	packages/asbish/*.el \
@@ -29,6 +30,7 @@ all: setup $(MAKE_PKG) $(BYTE_COMPILE_TARGET)
 setup:
 	@mkdir -p backup
 	cd packages/prettier.el && npm install
+	cd packages/rtags && mkdir -p _build && cd _build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ..
 
 $(MAKE_PKG):
 	@printf "\n* $@ \n"
@@ -47,3 +49,4 @@ update:
 clean: MAKE_TARGET = clean
 clean: $(MAKE_PKG)
 	$(RM) $(BYTE_COMPILE_TARGET)
+	rm -rf packages/rtags/_build

@@ -592,7 +592,7 @@
 (use-package company-c-headers
   :ensure t)
 
-(add-to-list 'load-path "~/opt/rtags/share/emacs/site-lisp/rtags")
+(add-to-list 'load-path (locate-user-emacs-file "packages/rtags/_build/src"))
 (require 'rtags)
 (require 'company-rtags)
 (require 'flycheck-rtags)

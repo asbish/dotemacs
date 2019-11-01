@@ -45,3 +45,4 @@
 [submodule "packages/rtags"]
 	path = packages/rtags
 	url = https://github.com/Andersbakken/rtags.git
+	ignore = dirty

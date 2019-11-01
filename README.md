@@ -11,6 +11,7 @@ build depends
 git submodule update --init --recursive
 cask install
 make
+export PATH="$HOME/.emacs.d/packages/rtags/_build/bin:$PATH"
 emacs
 ```
 ```
