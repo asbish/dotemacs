@@ -643,6 +643,7 @@
   (define-key map (kbd "C-c . RET") 'rtags-rename-symbol))
 
 (declare-function flycheck-add-next-checker "flycheck")
+(flycheck-add-next-checker 'rtags 'c/c++-cppcheck)
 (defun my/cc-mode-setup ()
   (c-set-style "linux")
   (setq-local c-basic-offset 4)
@@ -656,9 +657,7 @@
                         my/company-backends))
     (ggtags-mode 1)
     (when (fboundp 'rtags-start-process-unless-running)
-      (rtags-start-process-unless-running)
-      (flycheck-add-next-checker 'rtags 'c/c++-clang)
-      (flycheck-add-next-checker 'c/c++-clang 'c/c++-gcc))))
+      (rtags-start-process-unless-running))))
 
 (add-hook 'c-mode-hook #'my/cc-mode-setup t)
 (add-hook 'c++-mode-hook #'my/cc-mode-setup t)
@@ -1607,8 +1606,7 @@
       (let ((flow-bin (asbish/find-executable-node_modules
                        (concat "flow-bin/*" asbish/os "*/flow"))))
         (setq-local company-flow-executable flow-bin)
-        (setq-local flycheck-javascript-flow-executable flow-bin)
-        (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))))
+        (setq-local flycheck-javascript-flow-executable flow-bin))))
   (add-hook 'rjsx-mode-hook
             (lambda ()
               (hs-minor-mode 1)
@@ -1639,6 +1637,7 @@
   (define-key tide-mode-map (kbd "M-RET") 'tide-rename-symbol)
   (define-key tide-mode-map (kbd "C-c C-d") 'tide-documentation-at-point)
   (flycheck-add-mode 'javascript-eslint 'typescript-mode)
+  (flycheck-add-next-checker 'typescript-tslint 'javascript-eslint)
   (add-hook 'typescript-mode-hook
             (lambda ()
               (tide-setup)
@@ -1651,9 +1650,7 @@
                            "tslint/bin/tslint"))
               (setq-local flycheck-javascript-eslint-executable
                           (asbish/find-executable-node_modules
-                           "eslint/bin/eslint.js"))
-              (flycheck-add-next-checker 'typescript-tide 'typescript-tslint)
-              (flycheck-add-next-checker 'typescript-tslint 'javascript-eslint))))
+                           "eslint/bin/eslint.js")))))
 
 (use-package php-mode
   :ensure t
