@@ -14,9 +14,9 @@ make
 export PATH="$HOME/.emacs.d/packages/rtags/_build/bin:$PATH"
 emacs
 ```
+
 ```
 M-x skk-get
-M-x irony-install-server
 ```
 
 no network
