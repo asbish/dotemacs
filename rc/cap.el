@@ -592,6 +592,11 @@
 (use-package company-c-headers
   :ensure t)
 
+(use-package clang-format
+  :ensure t
+  :config
+  (define-key c-mode-base-map (kbd "C-c A") 'clang-format-buffer))
+
 (add-to-list 'load-path (locate-user-emacs-file "packages/rtags/_build/src"))
 (require 'rtags)
 (require 'company-rtags)
