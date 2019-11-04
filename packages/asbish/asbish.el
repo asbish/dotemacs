@@ -254,6 +254,8 @@
                      (c-file-style . "\"linux\"")
                      (indent-tabs-mode . t)
                      (c-basic-offset . 4))
+                    ("cc-google"        ; google-c-style.el
+                     (c-file-style . "\"Google\""))
                     ("none")))
          (presets-lis (mapcar #'car presets)))
     (cdr (assoc
@@ -261,7 +263,7 @@
           presets))))
 
 (defun asbish/gen-dir-locals--flycheck-disable ()
-  (let* ((checkers '("irony"))
+  (let* ((checkers '("rtags"))
          (checkers-prefix-c/c++ '("clang" "gcc" "cppcheck"))
          (inputs (split-string
                   (read-from-minibuffer
@@ -282,22 +284,23 @@
     (list `(flycheck-disabled-checkers . ,lis))))
 
 (defun asbish/gen-dir-locals--flycheck-include-path ()
-  (let ((lis (list)))
-    (while (let* ((default-dir (expand-file-name default-directory))
-                  (dir (ido-read-directory-name
-                        "Include path:"
-                        default-directory))
-                  (dir-str (format "\"%s\"" dir)))
-             (if (equal dir default-dir)
-                 (progn
-                   (when (and (not (cl-member dir-str lis))
-                              (y-or-n-p "Include path: add? \".\" "))
-                     (setq lis (cl-adjoin dir-str lis)))
-                   (not (y-or-n-p "Include path: end? ")))
-               (setq lis (cl-adjoin dir-str lis))
-               t)))
-    (list `(flycheck-gcc-include-path . ,lis)
-          `(flycheck-clang-include-path . ,lis))))
+  (when (y-or-n-p "Set flycheck include path?")
+    (let ((lis (list)))
+      (while (let* ((default-dir (expand-file-name default-directory))
+                    (dir (ido-read-directory-name
+                          "Include path:"
+                          default-directory))
+                    (dir-str (format "\"%s\"" dir)))
+               (if (equal dir default-dir)
+                   (progn
+                     (when (and (not (cl-member dir-str lis))
+                                (y-or-n-p "Include path: add? \".\" "))
+                       (setq lis (cl-adjoin dir-str lis)))
+                     (not (y-or-n-p "Include path: end? ")))
+                 (setq lis (cl-adjoin dir-str lis))
+                 t)))
+      (list `(flycheck-gcc-include-path . ,lis)
+            `(flycheck-clang-include-path . ,lis)))))
 
 (defun asbish/gen-dir-locals ()
   (interactive)
