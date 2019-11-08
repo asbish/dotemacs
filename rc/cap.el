@@ -1316,7 +1316,6 @@
     '(:from "C-c v c" :to "C-c C-f c" :bind haskell-cabal-visit-file)))
 
 (use-package lsp-haskell
-  :defer t
   :ensure t
   ;; TODO: Add nix integration. `lsp-haskell-process-wrapper-function`
   )
