@@ -190,7 +190,6 @@
         flycheck-check-syntax-automatically '(mode-enabled save))
   (setq-default flycheck-emacs-lisp-load-path 'inherit)
   (when (fboundp 'flycheck-overlays-at)
-    ;; overhead!
     (defun my/flycheck-error (str &rest args)
       (if (and flycheck-mode (flycheck-overlays-at (point))) t nil))
     (advice-add eldoc-message-function :before-until #'my/flycheck-error))
@@ -390,8 +389,7 @@
 (require 'semantic)
 (setq semantic-default-submodes
       '(global-semanticdb-minor-mode
-        global-semantic-idle-scheduler-mode
-        global-semantic-idle-summary-mode))
+        global-semantic-idle-scheduler-mode))
 (setq-default semantic-idle-scheduler-idle-time 2)
 (setq semantic-new-buffer-setup-functions
       (seq-difference semantic-new-buffer-setup-functions
