@@ -330,11 +330,9 @@
 
 (setq-default tags-revert-without-query 1)
 
-(use-package nvm
-  :ensure t)
+(use-package nvm :ensure t)
 
 (add-to-list 'safe-local-variable-values '(my/prettier-on . t))
-
 (defun my/prettier-mode-ignore ()
   (and buffer-file-name
        (or
@@ -652,7 +650,6 @@
     (setq-local company-backends
                 (append '(company-rtags
                           company-c-headers
-                          company-clang
                           company-semantic)
                         my/company-backends))
     (ggtags-mode 1)
