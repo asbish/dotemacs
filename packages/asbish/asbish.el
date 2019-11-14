@@ -263,7 +263,7 @@
           presets))))
 
 (defun asbish/gen-dir-locals--flycheck-disable ()
-  (let* ((checkers '("rtags"))
+  (let* ((checkers '("lsp-ui" "rtags"))
          (checkers-prefix-c/c++ '("clang" "gcc" "cppcheck"))
          (inputs (split-string
                   (read-from-minibuffer
