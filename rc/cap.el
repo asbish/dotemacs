@@ -233,6 +233,7 @@
    '(lsp-response-timeout 5)
    '(lsp-links-check-internal 0.5)
    '(lsp-prefer-flymake nil))
+  (add-to-list 'safe-local-variable-values '(my/lsp-off . t))
   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
 (use-package company-lsp
@@ -653,7 +654,9 @@
                           company-semantic)
                         my/company-backends))
     (ggtags-mode 1)
-    (lsp-deferred)))
+    (add-hook 'hack-local-variables-hook
+              (lambda () (unless (local-variable-p 'my/lsp-off) (lsp-deferred)))
+              nil t)))
 
 (add-hook 'c-mode-hook #'my/cc-mode-setup t)
 (add-hook 'c++-mode-hook #'my/cc-mode-setup t)
@@ -1311,8 +1314,6 @@
   ;; TODO: Add nix integration. `lsp-haskell-process-wrapper-function`
   )
 
-(add-to-list 'safe-local-variable-values '(my/lsp-haskell-on . t))
-
 (defun my/haskell-mode-setup ()
   (if (locate-dominating-file
        (file-name-directory (buffer-file-name))
@@ -1325,8 +1326,7 @@
   (asbish/once #'my/haskell-collapse-mode-setup)
   (haskell-decl-scan-mode 1)
   (add-hook 'hack-local-variables-hook
-            (lambda ()
-              (when (local-variable-p 'my/lsp-haskell-on) (lsp-deferred)))
+            (lambda () (unless (local-variable-p 'my/lsp-off) (lsp-deferred)))
             nil t))
 
 (add-hook 'haskell-mode-hook #'my/haskell-mode-setup)
