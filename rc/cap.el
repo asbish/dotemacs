@@ -660,8 +660,6 @@
 
 (add-hook 'c-mode-hook #'my/cc-mode-setup t)
 (add-hook 'c++-mode-hook #'my/cc-mode-setup t)
-(add-hook 'c++-mode-hook
-          (lambda () (setq-local flycheck-gcc-language-standard "c++11")))
 (add-hook 'objc-mode-hook #'my/cc-mode-setup t)
 
 (use-package protobuf-mode
