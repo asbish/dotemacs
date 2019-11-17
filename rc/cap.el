@@ -416,9 +416,9 @@
   :ensure t
   :pin melpa-stable
   :config
-  (define-key c-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
-  (define-key c++-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
-  (define-key java-mode-map (kbd "M-RET") 'srefactor-refactor-at-point))
+  (define-key c-mode-map (kbd "C-c , RET") 'srefactor-refactor-at-point)
+  (define-key c++-mode-map (kbd "C-c , RET") 'srefactor-refactor-at-point)
+  (define-key java-mode-map (kbd "C-c , RET") 'srefactor-refactor-at-point))
 
 (require 'prog-mode)
 (define-key prog-mode-map (kbd "C-c C-c") nil)
@@ -578,6 +578,7 @@
 (define-key c-mode-base-map (kbd "C-c C-w") nil) ;; c-subword-mode
 (define-key c-mode-base-map (kbd "C-M-j") nil) ;; c-indent-new-comment-line
 (define-key c-mode-base-map (kbd "C-M-;") 'comment-or-uncomment-region)
+(define-key c-mode-base-map (kbd "M-RET") 'lsp-rename)
 (define-key c-mode-base-map (kbd "<f6>") 'my/gdb-start)
 
 (use-package google-c-style
