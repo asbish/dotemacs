@@ -411,7 +411,6 @@
   '(:from "C-c , J" :to "C-c , ." :bind semantic-complete-jump)
   '(:from "C-c , l" :to "C-c , /" :bind semantic-analyze-possible-completions)
   '(:from "C-c , SPC" :to "C-c , M-/" :bind semantic-complete-analyze-inline))
-(semantic-mode 1)
 
 (use-package srefactor
   :ensure t
