@@ -479,10 +479,10 @@
     (when (and (not gdb-layout) buffer (get-buffer-process buffer))
       (gdb-restore-windows)))
   (call-interactively 'gdb))
+(global-set-key (kbd "<f6> g") 'my/gdb-start)
 
 (use-package realgud
-  :defer t
-  :pin melpa-stable
+  :ensure t
   :init
   (custom-set-variables
    '(realgud-populate-common-fn-keys-function nil))
@@ -500,7 +500,8 @@
             (delete-other-windows)
             (set-window-buffer (selected-window) source-buffer)
             (set-window-buffer (split-window-horizontally)
-                               (asbish/find-buffer (cdr debugger)))))))))
+                               (asbish/find-buffer (cdr debugger))))))))
+  (global-set-key (kbd "<f6> r") 'my/realgud-start))
 
 (use-package sh-script
   :defer t
@@ -561,7 +562,6 @@
 (require 'asm-mode)
 (define-key asm-mode-map (kbd ":") nil)
 (define-key asm-mode-map (kbd "RET") 'newline)
-(define-key asm-mode-map (kbd "<f6>") 'my/gdb-start)
 (add-hook 'asm-mode-hook
           (lambda ()
             (setq fill-prefix nil)
@@ -579,7 +579,6 @@
 (define-key c-mode-base-map (kbd "C-M-j") nil) ;; c-indent-new-comment-line
 (define-key c-mode-base-map (kbd "C-M-;") 'comment-or-uncomment-region)
 (define-key c-mode-base-map (kbd "M-RET") 'lsp-rename)
-(define-key c-mode-base-map (kbd "<f6>") 'my/gdb-start)
 
 (use-package google-c-style
   :ensure t
@@ -729,8 +728,7 @@
    '(rustic-builtin-formatting-macro-face
      ((t (:inherit font-lock-preprocessor-face)))))
   :config
-  (define-key rustic-mode-map (kbd "C-c A") 'rustic-format-buffer)
-  (define-key rustic-mode-map (kbd "<f6>") 'my/gdb-start))
+  (define-key rustic-mode-map (kbd "C-c A") 'rustic-format-buffer))
 
 (use-package rust-mode
   :requires rustic
@@ -743,7 +741,6 @@
   (custom-set-variables
    '(rust-format-on-save nil))
   :config
-  (define-key rust-mode-map (kbd "<f6>") 'my/gdb-start)
   (add-hook 'rust-mode-hook
             (lambda ()
               (unless (asbish/read-only-mode "/\\(\\.rustup\\|\\.cargo\\|target\\)/")
@@ -762,7 +759,6 @@
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save)
   (define-key go-mode-map (kbd "C-c A") 'gofmt)
-  (define-key go-mode-map (kbd "<f6>") 'my/gdb-start)
   (asbish/rebind-keys go-mode-map
     '(:from "C-x 4 C-c C-j" :to "C-x 4 M-." :bind godef-jump-other-window))
   (add-hook 'go-mode-hook
@@ -961,7 +957,7 @@
 (setq python-shell-interpreter "ipython"
       python-shell-interpreter-args "--simple-prompt --pprint")
 (define-key python-mode-map (kbd "C-c C-j") nil) ;; imenu
-(define-key python-mode-map (kbd "<f6>") 'my/realgud-start)
+
 (asbish/rebind-keys python-mode-map
   '(:from "C-c C-p" :to "C-c C-x" :bind run-python)
   '(:from "C-c C-c" :to "C-c C-b" :bind python-shell-send-buffer)
