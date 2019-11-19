@@ -158,6 +158,8 @@
 (setq recentf-max-menu-items 30
       recentf-max-saved-items 30)
 (global-set-key (kbd "<f9>") 'recentf-open-files)
+(add-to-list 'recentf-exclude "/mnt")
+(add-to-list 'recentf-exclude "/usr/include")
 (recentf-mode 1)
 
 (defun w-split ()
