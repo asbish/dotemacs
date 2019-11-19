@@ -493,14 +493,16 @@
     (interactive)
     (when (not (symbol-value 'realgud-short-key-mode))
       (let ((debugger (cadr (assoc major-mode my/realgud-alist))))
-        (when debugger
-          (asbish/quick-window-set nil)
-          (let ((source-buffer (current-buffer)))
-            (call-interactively (car debugger))
-            (delete-other-windows)
-            (set-window-buffer (selected-window) source-buffer)
-            (set-window-buffer (split-window-horizontally)
-                               (asbish/find-buffer (cdr debugger))))))))
+        (if debugger
+            (progn
+              (asbish/quick-window-set nil)
+              (let ((source-buffer (current-buffer)))
+                (call-interactively (car debugger))
+                (delete-other-windows)
+                (set-window-buffer (selected-window) source-buffer)
+                (set-window-buffer (split-window-horizontally)
+                                   (asbish/find-buffer (cdr debugger)))))
+          (message "Not found: debugger")))))
   (global-set-key (kbd "<f6> r") 'my/realgud-start))
 
 (use-package sh-script
