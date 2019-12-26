@@ -858,7 +858,7 @@
         ensime-typecheck-idle-interval 1
         ensime-eldoc-hints 'all
         ensime-db-default-port "5005")
-  (define-key ensime-mode-map (kbd "<f6>") 'ensime-db-attach)
+  (define-key ensime-mode-map (kbd "<f6> g") 'ensime-db-attach)
   (asbish/rebind-keys ensime-mode-map
     ;; ensime key binds are difficult to use for me...
     '(:from "C-c C-c r" :to "<f5>" :bind ensime-reload-open-files)
@@ -983,7 +983,7 @@
 (asbish/rebind-keys python-mode-map
   '(:from "C-c C-p" :to "C-c C-s" :bind run-python)
   '(:from "C-c C-c" :to "C-c C-b" :bind python-shell-send-buffer)
-  '(:from "C-c C-f" :to "C-c d" :bind python-eldoc-at-point)
+  '(:from "C-c C-f" :to "C-c C-d" :bind python-eldoc-at-point)
   '(:from "C-c C-v" :to "C-c l" :bind python-check)
   '(:from "C-c C-s" :to "C-c :" :bind python-shell-send-string)
   '(:from "C-c <" :to "C-c C-q <" :bind python-indent-shift-left)
@@ -1136,7 +1136,7 @@
   (add-hook 'mips-mode-hook
             (lambda () (electric-indent-local-mode -1)))
   :config
-  (asbish/rebind-keys mips-map
+  (asbish/rebind-keys mips-mode-map
     '(:from "C-c C-c" :to "C-c C-b" :bind mips-run-buffer) ;; TODO: not work
     '(:from "C-c C-l" :to "M-." :bind mips-goto-label-at-cursor)))
 
@@ -1302,7 +1302,7 @@
   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-file)
   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
   (define-key haskell-mode-map (kbd "C-c U") 'my/haskell-tags)
-  (define-key haskell-mode-map (kbd "<f6>") 'my/use-intero)
+  (define-key haskell-mode-map (kbd "<f6> g") 'my/use-intero)
   (when (fboundp 'hs-lint)
     (define-key haskell-mode-map (kbd "C-c l") 'hs-lint)))
 
@@ -1401,11 +1401,11 @@
                 (split-window-vertically (- goals-win-height 5)))))
       (set-window-buffer goals-win goals)
       (set-window-buffer response-win response))))
-(define-key proof-mode-map (kbd "<f6>") 'my/proof-layout-windows)
+(define-key proof-mode-map (kbd "<f6> g") 'my/proof-layout-windows)
 
 (with-eval-after-load 'proof
   (asbish/rebind-keys proof-mode-map
-    '(:from "C-c C-l" :to "S-<f6>" :bind proof-layout-windows)
+    '(:from "C-c C-l" :to "<f6> l" :bind proof-layout-windows)
     '(:from "C-c C-v" :to "C-c :" :bind proof-minibuffer-cmd)
     '(:from "C-c C-p" :to "C-c l" :bind proof-prf)
     '(:from "C-c C-c" :to "C-c C" :bind proof-interrupt-process)
@@ -1607,6 +1607,7 @@
     '(:from "C-M-." :to "C-c M-." :bind tern-find-definition-by-name))
   (asbish/rebind-keys rjsx-mode-map
     '(:from "C-c C-r" :to "C-c M-RET" :bind rjsx-rename-tag-at-point))
+  (define-key rjsx-mode-map (kbd "C-c A") 'prettier-prettify)
   (defun my/flow-setup ()
     (when (save-excursion
             (goto-char (point-min))
@@ -1644,7 +1645,7 @@
     :ensure t
     :diminish tide-mode)
   (setq typescript-indent-level 2)
-  (define-key tide-mode-map (kbd "C-c A") 'tide-format)
+  (define-key tide-mode-map (kbd "C-c A") 'prettier-prettify)
   (define-key tide-mode-map (kbd "M-RET") 'tide-rename-symbol)
   (define-key tide-mode-map (kbd "C-c C-d") 'tide-documentation-at-point)
   (flycheck-add-mode 'javascript-eslint 'typescript-mode)
