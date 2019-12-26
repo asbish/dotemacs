@@ -479,31 +479,37 @@
     (when (and (not gdb-layout) buffer (get-buffer-process buffer))
       (gdb-restore-windows)))
   (call-interactively 'gdb))
-(global-set-key (kbd "<f6> g") 'my/gdb-start)
 
 (use-package realgud
   :ensure t
   :init
   (custom-set-variables
-   '(realgud-populate-common-fn-keys-function nil))
-  :config
-  (defvar my/realgud-alist
-    '((python-mode (realgud:pdb . "^\\*pdb"))))
-  (defun my/realgud-start ()
-    (interactive)
-    (when (not (symbol-value 'realgud-short-key-mode))
-      (let ((debugger (cadr (assoc major-mode my/realgud-alist))))
-        (if debugger
-            (progn
-              (asbish/quick-window-set nil)
-              (let ((source-buffer (current-buffer)))
-                (call-interactively (car debugger))
-                (delete-other-windows)
-                (set-window-buffer (selected-window) source-buffer)
-                (set-window-buffer (split-window-horizontally)
-                                   (asbish/find-buffer (cdr debugger)))))
-          (message "Not found: debugger")))))
-  (global-set-key (kbd "<f6> r") 'my/realgud-start))
+   '(realgud-populate-common-fn-keys-function nil)))
+
+(use-package realgud-byebug :ensure t)
+
+(defvar my/realgud-alist
+  '((python-mode (realgud:pdb . "^\\*pdb"))
+    (ruby-mode (realgud:byebug . ""))
+    (enh-ruby-mode (realgud:byebug . ""))))
+(defun my/realgud-start ()
+  (interactive)
+  (when (not (symbol-value 'realgud-short-key-mode))
+    (let ((debugger (cadr (assoc major-mode my/realgud-alist))))
+      (if debugger
+          (progn
+            (asbish/quick-window-set nil)
+            (let ((source-buffer (current-buffer)))
+              (call-interactively (car debugger))
+              (delete-other-windows)
+              (set-window-buffer (selected-window) source-buffer)
+              (set-window-buffer (split-window-horizontally)
+                                 (asbish/find-buffer (cdr debugger)))))
+        (message "Not found: debugger")))))
+
+(global-set-key (kbd "<f6> g") 'my/gdb-start)
+(global-set-key (kbd "<f6> r") 'my/realgud-start)
+(global-set-key (kbd "<f6> z") 'asbish/quick-window)
 
 (use-package sh-script
   :defer t
@@ -931,29 +937,32 @@
    '(j-conjunction-face ((t (:inherit font-lock-constant-face :bold t))))
    '(j-other-face ((t (:foreground "#bcbcbc"))))))
 
-(use-package rbenv
+(use-package enh-ruby-mode
   :ensure t
-  :pin melpa-stable)
-
-(require 'ruby-mode)
-(use-package robe
-  :ensure t
-  :pin melpa-stable
   :init
-  (setq-default rspec-key-command-prefix (kbd "C-c r")
-                inf-ruby-default-implementation "pry")
+  (add-to-list 'auto-mode-alist '("\\(?:\\.rb\\|ru\\|rake\\|thor\\|jbuilder\\|gemspec\\|podspec\\|/\\(?:Gem\\|Rake\\|Cap\\|Thor\\|Vagrant\\|Guard\\|Pod\\)file\\)\\'" . enh-ruby-mode))
+  (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
   :config
-  (define-key robe-mode-map (kbd "C-c C-k") nil) ;; robe-rails-refresh
-  (asbish/rebind-keys inf-ruby-minor-mode-map
-    '(:from "C-c C-s" :to "C-c C-x" :bind inf-ruby)
-    '(:from "C-x C-e" :to "C-c C-n" :bind ruby-send-last-sexp)
-    '(:from "C-c M-x" :to "C-c M-n" :bind ruby-send-definition-and-go))
-  (add-hook 'ruby-mode-hook
-            (lambda ()
-              (setq-local company-backends
-                          (cons 'company-robe my/company-backends))
-              (robe-mode 1)
-              (setq-default flycheck-disabled-checkers '(ruby-rubylint)))))
+  (define-key enh-ruby-mode-map (kbd "M-RET") 'lsp-rename))
+
+(use-package bundler :ensure t)
+
+(use-package inf-ruby
+  :ensure t
+  :config
+  (setq-default inf-ruby-default-implementation "pry")
+  (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
+  (add-hook 'enh-ruby-mode-hook 'inf-ruby-minor-mode))
+
+(use-package rufo
+  :ensure t
+  :config
+  (define-key ruby-mode-map (kbd "C-c A") 'rufo-format)
+  (define-key enh-ruby-mode-map (kbd "C-c A") 'rufo-format))
+
+;; use solargraph
+(add-hook 'ruby-mode-hook (lambda () (lsp-deferred)))
+(add-hook 'enh-ruby-mode-hook (lambda () (lsp-deferred)))
 
 (require 'python)
 (setq python-shell-interpreter "ipython"
@@ -961,9 +970,9 @@
 (define-key python-mode-map (kbd "C-c C-j") nil) ;; imenu
 
 (asbish/rebind-keys python-mode-map
-  '(:from "C-c C-p" :to "C-c C-x" :bind run-python)
+  '(:from "C-c C-p" :to "C-c C-s" :bind run-python)
   '(:from "C-c C-c" :to "C-c C-b" :bind python-shell-send-buffer)
-  '(:from "C-c C-f" :to "C-c C-d" :bind python-eldoc-at-point)
+  '(:from "C-c C-f" :to "C-c d" :bind python-eldoc-at-point)
   '(:from "C-c C-v" :to "C-c l" :bind python-check)
   '(:from "C-c C-s" :to "C-c :" :bind python-shell-send-string)
   '(:from "C-c <" :to "C-c C-q <" :bind python-indent-shift-left)
