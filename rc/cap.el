@@ -489,30 +489,38 @@
   (custom-set-variables
    '(realgud-populate-common-fn-keys-function nil)))
 
+(use-package realgud-lldb :ensure t)
 (use-package realgud-byebug :ensure t)
 
-(defvar my/realgud-alist
-  '((python-mode (realgud:pdb . "^\\*pdb"))
-    (ruby-mode (realgud:byebug . ""))
-    (enh-ruby-mode (realgud:byebug . ""))))
+(defvar my/realgud-alist-mode-preset
+  '((sh-mode ((realgud:bashdb . "^\\*bashdb") (realgud:zshdb . "^\\*zshdb")))
+    (cperl-mode ((realgud:perldb . "^\\*perldb")))
+    (python-mode ((realgud:pdb . "^\\*pdb")))
+    (ruby-mode ((realgud:byebug . "^\\*byebug")))
+    (enh-ruby-mode ((realgud:byebug . "^\\*byebug")))))
+
 (defun my/realgud-start ()
   (interactive)
-  (when (not (symbol-value 'realgud-short-key-mode))
-    (let ((debugger (cadr (assoc major-mode my/realgud-alist))))
-      (if debugger
-          (progn
-            (asbish/quick-window-set nil)
-            (let ((source-buffer (current-buffer)))
-              (call-interactively (car debugger))
-              (delete-other-windows)
-              (set-window-buffer (selected-window) source-buffer)
-              (set-window-buffer (split-window-horizontally)
-                                 (asbish/find-buffer (cdr debugger)))))
-        (message "Not found: debugger")))))
+  (let* ((lis (or (cadr (assoc major-mode my/realgud-alist-mode-preset))
+                  '((lldb . "^\\*lldb"))))
+         (dbg (if (= 1 (length lis)) (car lis)
+                (assoc
+                 (intern (ido-completing-read
+                          "Select: "
+                          (mapcar (asbish/compose #'symbol-name #'car) lis)))
+                 lis)))
+         (source-buffer (current-buffer)))
+    (unless (symbol-value 'realgud-short-key-mode)
+      (asbish/quick-window-set nil)
+      (call-interactively (car dbg)))
+    (delete-other-windows)
+    (set-window-buffer (selected-window) source-buffer)
+    (set-window-buffer (split-window-horizontally)
+                       (asbish/find-buffer (cdr dbg)))))
 
 (global-set-key (kbd "<f6> g") 'my/gdb-start)
 (global-set-key (kbd "<f6> r") 'my/realgud-start)
-(global-set-key (kbd "<f6> z") 'asbish/quick-window)
+(global-set-key (kbd "<f6> <f6>") 'asbish/quick-window) ;; reset window
 
 (use-package sh-script
   :defer t
