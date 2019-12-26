@@ -20,6 +20,9 @@
 (global-set-key (kbd "<f10> <f10>") 'asbish/quick-window)
 (global-set-key (kbd "<f10> s") 'asbish/quick-window-set)
 
+(global-unset-key (kbd "C-x C-z"))
+(global-set-key (kbd "<f10> z") 'suspend-frame)
+
 (use-package smex
   :ensure t
   :config

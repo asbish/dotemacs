@@ -184,7 +184,6 @@
 
 (define-key global-map (kbd "C-c w") 'xsel-naive-copy)
 
-(global-unset-key (kbd "C-x C-z"))
 (global-set-key (kbd "<f5>") 'revert-buffer)
 (define-key mode-specific-map (kbd "C-c") 'compile)
 
