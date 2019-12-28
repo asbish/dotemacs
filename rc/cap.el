@@ -526,7 +526,7 @@
 
 (use-package dockerfile-mode
   :ensure t
-  :init
+  :config
   (define-key dockerfile-mode-map (kbd "C-c C-b") nil)
   (define-key dockerfile-mode-map (kbd "C-c M-b") nil))
 
@@ -1056,27 +1056,13 @@
         (venv-workon my/python-venv-default)))))
 
 (add-hook 'python-mode-hook #'my/python-venv-direnv)
-
-(use-package jedi-core
-  :ensure t
-  :pin melpa-stable)
-
-(use-package company-jedi
-  :ensure t
-  :pin melpa-stable
-  :config
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (hs-minor-mode 1)
-              (ggtags-mode 1)
-              (setq imenu-create-index-function 'python-imenu-create-index)
-              (setq-local company-backends
-                          (cons 'company-jedi my/company-backends))
-              (setq-default flycheck-disabled-checkers '(python-pylint)))
-            t))
-
-(define-key emacs-lisp-mode-map (kbd "C-c C-z") 'ielm)
-(add-hook 'emacs-lisp-mode-hook #'hs-minor-mode)
+(add-hook 'python-mode-hook
+          (lambda ()
+            (hs-minor-mode 1)
+            (ggtags-mode 1)
+            (setq imenu-create-index-function 'python-imenu-create-index)
+            (setq-default flycheck-disabled-checkers '(python-pylint))
+            (lsp-deferred)))
 
 (use-package nim-mode
   :ensure t
@@ -1087,6 +1073,9 @@
 (use-package ob-nim
   :ensure t
   :defer t)
+
+(define-key emacs-lisp-mode-map (kbd "C-c C-z") 'ielm)
+(add-hook 'emacs-lisp-mode-hook #'hs-minor-mode)
 
 (use-package racket-mode
   :ensure t
