@@ -20,9 +20,6 @@
 (global-set-key (kbd "<f10> <f10>") 'asbish/quick-window)
 (global-set-key (kbd "<f10> s") 'asbish/quick-window-set)
 
-(global-unset-key (kbd "C-x C-z"))
-(global-set-key (kbd "<f10> z") 'suspend-frame)
-
 (use-package smex
   :ensure t
   :config
@@ -521,6 +518,25 @@
 (global-set-key (kbd "<f6> g") 'my/gdb-start)
 (global-set-key (kbd "<f6> r") 'my/realgud-start)
 (global-set-key (kbd "<f6> <f6>") 'asbish/quick-window) ;; reset window
+
+(use-package docker
+  :ensure t
+  :init
+  (global-set-key (kbd "<f10> d") 'docker))
+
+(use-package dockerfile-mode
+  :ensure t
+  :init
+  (define-key dockerfile-mode-map (kbd "C-c C-b") nil)
+  (define-key dockerfile-mode-map (kbd "C-c M-b") nil))
+
+(use-package docker-compose-mode :ensure t)
+
+(use-package docker-tramp
+  :ensure t
+  :init
+  (custom-set-variables
+   '(docker-tramp-use-names t)))
 
 (use-package sh-script
   :defer t
