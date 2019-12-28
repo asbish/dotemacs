@@ -17,8 +17,11 @@
   ("<left>" winner-undo "undo")
   ("<right>" winner-redo "redo"))
 
-(global-set-key (kbd "<f10> <f10>") 'asbish/quick-window)
-(global-set-key (kbd "<f10> s") 'asbish/quick-window-set)
+(global-set-key (kbd "<f10> q") 'asbish/quick-window)
+(global-set-key (kbd "<f10> Q") 'asbish/quick-window-set)
+(global-set-key (kbd "<f10> c") 'tramp-cleanup-connection)
+(global-set-key (kbd "<f10> B") 'tramp-cleanup-all-buffers)
+(global-set-key (kbd "<f10> C") 'tramp-cleanup-all-connections)
 
 (use-package smex
   :ensure t
