@@ -50,3 +50,7 @@
            (expand-file-name "rc" user-emacs-directory))))
   (mapc (lambda (x) (load (concat rc (symbol-name x))))
         '(base cap fun)))
+
+;; Specific customization for local systems.
+(let ((my-local (locate-user-emacs-file ".my-local.el")))
+  (when (file-exists-p my-local) (load my-local)))
