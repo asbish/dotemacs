@@ -497,8 +497,7 @@
   '((sh-mode ((realgud:bashdb . "^\\*bashdb") (realgud:zshdb . "^\\*zshdb")))
     (cperl-mode ((realgud:perldb . "^\\*perldb")))
     (python-mode ((realgud:pdb . "^\\*pdb")))
-    (ruby-mode ((realgud:byebug . "^\\*byebug")))
-    (enh-ruby-mode ((realgud:byebug . "^\\*byebug")))))
+    (ruby-mode ((realgud:byebug . "^\\*byebug")))))
 
 (defun my/realgud-start ()
   (interactive)
@@ -968,14 +967,13 @@
    '(j-conjunction-face ((t (:inherit font-lock-constant-face :bold t))))
    '(j-other-face ((t (:foreground "#bcbcbc"))))))
 
-(use-package enh-ruby-mode
+(use-package ruby-mode
   :ensure t
   :init
-  (add-to-list 'auto-mode-alist '("\\(?:\\.rb\\|ru\\|rake\\|thor\\|jbuilder\\|gemspec\\|podspec\\|/\\(?:Gem\\|Rake\\|Cap\\|Thor\\|Vagrant\\|Guard\\|Pod\\)file\\)\\'" . enh-ruby-mode))
-  (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
+  (custom-set-variables
+   '(ruby-use-encoding-map nil))
   :config
-  (define-key enh-ruby-mode-map (kbd "C-c /") nil)
-  (define-key enh-ruby-mode-map (kbd "M-RET") 'lsp-rename))
+  (define-key ruby-mode-map (kbd "M-RET") 'lsp-rename))
 
 (use-package bundler :ensure t)
 
@@ -983,18 +981,15 @@
   :ensure t
   :config
   (setq-default inf-ruby-default-implementation "pry")
-  (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
-  (add-hook 'enh-ruby-mode-hook 'inf-ruby-minor-mode))
+  (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode))
 
 (use-package rufo
   :ensure t
   :config
-  (define-key ruby-mode-map (kbd "C-c A") 'rufo-format)
-  (define-key enh-ruby-mode-map (kbd "C-c A") 'rufo-format))
+  (define-key ruby-mode-map (kbd "C-c A") 'rufo-format))
 
 ;; use solargraph
 (add-hook 'ruby-mode-hook (lambda () (lsp-deferred)))
-(add-hook 'enh-ruby-mode-hook (lambda () (lsp-deferred)))
 
 (require 'python)
 (setq python-shell-interpreter "ipython"
