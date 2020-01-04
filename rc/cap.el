@@ -971,6 +971,7 @@
   :ensure t
   :init
   (custom-set-variables
+   '(ruby-insert-encoding-magic-comment nil)
    '(ruby-use-encoding-map nil))
   :config
   (define-key ruby-mode-map (kbd "M-RET") 'lsp-rename))
