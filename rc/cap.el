@@ -974,7 +974,10 @@
    '(ruby-insert-encoding-magic-comment nil)
    '(ruby-use-encoding-map nil))
   :config
-  (define-key ruby-mode-map (kbd "M-RET") 'lsp-rename))
+  (define-key ruby-mode-map (kbd "M-RET") 'lsp-rename)
+  (define-key ruby-mode-map (kbd "C-c . .") 'find-tag)
+  (define-key ruby-mode-map (kbd "C-c . ?") 'xref-find-references)
+  (define-key ruby-mode-map (kbd "C-c . ,") 'xref-pop-marker-stack))
 
 (use-package bundler :ensure t)
 
@@ -989,8 +992,10 @@
   :config
   (define-key ruby-mode-map (kbd "C-c A") 'rufo-format))
 
-;; use solargraph
-(add-hook 'ruby-mode-hook (lambda () (lsp-deferred)))
+(add-hook 'ruby-mode-hook
+          (lambda ()
+            (asbish/read-only-mode "/\\(vendor\/bundle\\)/")
+            (lsp-deferred)))
 
 (require 'python)
 (setq python-shell-interpreter "ipython"
