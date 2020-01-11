@@ -332,4 +332,9 @@
         (face-remap-remove-relative cookie)
         (set sym nil)))))
 
+(defun asbish/print-point ()
+  (interactive)
+  (message (concat "Line: " (format-mode-line "%l")
+                   ", Point: " (number-to-string (point)))))
+
 (provide 'asbish)
