@@ -1544,7 +1544,59 @@
 
 (use-package yaml-mode
   :ensure t
-  :pin melpa-stable)
+  :pin melpa-stable
+  :config
+  (defun my/yaml--forward-nested-indent (ind pmax)
+    (forward-line)
+    (end-of-line)
+    (if (or (> (current-indentation) ind)
+            (and (not (= (point) pmax))
+                 (= (current-indentation) 0)
+                 (progn (beginning-of-line) t)
+                 (looking-at "[ \\t]*$")))
+        (my/yaml--forward-nested-indent ind pmax)
+      (previous-line)))
+
+  (defun my/yaml--backward-nested-indent (ind)
+    (beginning-of-line)
+    (if (or (< (current-indentation) ind) (looking-at "[ \\t]*$"))
+        (progn
+          (previous-line)
+          (my/yaml--backward-nested-indent ind))
+      (end-of-line)))
+
+  (defun my/yaml-forward-sexp (&optional arg) ;; TODO: use argument
+    (interactive)
+    (let ((ind (current-indentation)))
+      (beginning-of-line)
+      (unless  (looking-at "[ \\t]*$")
+        (my/yaml--forward-nested-indent ind (point-max))
+        (my/yaml--backward-nested-indent ind))))
+
+  (add-to-list 'hs-special-modes-alist
+               '(yaml-mode "\\s-*\\_<\\(?:[^:]+\\)\\_>" "\\s$" "#"
+                           my/yaml-forward-sexp nil))
+
+  ;; Note: `hs-toggle-hiding' doen't work correctry. overlay?
+  (defun my/yaml-toggle-hs-toggle-hiding ()
+    (interactive)
+    (if (or (hs-already-hidden-p)
+            (save-excursion
+              (end-of-line)
+              (backward-char -1)
+              (hs-overlay-at (point))))
+        (hs-show-block)
+      (hs-hide-block)))
+  (add-hook
+   'yaml-mode-hook
+   (lambda ()
+     (hs-minor-mode)
+     (let ((oldmap (cdr (assoc 'hs-minor-mode-map minor-mode-map-alist)))
+           (newmap (make-sparse-keymap)))
+       (set-keymap-parent newmap oldmap)
+       (define-key newmap (kbd "C-c f") 'my/yaml-toggle-hs-toggle-hiding)
+       (make-local-variable 'my/hs-minor-mode-map-fixed)
+       (push `(hs-minor-mode . ,newmap) minor-mode-overriding-map-alist)))))
 
 (use-package toml-mode
   :ensure t)
@@ -1756,6 +1808,7 @@
   (custom-set-variables '(css-indent-offset 2))
   (add-hook 'css-mode-hook
             (lambda ()
+              (hs-minor-mode 1)
               (setq-local company-backends
                           (cons 'company-css my/company-backends))
               (setq-default flycheck-disabled-checkers '(css-css-lint))
@@ -1771,6 +1824,7 @@
   (add-hook 'scss-mode-hook
             (lambda ()
               (remove-hook 'after-save-hook 'scss-compile-maybe t)
+              (hs-minor-mode 1)
               (setq-local company-backends
                           (cons 'company-css my/company-backends))
               (setq-default flycheck-disabled-checkers '(scss))
@@ -1784,6 +1838,7 @@
   :init
   (add-hook 'sass-mode-hook
             (lambda ()
+              (hs-minor-mode 1)
               (setq-local company-backends
                           (cons 'company-css my/company-backends))
               (setq-default flycheck-disabled-checkers '(sass))
