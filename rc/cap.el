@@ -1546,32 +1546,22 @@
   :ensure t
   :pin melpa-stable
   :config
-  (defun my/yaml--forward-nested-indent (ind pmax)
-    (while (progn
-             (forward-line)
-             (end-of-line)
-             (or (> (current-indentation) ind)
-                 (and (not (= (point) pmax))
-                      (= (current-indentation) 0)
-                      (progn (beginning-of-line) t)
-                      (looking-at "[ \\t]*$")))))
-    (previous-line))
-
-  (defun my/yaml--backward-nested-indent (ind)
-    (beginning-of-line)
-    (if (or (< (current-indentation) ind) (looking-at "[ \\t]*$"))
-        (progn
-          (previous-line)
-          (my/yaml--backward-nested-indent ind))
-      (end-of-line)))
-
   (defun my/yaml-forward-sexp (&optional arg) ;; TODO: use argument
     (interactive)
-    (let ((ind (current-indentation)))
-      (beginning-of-line)
-      (unless  (looking-at "[ \\t]*$")
-        (my/yaml--forward-nested-indent ind (point-max))
-        (my/yaml--backward-nested-indent ind))))
+    (let ((ind (current-indentation))
+          (pmax (point-max)))
+      (unless (asbish/empty-line-p)
+        (while (progn
+                 (forward-line)
+                 (end-of-line)
+                 (or (> (current-indentation) ind)
+                     (and (not (= (point) pmax))
+                          (= (current-indentation) 0)
+                          (asbish/empty-line-p)))))
+        (while (progn ; backward
+                 (previous-line)
+                 (or (< (current-indentation) ind) (asbish/empty-line-p))))
+        (end-of-line))))
 
   (add-to-list 'hs-special-modes-alist
                '(yaml-mode "\\s-*\\_<\\(?:[^:]+\\)\\_>" "\\s$" "#"
@@ -1587,6 +1577,7 @@
               (hs-overlay-at (point))))
         (hs-show-block)
       (hs-hide-block)))
+
   (add-hook
    'yaml-mode-hook
    (lambda ()

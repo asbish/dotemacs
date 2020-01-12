@@ -127,6 +127,11 @@
          (beg1 (string-match re (buffer-substring-no-properties beg end))))
     (if beg1 (list (+ beg beg1) end) (list beg end))))
 
+(defun asbish/empty-line-p ()
+  (save-excursion
+    (beginning-of-line)
+    (looking-at "[ \\t]*$")))
+
 (defmacro asbish/try-comp (abbrev)
   (let ((fun (intern (concat "asbish/try-comp-" abbrev)))
         (abb (substring abbrev 0 (- (length abbrev) 1))))
