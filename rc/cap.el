@@ -1547,15 +1547,15 @@
   :pin melpa-stable
   :config
   (defun my/yaml--forward-nested-indent (ind pmax)
-    (forward-line)
-    (end-of-line)
-    (if (or (> (current-indentation) ind)
-            (and (not (= (point) pmax))
-                 (= (current-indentation) 0)
-                 (progn (beginning-of-line) t)
-                 (looking-at "[ \\t]*$")))
-        (my/yaml--forward-nested-indent ind pmax)
-      (previous-line)))
+    (while (progn
+             (forward-line)
+             (end-of-line)
+             (or (> (current-indentation) ind)
+                 (and (not (= (point) pmax))
+                      (= (current-indentation) 0)
+                      (progn (beginning-of-line) t)
+                      (looking-at "[ \\t]*$")))))
+    (previous-line))
 
   (defun my/yaml--backward-nested-indent (ind)
     (beginning-of-line)
