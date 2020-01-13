@@ -653,9 +653,9 @@
 (let ((map c-mode-base-map))
   (define-key map (kbd "C-c . .") 'my/rtags-find-symbol-at-point)
   (define-key map (kbd "C-c . ,") 'my/rtags-find-references-at-point)
-  (define-key map (kbd "C-c . M-.") 'rtags-find-references)
-  (define-key map (kbd "C-c . M-,") 'rtags-find-symbol)
-  (define-key map (kbd "C-c . ;") 'rtags-find-all-references-at-point)
+  (define-key map (kbd "C-c . ;") 'rtags-find-symbol)
+  (define-key map (kbd "C-c . ?") 'rtags-find-references)
+  (define-key map (kbd "C-c . /") 'rtags-find-all-references-at-point)
   (define-key map (kbd "C-c . v") 'rtags-find-virtuals-at-point)
   (define-key map (kbd "C-c . <") 'rtags-location-stack-back)
   (define-key map (kbd "C-c . >") 'rtags-location-stack-forward)
@@ -976,7 +976,7 @@
   :config
   (define-key ruby-mode-map (kbd "M-RET") 'lsp-rename)
   (define-key ruby-mode-map (kbd "C-c . .") 'find-tag)
-  (define-key ruby-mode-map (kbd "C-c . ?") 'xref-find-references)
+  (define-key ruby-mode-map (kbd "C-c . /") 'xref-find-references)
   (define-key ruby-mode-map (kbd "C-c . ,") 'xref-pop-marker-stack))
 
 (use-package bundler :ensure t)
@@ -1261,7 +1261,7 @@
 (require 'intero)
 (add-to-list 'recentf-exclude ".*/.stack-work/intero/intero-script.*")
 (asbish/rebind-keys intero-mode-map
-  '(:from "M-." :to "C-c ." :bind intero-goto-definition)
+  '(:from "M-." :to "C-c . ." :bind intero-goto-definition)
   '(:from "C-c C-i" :to "C-c C-d" :bind intero-info)
   '(:from "C-c C-c" :to "C-c C-r" :bind intero-repl-eval-region)
   '(:from "C-c C-r" :to "M-RET a" :bind intero-apply-suggestions))
