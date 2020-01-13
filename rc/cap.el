@@ -975,7 +975,7 @@
    '(ruby-use-encoding-map nil))
   :config
   (define-key ruby-mode-map (kbd "M-RET") 'lsp-rename)
-  (define-key ruby-mode-map (kbd "C-c . .") 'find-tag)
+  (define-key ruby-mode-map (kbd "C-c . .") 'xref-find-definitions)
   (define-key ruby-mode-map (kbd "C-c . /") 'xref-find-references)
   (define-key ruby-mode-map (kbd "C-c . ,") 'xref-pop-marker-stack))
 
@@ -994,6 +994,7 @@
 
 (add-hook 'ruby-mode-hook
           (lambda ()
+            (xref-etags-mode)
             (asbish/read-only-mode "/\\(vendor\/bundle\\)/")
             (lsp-deferred)))
 
