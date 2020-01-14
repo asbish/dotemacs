@@ -929,6 +929,15 @@
     '(:from "C-c C-d q" :to "C-c C-a C-q" :bind ensime-db-quit)
     '(:from "C-c C-d i" :to "C-c C-a C-p" :bind ensime-db-inspect-value-at-point)))
 
+(use-package dart-server :ensure t)
+(use-package dart-mode
+  :ensure t
+  :config
+  (define-key dart-mode-map (kbd "C-c A") 'dart-server-format)
+  (add-hook 'dart-mode-hook
+            (lambda ()
+              (lsp-deferred))))
+
 (add-to-list 'load-path (locate-user-emacs-file "packages/distel/elisp"))
 (require 'distel)
 (use-package erlang
