@@ -1721,6 +1721,18 @@
                           (asbish/find-executable-node_modules
                            "eslint/bin/eslint.js")))))
 
+(use-package coffee-mode
+  :ensure t
+  :init
+  (custom-set-variables '(coffee-tab-width 2))
+  (add-hook 'coffee-mode-hook
+            (lambda ()
+              (tern-mode t)
+              (hs-minor-mode 1)
+              (setq-local flycheck-coffee-executable
+                          (asbish/find-executable-node_modules
+                           ".bin/coffee")))))
+
 (use-package php-mode
   :ensure t
   :pin melpa-stable
