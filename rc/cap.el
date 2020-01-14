@@ -4,6 +4,8 @@
 (add-to-list 'load-path (locate-user-emacs-file "packages/asbish"))
 (require 'asbish)
 
+(require 'xref)
+
 (add-hook 'ediff-mode-hook (lambda () (asbish/quick-window-set nil)))
 
 (require 'recentf)
@@ -994,7 +996,7 @@
 
 (add-hook 'ruby-mode-hook
           (lambda ()
-            (xref-etags-mode)
+            (xref-etags-mode 1)
             (asbish/read-only-mode "/\\(vendor\/bundle\\)/")
             (lsp-deferred)))
 
