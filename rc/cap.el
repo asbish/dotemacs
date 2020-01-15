@@ -1593,7 +1593,7 @@
   (add-hook
    'yaml-mode-hook
    (lambda ()
-     (hs-minor-mode)
+     (hs-minor-mode 1)
      (let ((oldmap (cdr (assoc 'hs-minor-mode-map minor-mode-map-alist)))
            (newmap (make-sparse-keymap)))
        (set-keymap-parent newmap oldmap)
@@ -1602,7 +1602,9 @@
        (push `(hs-minor-mode . ,newmap) minor-mode-overriding-map-alist)))))
 
 (use-package toml-mode
-  :ensure t)
+  :ensure t
+  (add-hook 'tom-mode-hook
+            (lambda () (hs-minor-mode 1))))
 
 (use-package csv-mode
   :ensure t
