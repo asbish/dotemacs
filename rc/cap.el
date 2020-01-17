@@ -1603,6 +1603,7 @@
 
 (use-package toml-mode
   :ensure t
+  :init
   (add-hook 'tom-mode-hook
             (lambda () (hs-minor-mode 1))))
 
