@@ -451,6 +451,14 @@
 (use-package meson-mode
   :ensure t)
 
+(use-package gn-mode
+  :ensure t
+  :mode "\\.gni?\\'"
+  :init
+  (custom-set-variables
+   '(gn-cleanup-on-load nil)
+   '(gn-cleanup-on-save nil)))
+
 (use-package ninja-mode
   :ensure t
   :pin melpa-stable
