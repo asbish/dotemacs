@@ -5,10 +5,9 @@
 (require 'asbish)
 
 (require 'xref)
+(require 'recentf)
 
 (add-hook 'ediff-mode-hook (lambda () (asbish/quick-window-set nil)))
-
-(require 'recentf)
 
 (require 'hydra)
 (defhydra hydra-zoom (global-map "<f2>")
