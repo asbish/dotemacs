@@ -1565,48 +1565,31 @@
   :ensure t
   :pin melpa-stable
   :config
-  (defun my/yaml-forward-sexp (&optional arg) ;; TODO: use argument
+  (defun my/yaml-forward-sexp (&optional arg) ;; TODO: use arg
     (interactive)
     (let ((ind (current-indentation))
           (pmax (point-max)))
       (unless (asbish/empty-line-p)
         (while (progn
                  (forward-line)
-                 (end-of-line)
-                 (or (> (current-indentation) ind)
+                 (skip-chars-forward "[:blank:]")
+                 (or (looking-at "#")
+                     (end-of-line)
+                     (> (current-indentation) ind)
                      (and (not (= (point) pmax))
                           (= (current-indentation) 0)
                           (asbish/empty-line-p)))))
         (while (progn ; backward
                  (previous-line)
                  (or (< (current-indentation) ind) (asbish/empty-line-p))))
-        (end-of-line))))
+        (move-end-of-line 1))))
 
   (add-to-list 'hs-special-modes-alist
-               '(yaml-mode "\\s-*\\_<\\(?:[^:]+\\)\\_>" "\\s$" "#"
+               '(yaml-mode "\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#"
                            my/yaml-forward-sexp nil))
 
-  ;; Note: `hs-toggle-hiding' doen't work correctry. overlay?
-  (defun my/yaml-toggle-hs-toggle-hiding ()
-    (interactive)
-    (if (or (hs-already-hidden-p)
-            (save-excursion
-              (end-of-line)
-              (backward-char -1)
-              (hs-overlay-at (point))))
-        (hs-show-block)
-      (hs-hide-block)))
-
-  (add-hook
-   'yaml-mode-hook
-   (lambda ()
-     (hs-minor-mode 1)
-     (let ((oldmap (cdr (assoc 'hs-minor-mode-map minor-mode-map-alist)))
-           (newmap (make-sparse-keymap)))
-       (set-keymap-parent newmap oldmap)
-       (define-key newmap (kbd "C-c f") 'my/yaml-toggle-hs-toggle-hiding)
-       (make-local-variable 'my/hs-minor-mode-map-fixed)
-       (push `(hs-minor-mode . ,newmap) minor-mode-overriding-map-alist)))))
+  (add-hook 'yaml-mode-hook
+            (lambda () (hs-minor-mode 1))))
 
 (use-package toml-mode
   :ensure t
