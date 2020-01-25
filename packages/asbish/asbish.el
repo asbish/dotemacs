@@ -323,6 +323,27 @@
                           result
                           indent))))))
 
+;; TODO: support cua
+(defun asbish/draft--insert (beg end)
+  (let ((current (buffer-name))
+        (draft (get-buffer-create "*draft*"))
+        (offset (save-excursion (goto-char beg)
+                                (- beg (line-beginning-position)))))
+    (with-current-buffer draft
+      (when (eq major-mode 'fundamental-mode) (funcall 'text-mode))
+      (save-excursion
+        (goto-char (point-max))
+        (when (> (point) 1) (newline))
+        (when (> offset 0) (insert (make-string offset ?\s)))
+        (insert-buffer-substring-no-properties current beg end)))))
+
+(defun asbish/draft ()
+  (interactive)
+  (if (use-region-p)
+      (asbish/draft--insert (region-beginning) (region-end))
+    (asbish/draft--insert (line-beginning-position) (line-end-position)))
+  (message "copy to draft"))
+
 (defconst asbish/whitespace-background (face-attribute 'default :background))
 
 (defun asbish/whitespace-tab-toggle ()
@@ -336,10 +357,5 @@
                     `((:background ,asbish/whitespace-background))))
         (face-remap-remove-relative cookie)
         (set sym nil)))))
-
-(defun asbish/print-point ()
-  (interactive)
-  (message (concat "Line: " (format-mode-line "%l")
-                   ", Point: " (number-to-string (point)))))
 
 (provide 'asbish)

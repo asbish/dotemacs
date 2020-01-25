@@ -45,27 +45,10 @@
   (message
    (format "%d d(%s, %s)" (levenshtein-distance str1 str2) str1 str2)))
 
-;; TODO support cua
-(defun my/draft-insert (beg end)
-  (let ((current (buffer-name))
-        (draft (get-buffer-create "*draft*"))
-        (offset (save-excursion (goto-char beg)
-                                (- beg (line-beginning-position)))))
-    (with-current-buffer draft
-      (when (eq major-mode 'fundamental-mode) (funcall 'text-mode))
-      (save-excursion
-        (goto-char (point-max))
-        (when (> (point) 1) (newline))
-        (when (> offset 0) (insert (make-string offset ?\s)))
-        (insert-buffer-substring-no-properties current beg end)))))
-
-(defun my/draft ()
+(defun my/print-point ()
   (interactive)
-  (if (use-region-p) (my/draft-insert (region-beginning) (region-end))
-    (my/draft-insert (line-beginning-position) (line-end-position)))
-  (message "copy to draft"))
-
-(define-key global-map (kbd "C-c C-+") 'my/draft)
+  (message (concat "Line: " (format-mode-line "%l")
+                   ", Point: " (number-to-string (point)))))
 
 (defconst my/frame-file (locate-user-emacs-file ".my-frame"))
 

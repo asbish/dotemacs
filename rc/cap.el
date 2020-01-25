@@ -7,6 +7,7 @@
 (require 'xref)
 (require 'recentf)
 
+(define-key global-map (kbd "C-c C-+") 'asbish/draft)
 (add-hook 'ediff-mode-hook (lambda () (asbish/quick-window-set nil)))
 
 (require 'hydra)
