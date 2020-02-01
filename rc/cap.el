@@ -207,7 +207,6 @@
 
 (use-package lsp-ui
   :ensure t
-  :pin melpa-stable
   :config
   (define-key lsp-ui-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions)
   (define-key lsp-ui-mode-map (kbd "M-?") 'lsp-ui-peek-find-references)
@@ -230,7 +229,6 @@
 
 (use-package lsp-mode
   :ensure t
-  :pin melpa-stable
   :requires lsp-ui
   :diminish
   :init
