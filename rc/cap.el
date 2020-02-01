@@ -49,8 +49,7 @@
   (define-key mode-specific-map (kbd "I") 'imenu-list-smart-toggle))
 
 (use-package delight
-  :ensure t
-  :pin gnu)
+  :ensure t)
 
 (use-package diminish
   :ensure t
@@ -868,74 +867,6 @@
   (add-hook 'sbt-mode-hook
             (lambda ()
               (add-hook 'before-save-hook 'sbt-hydra:check-modified-buffers))))
-
-(use-package ensime
-  :ensure t
-  :pin melpa-stable
-  :init
-  (setq-default ensime-startup-snapshot-notification nil)
-  (custom-set-faces
-   '(ensime-breakpoint-face ((t (:background "#87005f"))))
-   '(ensime-pending-breakpoint-face ((t (:background "#5f0000")))))
-  :config
-  (setq ensime-completion-style 'company
-        ensime-startup-notification nil
-        ensime-left-margin-gutter nil
-        ensime-implicit-gutter-icons nil
-        ensime-tooltip-hints nil
-        ensime-tooltip-type-hints nil
-        ensime-typecheck-idle-interval 1
-        ensime-eldoc-hints 'all
-        ensime-db-default-port "5005")
-  (define-key ensime-mode-map (kbd "<f6> g") 'ensime-db-attach)
-  (asbish/rebind-keys ensime-mode-map
-    ;; ensime key binds are difficult to use for me...
-    '(:from "C-c C-c r" :to "<f5>" :bind ensime-reload-open-files)
-    '(:from "C-c C-b C" :to "C-c C-k" :bind ensime-sbt-do-compile-only)
-    '(:from "C-c C-b c" :to "C-c M-k" :bind ensime-sbt-do-compile)
-    '(:from "C-c C-b E" :to "C-c C-s E" :bind ensime-sbt-do-ensime-config)
-    '(:from "C-c C-b C-j" :to "C-c C-s j" :bind ensime-sbt-send-eol)
-    '(:from "C-c C-b T" :to "C-c C-s T" :bind ensime-sbt-do-test)
-    '(:from "C-c C-b t" :to "C-c C-s t" :bind ensime-sbt-do-test-dwim)
-    '(:from "C-c C-b o" :to "C-c C-s o" :bind ensime-sbt-do-test-only-dwim)
-    '(:from "C-c C-b q" :to "C-c C-s q" :bind ensime-sbt-do-test-quick-dwim)
-    '(:from "C-c C-b r" :to "C-c C-s r" :bind ensime-sbt-do-run)
-    '(:from "C-c C-b n" :to "C-c C-s c" :bind ensime-sbt-do-clean)
-    '(:from "C-c C-b S" :to "C-c C-s s" :bind ensime-stacktrace-switch)
-    '(:from "C-c C-v z" :to "C-c C-s z" :bind ensime-sbt-switch)
-    '(:from "C-c C-v s" :to "C-c C-z" :bind ensime-inf-switch)
-    '(:from "C-c C-v l" :to "C-c C-l" :bind ensime-inf-load-file)
-    '(:from "C-c C-v b" :to "C-c C-b" :bind ensime-inf-eval-buffer)
-    '(:from "C-c C-v C-r" :to "C-c C-r" :bind ensime-inf-eval-region)
-    '(:from "C-c C-v ." :to "C-c C-e" :bind ensime-expand-selection-command)
-    '(:from "C-c C-v v" :to "C-c C-o" :bind ensime-search)
-    '(:from "C-c C-v t" :to "C-c C-t t" :bind ensime-type-at-point)
-    '(:from "C-c C-v T" :to "C-c C-t f" :bind ensime-type-at-point-full-name)
-    '(:from "C-c C-v h" :to "C-c C-t h" :bind ensime-show-hierarchy-of-type-at-point)
-    '(:from "C-c C-c c" :to "C-c C-t l" :bind ensime-typecheck-current-buffer)
-    '(:from "C-c C-v e" :to "C-c C-v" :bind ensime-print-errors-at-point)
-    '(:from "C-c C-v r" :to "C-c C-," :bind ensime-show-uses-of-symbol-at-point)
-    '(:from "C-c C-v d" :to "C-c C-d d" :bind ensime-show-doc-for-symbol-at-point)
-    '(:from "C-c C-v D" :to "C-c C-d p" :bind ensime-project-docs)
-    '(:from "C-c C-r i" :to "M-RET L" :bind ensime-refactor-diff-inline-local)
-    '(:from "C-c C-r l" :to "M-RET l" :bind ensime-refactor-diff-extract-local)
-    '(:from "C-c C-r m" :to "M-RET m" :bind ensime-refactor-diff-extract-method)
-    '(:from "C-c C-r a" :to "M-RET t" :bind ensime-refactor-add-type-annotation)
-    '(:from "C-c C-r e" :to "M-RET e" :bind ensime-refactor-expand-match-cases)
-    '(:from "C-c C-r o" :to "M-RET I" :bind ensime-refactor-diff-organize-imports)
-    '(:from "C-c C-r t" :to "M-RET i" :bind ensime-import-type-at-point)
-    '(:from "C-c C-r r" :to "M-RET r" :bind ensime-refactor-diff-rename)
-    '(:from "C-c C-d b" :to "C-c C-a C-b" :bind ensime-db-set-break)
-    '(:from "C-c C-d u" :to "C-c C-a C-d" :bind ensime-db-clear-break)
-    '(:from "C-c C-d a" :to "C-c C-a M-d" :bind ensime-db-clear-all-breaks)
-    '(:from "C-c C-d r" :to "C-c C-a C-f" :bind ensime-db-run)
-    '(:from "C-c C-d c" :to "C-c C-a C-r" :bind ensime-db-continue)
-    '(:from "C-c C-d n" :to "C-c C-a C-n" :bind ensime-db-next)
-    '(:from "C-c C-d s" :to "C-c C-a C-s" :bind ensime-db-step)
-    '(:from "C-c C-d o" :to "C-c C-a C-o" :bind ensime-db-step-out)
-    '(:from "C-c C-d t" :to "C-c C-a C-t" :bind ensime-db-backtrace)
-    '(:from "C-c C-d q" :to "C-c C-a C-q" :bind ensime-db-quit)
-    '(:from "C-c C-d i" :to "C-c C-a C-p" :bind ensime-db-inspect-value-at-point)))
 
 (use-package dart-server :ensure t)
 (use-package dart-mode
