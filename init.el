@@ -42,8 +42,6 @@
 
 (require 'exec-path-from-shell)
 (when (memq window-system '(mac ns x))
-  (let ((zsh (executable-find "zsh")))
-    (when zsh (setenv "SHELL" zsh)))
   (exec-path-from-shell-initialize))
 
 (let ((rc (file-name-as-directory

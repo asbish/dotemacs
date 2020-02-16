@@ -564,7 +564,8 @@
     '(:from "C-c C-t" :to "C-c C-i t" :bind sh-tmp-file)
     '(:from "C-c C-u" :to "C-c C-i u" :bind sh-until)
     '(:from "C-c C-w" :to "C-c C-i w" :bind sh-while)
-    '(:from "C-c C-o" :to "C-c C-i o" :bind sh-while-getopts)))
+    '(:from "C-c C-o" :to "C-c C-i o" :bind sh-while-getopts))
+  (add-hook 'sh-mode-hook (lambda () (hs-minor-mode 1))))
 
 (use-package cperl-mode
   :defer t
@@ -879,9 +880,6 @@
 (require 'distel)
 (use-package erlang
   :pin melpa-stable
-  :init
-  (let ((run (asbish/shell-command-to-string "kerl path")))
-    (when (= 0 (car run)) (setq erlang-root-dir (string-trim (cadr run)))))
   :config
   (use-package company-distel :ensure t)
   (setq-default inferior-erlang-prompt-timeout t
