@@ -21,7 +21,6 @@
         levenshtein
         use-package
         slime-company
-        virtualenvwrapper
         exec-path-from-shell))
 
 (mapc (lambda (x)
