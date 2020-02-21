@@ -341,8 +341,6 @@
 
 (setq-default tags-revert-without-query 1)
 
-(use-package nvm :ensure t)
-
 (add-to-list 'safe-local-variable-values '(my/prettier-on . t))
 (defun my/prettier-mode-ignore ()
   (and buffer-file-name
