@@ -165,6 +165,13 @@
 (defun my/whitespace-trailing-space-remap ()
   (face-remap-add-relative 'whitespace-trailing '((:background "#585858"))))
 
+(use-package direnv
+  :init
+  (custom-set-variables
+   '(direnv-always-show-summary nil))
+  :config
+  (direnv-mode))
+
 (use-package editorconfig
   :ensure t
   :pin melpa-stable
@@ -965,54 +972,9 @@
   '(:from "C-c C-t t" :to "C-c C-i t" :bind python-skeleton-try)
   '(:from "C-c C-t w" :to "C-c C-i w" :bind python-skeleton-while))
 
-(require 'virtualenvwrapper)
-(defvar my/python-venv-default "py3")
-(defvar my/python-venv-location nil)
-(let* ((dir "~/.virtualenvs/")
-       (envs (when (file-directory-p dir) (venv-get-candidates-dir dir)))
-       (loc (mapcar (lambda (x) (expand-file-name (concat dir x))) envs))
-       (env-default (car (member my/python-venv-default envs))))
-  (setq venv-location loc
-        my/python-venv-location loc
-        my/python-venv-default env-default)
-  (when my/python-venv-default (venv-workon env-default))
-  (setq-default mode-line-format
-                (cons '(:exec venv-current-name) mode-line-format)))
-
-(defun my/python-venv-reset (&optional loc force)
-  (interactive (list nil t))
-  (let ((p (get-buffer-process (format "*%s*" python-shell-buffer-name))))
-    (when p
-      (set-process-query-on-exit-flag p nil)
-      (kill-process p)
-      (message "exiting python process...")
-      (sleep-for 0.8)))
-  (venv-deactivate)
-  (when force (message "clear venv history") (venv-clear-history))
-  (if loc (venv-set-location loc)
-    (venv-set-location my/python-venv-location)))
-
-(defun my/python-venv-direnv ()
-  ;; python.el calls `python-mode' in temp buffer.
-  (unless (equal (buffer-name) " *temp*")
-    (let ((path (cdr (assoc 'VIRTUAL_ENV (asbish/get-direnv-content)))))
-      (when (and path
-                 (not (equal (file-name-as-directory path) venv-current-dir))
-                 (y-or-n-p (format "use venv[%s]?" path)))
-        (let* ((env (file-name-nondirectory path))
-               (lis (asbish/filter
-                     (lambda (x) (not (equal env (file-name-nondirectory x))))
-                     venv-location)))
-          (my/python-venv-reset (cons path (car lis)) (cadr lis))
-          (venv-workon env)))
-      (when (and (not venv-current-name) my/python-venv-default)
-        (venv-workon my/python-venv-default)))))
-
-(add-hook 'python-mode-hook #'my/python-venv-direnv)
 (add-hook 'python-mode-hook
           (lambda ()
             (hs-minor-mode 1)
-            (ggtags-mode 1)
             (setq imenu-create-index-function 'python-imenu-create-index)
             (setq-default flycheck-disabled-checkers '(python-pylint))
             (lsp-deferred)))
