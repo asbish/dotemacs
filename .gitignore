@@ -7,7 +7,9 @@
 !Cask
 !init.el
 !rc/
-!rc/*.el
+!rc/base.el
+!rc/cap.el
+!rc/fun.el
 !packages/
 !packages/*
 !packages/asbish/*.el

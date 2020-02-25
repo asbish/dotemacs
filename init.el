@@ -49,5 +49,5 @@
         '(base cap fun)))
 
 ;; Specific customization for local systems.
-(let ((my-local (locate-user-emacs-file ".my-local.el")))
+(let ((my-local (locate-user-emacs-file "rc/my-local.el")))
   (when (file-exists-p my-local) (load my-local)))

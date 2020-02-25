@@ -50,7 +50,7 @@
   (message (concat "Line: " (format-mode-line "%l")
                    ", Point: " (number-to-string (point)))))
 
-(defconst my/frame-file (locate-user-emacs-file ".my-frame"))
+(defconst my/frame-file (locate-user-emacs-file "rc/my-frame"))
 
 (defun my/frame-write-file ()
   (when (file-writable-p my/frame-file)
