@@ -1569,7 +1569,6 @@
   (add-hook 'rjsx-mode-hook
             (lambda ()
               (hs-minor-mode 1)
-              (tern-mode t)
               (setq-local company-backends
                           (append '(company-tern company-flow)
                                   my/company-backends))
@@ -1578,6 +1577,10 @@
               (setq-local flycheck-javascript-eslint-executable
                           (asbish/find-executable-node_modules
                            "eslint/bin/eslint.js"))
+              (setq-local tern-command
+                          (list (asbish/find-executable-node_modules
+                                 "tern/bin/tern")))
+              (tern-mode t)
               (my/flow-setup))))
 
 (use-package typescript-mode
@@ -1617,11 +1620,14 @@
   (custom-set-variables '(coffee-tab-width 2))
   (add-hook 'coffee-mode-hook
             (lambda ()
-              (tern-mode t)
               (hs-minor-mode 1)
               (setq-local flycheck-coffee-executable
                           (asbish/find-executable-node_modules
-                           ".bin/coffee")))))
+                           ".bin/coffee"))
+              (setq-local tern-command
+                          (list (asbish/find-executable-node_modules
+                                 "tern/bin/tern")))
+              (tern-mode t))))
 
 (use-package php-mode
   :ensure t
