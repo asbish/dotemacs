@@ -50,6 +50,20 @@
   (message (concat "Line: " (format-mode-line "%l")
                    ", Point: " (number-to-string (point)))))
 
+(defvar my/reinstall-melpa-package-path nil)
+
+(defun my/reinstall-melpa-package ()
+  (interactive)
+  (if (not my/reinstall-melpa-package-path)
+      (message "Eval: (setq my/reinstall-melpa-package-path <path-to-package>)")
+    (let ((package-name (car (split-string
+                              (f-filename my/reinstall-melpa-package-path)
+                              "-"))))
+      (when (package-installed-p (intern package-name))
+        (package-delete
+         (cadr (assq (intern package-name) package-alist)) 'force 'nosave)))
+    (package-install-file my/reinstall-melpa-package-path)))
+
 (defconst my/frame-file (locate-user-emacs-file "rc/my-frame"))
 
 (defun my/frame-write-file ()
