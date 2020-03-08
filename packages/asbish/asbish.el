@@ -88,27 +88,28 @@
        (read-only-mode)
        t))
 
-(defun asbish/find-in (start-dir target-dirname target-path)
+(defun asbish/find-in (start-dir target-dirname target-path &optional expand)
   (let ((root (locate-dominating-file start-dir target-dirname)))
     (when root
       (let ((file (file-expand-wildcards
                    (concat root
                            (file-name-as-directory target-dirname)
                            target-path))))
-        (cons (car file) root)))))
+        (cons (if expand (expand-file-name (car file)) (car file))
+              root)))))
 
-(defun asbish/find-executable-node_modules (target-path &optional dir)
-  (let* ((start-dir (or dir (file-name-directory (buffer-file-name))))
-         (result (asbish/find-in start-dir "node_modules" target-path)))
+(defun asbish/find-in-rec (target-dirname target-path &optional dirname)
+  (let* ((start-dir (or dirname (file-name-directory (buffer-file-name))))
+         (result (asbish/find-in start-dir target-dirname target-path)))
     (when result
-      (let ((file (car result))
-            (root (cdr result)))
+      (let ((file (car result)) (root (cdr result)))
         (if file
-            (and (file-executable-p file) file)
+            (expand-file-name file)
           (when (and root (not (string= "~/" root)))
-               (asbish/find-executable-node_modules
-                target-path
-                (file-name-directory (directory-file-name root)))))))))
+            (asbish/find-in-rec
+             target-dirname
+             target-path
+             (file-name-directory (directory-file-name root)))))))))
 
 (cl-defun asbish/get-direnv-content (&optional (dir default-directory))
   (with-temp-buffer

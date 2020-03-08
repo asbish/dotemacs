@@ -1441,7 +1441,6 @@
   :pin melpa-stable
   :init
   (add-to-list 'auto-mode-alist '("\\.babelrc\\'" . json-mode))
-  (add-to-list 'auto-mode-alist '("\\.tern-project\\'" . json-mode))
   (add-to-list 'auto-mode-alist '("\\.stylelintrc\\'" . json-mode))
   :config
   (define-key json-mode-map (kbd "C-c P") nil)
@@ -1504,6 +1503,20 @@
     (setq httpd-root root)
     (message (format "set 'httpd-root \"%s\"" httpd-root))))
 
+(defun my/yarn-pnpify-sdk ()
+  (let ((tsserver-path
+         (asbish/find-in-rec ".vscode" "pnpify/typescript/bin/tsserver")))
+    (when tsserver-path
+      `(:tsserver ,tsserver-path
+        :eslint ,(asbish/find-in-rec ".vscode" "pnpify/eslint/bin/eslint.js")
+        :prettier ,(asbish/find-in-rec ".vscode" "pnpify/prettier")))))
+
+(use-package tide
+  :ensure t
+  :diminish tide-mode
+  :config
+  (flycheck-add-next-checker 'typescript-tide 'javascript-eslint))
+
 (add-to-list 'load-path (locate-user-emacs-file "packages/js2-mode"))
 (use-package js2-mode
   :defer t
@@ -1524,6 +1537,8 @@
    '(js2-strict-missing-semi-warning nil)
    '(js2-strict-trainling-comma-warning nil))
   :config
+  (setq js2-basic-offset 2
+        js-switch-indent-offset 2)
   (define-key js2-mode-map (kbd "C-c C-a") nil)
   (define-key js2-mode-map (kbd "C-c C-e") nil)
   (define-key js2-mode-map (kbd "C-c C-f") nil)
@@ -1541,47 +1556,51 @@
   :init
   (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
   (add-to-list 'auto-mode-alist '("\\.mjs\\'" . rjsx-mode))
-  :functions my/flow-setup
+  :functions my/get-flow-bin
   :config
-  (use-package tern :ensure t :diminish tern-mode)
-  (use-package company-tern :ensure t)
-  (use-package company-flow :ensure t)
   (use-package flycheck-flow :ensure t)
-  (setq company-tern-meta-as-single-line t)
-  (asbish/rebind-keys tern-mode-keymap
-    '(:from "C-c C-c" :to "C-c C-t" :bind tern-get-type)
-    '(:from "C-c C-r" :to "M-RET" :bind tern-rename-variable)
-    '(:from "C-M-." :to "C-c M-." :bind tern-find-definition-by-name))
+  (use-package company-flow :ensure t)
   (asbish/rebind-keys rjsx-mode-map
     '(:from "C-c C-r" :to "C-c M-RET" :bind rjsx-rename-tag-at-point))
-  (define-key rjsx-mode-map (kbd "C-c A") 'prettier-prettify)
-  (defun my/flow-setup ()
+  (define-key tide-mode-map (kbd "C-c A") 'prettier-prettify)
+  (define-key tide-mode-map (kbd "M-RET") 'tide-rename-symbol)
+  (define-key tide-mode-map (kbd "C-c C-d") 'tide-documentation-at-point)
+  (defun my/get-flow-bin ()
     (when (save-excursion
             (goto-char (point-min))
             (ignore-errors
               ;; TODO: need work
               (string-match-p "\/[\/|\*][\s\t]?+@flow[\s\t]?+"
                               (thing-at-point 'line t))))
-      (let ((flow-bin (asbish/find-executable-node_modules
-                       (concat "flow-bin/*" asbish/os "*/flow"))))
-        (setq-local company-flow-executable flow-bin)
-        (setq-local flycheck-javascript-flow-executable flow-bin))))
+      (or (asbish/find-in-rec
+           "node_modules" (concat "flow-bin/*" asbish/os "*/flow"))
+          "flow")))
   (add-hook 'rjsx-mode-hook
             (lambda ()
-              (hs-minor-mode 1)
-              (setq-local company-backends
-                          (append '(company-tern company-flow)
-                                  my/company-backends))
-              (setq-default flycheck-disabled-checkers
-                            '(javascript-jshint jsx-tide))
-              (setq-local flycheck-javascript-eslint-executable
-                          (asbish/find-executable-node_modules
-                           "eslint/bin/eslint.js"))
-              (setq-local tern-command
-                          (list (asbish/find-executable-node_modules
-                                 "tern/bin/tern")))
-              (tern-mode t)
-              (my/flow-setup))))
+              (let ((pnpify-sdk (my/yarn-pnpify-sdk))
+                    (flow-bin (my/get-flow-bin))
+                    (local-company-backends '(company-tide)))
+                (if pnpify-sdk
+                    (progn
+                      (setq-local tide-tsserver-executable
+                                  (plist-get pnpify-sdk :tsserver))
+                      (setq-local flycheck-javascript-eslint-executable
+                                  (plist-get pnpify-sdk :eslint)))
+                  (setq-local flycheck-javascript-eslint-executable
+                              (or (asbish/find-in-rec
+                                   "node_modules" "eslint/bin/eslint.js")
+                                  "eslint")))
+                (when flow-bin
+                  (setq-local company-flow-executable flow-bin)
+                  (setq-local flycheck-javascript-flow-executable flow-bin)
+                  (cons 'company-flow local-company-backends))
+
+                (setq-default flycheck-disabled-checkers
+                              '(javascript-jshint jsx-tide))
+                (setq-local company-backends
+                            (append local-company-backends my/company-backends))
+                (hs-minor-mode 1)
+                (tide-setup)))))
 
 (use-package typescript-mode
   :ensure t
@@ -1591,9 +1610,6 @@
   :init
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
   :config
-  (use-package tide
-    :ensure t
-    :diminish tide-mode)
   (setq typescript-indent-level 2)
   (define-key tide-mode-map (kbd "C-c A") 'prettier-prettify)
   (define-key tide-mode-map (kbd "M-RET") 'tide-rename-symbol)
@@ -1602,31 +1618,54 @@
   (flycheck-add-next-checker 'typescript-tslint 'javascript-eslint)
   (add-hook 'typescript-mode-hook
             (lambda ()
-              (tide-setup)
-              (eldoc-mode 1)
-              (hs-minor-mode 1)
-              (setq-local company-backends
-                          (cons 'company-tide my/company-backends))
-              (setq-local flycheck-typescript-tslint-executable
-                          (asbish/find-executable-node_modules
-                           "tslint/bin/tslint"))
-              (setq-local flycheck-javascript-eslint-executable
-                          (asbish/find-executable-node_modules
-                           "eslint/bin/eslint.js")))))
+              (let ((pnpify-sdk (my/yarn-pnpify-sdk)))
+                (if pnpify-sdk
+                    (progn
+                      (setq-local tide-tsserver-executable
+                                  (plist-get pnpify-sdk :tsserver))
+                      (setq-local flycheck-javascript-eslint-executable
+                                  (plist-get pnpify-sdk :eslint)))
+                  (setq-local flycheck-javascript-eslint-executable
+                              (or (asbish/find-in-rec
+                                   "node_modules" "eslint/bin/eslint.js")
+                                  "eslint"))
+                  (setq-local flycheck-typescript-tslint-executable
+                              (or (asbish/find-in-rec
+                                   "node_modules" "tslint/bin/tslint")
+                                  "tslint")))
+
+                (setq-default flycheck-disabled-checkers
+                              '(javascript-jshint jsx-tide))
+                (setq-local company-backends
+                            (cons 'company-tide my/company-backends))
+                (eldoc-mode 1)
+                (hs-minor-mode 1)
+                (tide-setup)))))
 
 (use-package coffee-mode
   :ensure t
   :init
   (custom-set-variables '(coffee-tab-width 2))
+  :config
+  (use-package tern :ensure t :diminish tern-mode)
+  (use-package company-tern :ensure t)
+  (setq company-tern-meta-as-single-line t)
+  (asbish/rebind-keys tern-mode-keymap
+    '(:from "C-c C-c" :to "C-c C-t" :bind tern-get-type)
+    '(:from "C-c C-r" :to "M-RET" :bind tern-rename-variable)
+    '(:from "C-M-." :to "C-c M-." :bind tern-find-definition-by-name))
   (add-hook 'coffee-mode-hook
             (lambda ()
               (hs-minor-mode 1)
               (setq-local flycheck-coffee-executable
-                          (asbish/find-executable-node_modules
-                           ".bin/coffee"))
+                          (or (asbish/find-in-rec
+                               "node_modules" ".bin/coffee") "coffee"))
               (setq-local tern-command
-                          (list (asbish/find-executable-node_modules
-                                 "tern/bin/tern")))
+                          (list
+                           (or (asbish/find-in-rec
+                                "node_modules" "tern/bin/tern") "tern")))
+              (setq-local company-backends
+                          (cons 'company-tern my/company-backends))
               (tern-mode t))))
 
 (use-package php-mode
@@ -1666,10 +1705,11 @@
   (add-to-list 'auto-mode-alist '("\\.vue\\'" . web-mode))
   :config
   (use-package company-web :ensure t)
+  (asbish/rebind-keys web-mode-map
+    '(:from "C-c C-f" :to "C-c f" :bind web-mode-fold-or-unfold))
   (define-key web-mode-map (kbd "C-c C-w") nil)
   (add-hook 'web-mode-hook
             (lambda ()
-              (hs-minor-mode 1)
               (toggle-truncate-lines)
               (setq web-mode-markup-indent-offset 2
                     web-mode-enable-auto-closing t)
@@ -1715,8 +1755,9 @@
                           (cons 'company-css my/company-backends))
               (setq-default flycheck-disabled-checkers '(css-css-lint))
               (setq-local flycheck-css-stylelint-executable
-                          (asbish/find-executable-node_modules
-                           "stylelint/bin/stylelint.js")))))
+                          (or (asbish/find-in-rec
+                               "node_modules" "stylelint/bin/stylelint.js")
+                              "stylelint")))))
 
 (use-package scss-mode
   :ensure t
@@ -1731,8 +1772,9 @@
                           (cons 'company-css my/company-backends))
               (setq-default flycheck-disabled-checkers '(scss))
               (setq-local flycheck-scss-stylelint-executable
-                          (asbish/find-executable-node_modules
-                           "stylelint/bin/stylelint.js")))))
+                          (or (asbish/find-in-rec
+                               "node_modules" "stylelint/bin/stylelint.js")
+                              "stylelint")))))
 
 (use-package sass-mode
   :ensure t
@@ -1745,8 +1787,9 @@
                           (cons 'company-css my/company-backends))
               (setq-default flycheck-disabled-checkers '(sass))
               (setq-local flycheck-sass/scss-sass-lint-executable
-                          (asbish/find-executable-node_modules
-                           "sass-lint/bin/sass-lint.js")))))
+                          (or (asbish/find-in-rec
+                               "node_modules" "stylelint/bin/stylelint.js")
+                              "stylelint")))))
 
 (use-package emms
   :ensure t
