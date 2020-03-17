@@ -47,7 +47,8 @@
  '(ediff-keep-variants nil)
  '(ediff-make-buffers-readonly-at-startup t)
  '(ediff-merge-split-window-function (quote split-window-vertically))
- '(ediff-split-window-function (quote split-window-horizontally)))
+ '(ediff-split-window-function (quote split-window-horizontally))
+ '(tramp-default-method "ssh"))
 
 (cd "~/")
 (electric-indent-mode 1)

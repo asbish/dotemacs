@@ -48,6 +48,6 @@
   (mapc (lambda (x) (load (concat rc (symbol-name x))))
         '(base cap fun)))
 
-;; Specific customization for local systems.
+;; Local system specific customizations.
 (let ((my-local (locate-user-emacs-file "rc/my-local.el")))
   (when (file-exists-p my-local) (load my-local)))

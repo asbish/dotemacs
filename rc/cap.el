@@ -794,7 +794,8 @@
   :config
   (add-hook 'rust-mode-hook
             (lambda ()
-              (unless (asbish/read-only-mode "/\\(\\.rustup\\|\\.cargo\\|target\\)/")
+              (unless (asbish/read-only-mode
+                       "/\\(\\.rustup\\|\\.cargo\\|target\\)/")
                 (rustic-mode)))))
 
 (use-package flycheck-golangci-lint
@@ -1515,7 +1516,10 @@
   :ensure t
   :diminish tide-mode
   :config
-  (flycheck-add-next-checker 'typescript-tide 'javascript-eslint))
+  (flycheck-add-next-checker 'typescript-tide 'javascript-eslint)
+  (define-key tide-mode-map (kbd "C-c A") 'prettier-prettify)
+  (define-key tide-mode-map (kbd "M-RET") 'tide-rename-symbol)
+  (define-key tide-mode-map (kbd "C-c C-d") 'tide-documentation-at-point))
 
 (add-to-list 'load-path (locate-user-emacs-file "packages/js2-mode"))
 (use-package js2-mode
@@ -1562,9 +1566,6 @@
   (use-package company-flow :ensure t)
   (asbish/rebind-keys rjsx-mode-map
     '(:from "C-c C-r" :to "C-c M-RET" :bind rjsx-rename-tag-at-point))
-  (define-key tide-mode-map (kbd "C-c A") 'prettier-prettify)
-  (define-key tide-mode-map (kbd "M-RET") 'tide-rename-symbol)
-  (define-key tide-mode-map (kbd "C-c C-d") 'tide-documentation-at-point)
   (defun my/get-flow-bin ()
     (when (save-excursion
             (goto-char (point-min))
@@ -1611,9 +1612,6 @@
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
   :config
   (setq typescript-indent-level 2)
-  (define-key tide-mode-map (kbd "C-c A") 'prettier-prettify)
-  (define-key tide-mode-map (kbd "M-RET") 'tide-rename-symbol)
-  (define-key tide-mode-map (kbd "C-c C-d") 'tide-documentation-at-point)
   (flycheck-add-mode 'javascript-eslint 'typescript-mode)
   (flycheck-add-next-checker 'typescript-tslint 'javascript-eslint)
   (add-hook 'typescript-mode-hook
