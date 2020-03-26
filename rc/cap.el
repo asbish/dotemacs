@@ -179,6 +179,21 @@
   :config
   (editorconfig-mode 1))
 
+(use-package projectile
+  :ensure t
+  :pin melpa-stable
+  :diminish projectile-mode
+  :config
+  (setq
+   projectile-enable-caching t
+   projectile-file-exists-remote-cache-expire nil
+   projectile-indexing-method 'alien
+   projectile-dynamic-mode-line nil
+   projectile-mode-line-function (lambda () "")
+   projectile-sort-order 'recentf)
+  (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
+  (projectile-mode 1))
+
 (use-package flymake
   :defer t
   :functions my/flymake-mode-setup
@@ -249,6 +264,69 @@
 (use-package company-lsp
   :ensure t)
 
+(use-package ccls
+  :ensure t)
+
+;; https://github.com/MaskRay/ccls/wiki/lsp-mode
+
+(defun ccls/callee ()
+  (interactive)
+  (lsp-ui-peek-find-custom "$ccls/call" '(:callee t)))
+
+(defun ccls/caller ()
+  (interactive)
+  (lsp-ui-peek-find-custom "$ccls/call"))
+
+(defun ccls/vars (kind)
+  (lsp-ui-peek-find-custom "$ccls/vars" `(:kind ,kind)))
+
+(defun ccls/base (levels)
+  (lsp-ui-peek-find-custom "$ccls/inheritance" `(:levels ,levels)))
+
+(defun ccls/derived (levels)
+  (lsp-ui-peek-find-custom "$ccls/inheritance" `(:levels ,levels :derived t)))
+
+(defun ccls/member (kind)
+  (interactive)
+  (lsp-ui-peek-find-custom "$ccls/member" `(:kind ,kind)))
+
+;; References w/ Role::Role
+(defun ccls/references-read ()
+  (interactive)
+  (lsp-ui-peek-find-custom
+   "textDocument/references"
+   (plist-put (lsp--text-document-position-params) :role 8)))
+
+;; References w/ Role::Write
+(defun ccls/references-write ()
+  (interactive)
+  (lsp-ui-peek-find-custom
+   "textDocument/references"
+   (plist-put (lsp--text-document-position-params) :role 16)))
+
+;; References w/ Role::Dynamic bit (macro expansions)
+(defun ccls/references-macro ()
+  (interactive)
+  (lsp-ui-peek-find-custom
+   "textDocument/references"
+   (plist-put (lsp--text-document-position-params) :role 64)))
+
+;; References w/o Role::Call bit (e.g. where functions are taken addresses)
+(defun ccls/references-not-call ()
+  (interactive)
+  (lsp-ui-peek-find-custom
+   "textDocument/references"
+   (plist-put (lsp--text-document-position-params) :excludeRole 32)))
+
+(let ((map lsp-mode-map))
+  (define-key map (kbd "C-c , /") 'ccls-call-hierarchy)
+  (define-key map (kbd "C-c , ,") 'ccls/callee)
+  (define-key map (kbd "C-c , .") 'ccls/caller)
+  (define-key map (kbd "C-c , r") 'ccls/references-read)
+  (define-key map (kbd "C-c , w") 'ccls/references-write)
+  (define-key map (kbd "C-c , #") 'ccls/references-macro)
+  (define-key map (kbd "C-c , n") 'ccls/references-not-call))
+
 (defvar my/company-backends nil)
 (use-package company
   :ensure t
@@ -277,21 +355,6 @@
                                    company-oddmuse
                                    company-xcode))))
   (setq company-backends my/company-backends))
-
-(use-package projectile
-  :ensure t
-  :pin melpa-stable
-  :diminish projectile-mode
-  :config
-  (setq
-   projectile-enable-caching t
-   projectile-file-exists-remote-cache-expire nil
-   projectile-indexing-method 'alien
-   projectile-dynamic-mode-line nil
-   projectile-mode-line-function (lambda () "")
-   projectile-sort-order 'recentf)
-  (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
-  (projectile-mode 1))
 
 (use-package treemacs
   :ensure t
@@ -679,7 +742,7 @@
   (define-key map (kbd "C-c . i") 'rtags-symbol-info)
   (define-key map (kbd "C-c . t") 'rtags-symbol-type)
   (define-key map (kbd "C-c . l") 'rtags-diagnostics)
-  (define-key map (kbd "C-c . /") 'rtags-display-summary)
+  (define-key map (kbd "C-c . s") 'rtags-display-summary)
   (define-key map (kbd "C-c . d") 'rtags-dependency-tree)
   (define-key map (kbd "C-c . D") 'rtags-dependency-tree-all)
   (define-key map (kbd "C-c . c") 'rtags-print-class-hierarchy)
@@ -705,7 +768,10 @@
                         my/company-backends))
     (ggtags-mode 1)
     (add-hook 'hack-local-variables-hook
-              (lambda () (unless (local-variable-p 'my/lsp-off) (lsp-deferred)))
+              (lambda ()
+                (unless (local-variable-p 'my/lsp-off)
+                  (require 'ccls)
+                  (lsp-deferred)))
               nil t)))
 
 (add-hook 'c-mode-hook #'my/cc-mode-setup t)
