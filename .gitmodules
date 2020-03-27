@@ -26,7 +26,7 @@
 [submodule "packages/js2-mode"]
 	path = packages/js2-mode
 	url = https://github.com/HairyRabbit/js2-mode
-	branch = master
+	branch = flow
 	ignore = dirty
 [submodule "packages/j-mode"]
 	path = packages/j-mode
