@@ -979,6 +979,8 @@
    '(j-conjunction-face ((t (:inherit font-lock-constant-face :bold t))))
    '(j-other-face ((t (:foreground "#bcbcbc"))))))
 
+(use-package zig-mode :ensure t)
+
 (use-package ruby-mode
   :ensure t
   :init
