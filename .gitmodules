@@ -1,48 +1,45 @@
 [submodule "packages/zscript-mode"]
 	path = packages/zscript-mode
 	url = https://github.com/asbish/zscript-mode
+	branch = master
 	ignore = dirty
 [submodule "packages/PG"]
 	path = packages/PG
 	url = https://github.com/ProofGeneral/PG
-	ignore = dirty
-[submodule "packages/distel"]
-	path = packages/distel
-	url = https://github.com/massemanet/distel
+	branch = master
 	ignore = dirty
 [submodule "packages/bison-mode"]
 	path = packages/bison-mode
 	url = https://github.com/Wilfred/bison-mode
+	branch = master
 	ignore = dirty
 [submodule "packages/forth-mode"]
 	path = packages/forth-mode
 	url = https://github.com/larsbrinkhoff/forth-mode
+	branch = master
 	ignore = dirty
 [submodule "packages/emacs-mips-mode"]
 	path = packages/emacs-mips-mode
 	url = https://github.com/hlissner/emacs-mips-mode
-	ignore = dirty
-[submodule "packages/haskell-mode"]
-	path = packages/haskell-mode
-	url = https://github.com/haskell/haskell-mode
-	ignore = dirty
-[submodule "packages/intero"]
-	path = packages/intero
-	url = https://github.com/commercialhaskell/intero
+	branch = master
 	ignore = dirty
 [submodule "packages/js2-mode"]
 	path = packages/js2-mode
 	url = https://github.com/HairyRabbit/js2-mode
+	branch = master
 	ignore = dirty
 [submodule "packages/j-mode"]
 	path = packages/j-mode
 	url = https://github.com/zellio/j-mode
-	ignore = dirty
-[submodule "packages/prettier.el"]
-	path = packages/prettier.el
-	url = https://github.com/asbish/prettier.el
+	branch = master
 	ignore = dirty
 [submodule "packages/rtags"]
 	path = packages/rtags
 	url = https://github.com/Andersbakken/rtags.git
+	branch = master
+	ignore = dirty
+[submodule "packages/haskell-mode"]
+	path = packages/haskell-mode
+	url = https://github.com/haskell/haskell-mode
+	branch = master
 	ignore = dirty

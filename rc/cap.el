@@ -948,12 +948,8 @@
             (lambda ()
               (lsp-deferred))))
 
-(add-to-list 'load-path (locate-user-emacs-file "packages/distel/elisp"))
-(require 'distel)
 (use-package erlang
-  :pin melpa-stable
   :config
-  (use-package company-distel :ensure t)
   (setq-default inferior-erlang-prompt-timeout t
                 inferior-erlang-machine-options '("-sname" "emacs"))
   (setq-default erl-nodename-cache
@@ -962,11 +958,9 @@
   (asbish/rebind-keys erlang-mode-map
     '(:from "C-c C-j" :to "C-c C-i" :bind erlang-generate-new-clause)
     '(:from "C-c C-a" :to "C-c A" :bind erlang-align-arrows))
-  (distel-setup)
   (add-hook 'erlang-mode-hook
             (lambda ()
-              (setq-local company-backends
-                          (cons 'company-distel my/company-backends)))))
+              (lsp-deferred))))
 
 (add-to-list 'load-path (locate-user-emacs-file "packages/j-mode"))
 (use-package j-mode
@@ -1231,20 +1225,6 @@
       (error "Could not generate input file."))))
 
 
-(add-to-list 'load-path (locate-user-emacs-file "packages/intero/elisp"))
-(require 'intero)
-(add-to-list 'recentf-exclude ".*/.stack-work/intero/intero-script.*")
-(asbish/rebind-keys intero-mode-map
-  '(:from "M-." :to "C-c . ." :bind intero-goto-definition)
-  '(:from "C-c C-i" :to "C-c C-d" :bind intero-info)
-  '(:from "C-c C-c" :to "C-c C-r" :bind intero-repl-eval-region)
-  '(:from "C-c C-r" :to "M-RET a" :bind intero-apply-suggestions))
-
-(defun my/use-intero ()
-  (interactive)
-  (when (and (not (symbol-value 'intero-mode)) (y-or-n-p "use intero? "))
-    (intero-mode 1)))
-
 (defvar haskell-mode-map)
 (defvar haskell-collapse-mode-map)
 (defvar interactive-haskell-mode-map)
@@ -1287,7 +1267,6 @@
   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-file)
   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
   (define-key haskell-mode-map (kbd "C-c U") 'my/haskell-tags)
-  (define-key haskell-mode-map (kbd "<f6> g") 'my/use-intero)
   (when (fboundp 'hs-lint)
     (define-key haskell-mode-map (kbd "C-c l") 'hs-lint)))
 

@@ -3,11 +3,9 @@ CASK ?= cask
 
 MAKE_PKG := \
 	packages/PG \
-	packages/distel \
 	packages/forth-mode \
 	packages/haskell-mode \
 	packages/js2-mode \
-	packages/prettier.el \
 	packages/rtags/_build
 
 BYTE_COMPILE_PKG := \
@@ -17,19 +15,17 @@ BYTE_COMPILE_PKG := \
 	packages/j-mode/j-font-lock.el \
 	packages/bison-mode/*.el \
 	packages/emacs-mips-mode/*.el \
-	packages/intero/elisp/intero.el \
 	packages/zscript-mode/*.el
 
 MAKE_TARGET :=
 BYTE_COMPILE_TARGET := $(patsubst %.el,%.elc,$(wildcard $(BYTE_COMPILE_PKG)))
 
-.PHONY: all setup $(MAKE_PKG) update clean
+.PHONY: all setup $(MAKE_PKG) update upgrade clean
 
 all: setup $(MAKE_PKG) $(BYTE_COMPILE_TARGET)
 
 setup:
 	@mkdir -p backup
-	cd packages/prettier.el && npm install
 	cd packages/rtags && mkdir -p _build && cd _build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ..
 
 $(MAKE_PKG):
@@ -45,6 +41,9 @@ $(MAKE_PKG):
 update:
 	git pull origin master
 	git submodule update --init --recursive
+
+upgrade:
+	git submodule update --remote --recursive
 
 clean: MAKE_TARGET = clean
 clean: $(MAKE_PKG)
