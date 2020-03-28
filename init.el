@@ -1,12 +1,14 @@
 (require 'package)
 
 (setq package-archives
-      '(("melpa-stable" . "https://stable.melpa.org/packages/")
+      '(("my-elpa" . "~/elpapkgs")
+        ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
         ("gnu" . "https://elpa.gnu.org/packages/")))
 
 (setq package-archive-priorities
-      '(("melpa-stable" . 20)
+      '(("my-elpa" . 30)
+        ("melpa-stable" . 20)
         ("melpa" . 20)
         ("gnu" . 10)))
 
