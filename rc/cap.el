@@ -968,7 +968,11 @@
   (define-key ruby-mode-map (kbd "M-RET") 'lsp-rename)
   (define-key ruby-mode-map (kbd "C-c . .") 'xref-find-definitions)
   (define-key ruby-mode-map (kbd "C-c . /") 'xref-find-references)
-  (define-key ruby-mode-map (kbd "C-c . ,") 'xref-pop-marker-stack))
+  (define-key ruby-mode-map (kbd "C-c . ,") 'xref-pop-marker-stack)
+  (add-to-list 'hs-special-modes-alist
+               '(ruby-mode
+                 "\\(def\\|do\\|{\\)" "\\(end\\|end\\|}\\)" "#"
+                 (lambda (arg) (ruby-end-of-block)) nil)))
 
 (use-package bundler :ensure t)
 
@@ -985,6 +989,7 @@
 
 (add-hook 'ruby-mode-hook
           (lambda ()
+            (hs-minor-mode 1)
             (xref-etags-mode 1)
             (asbish/read-only-mode "/\\(vendor\/bundle\\)/")
             (lsp-deferred)))
