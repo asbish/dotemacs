@@ -4,7 +4,6 @@ My Emacs configuration
 
 ```sh
 git submodule update --init --recursive
-cask install
 make
 export PATH="$PATH:${HOME}/.emacs.d/packages/rtags/_build/bin"
 emacs

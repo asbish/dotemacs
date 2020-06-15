@@ -1,5 +1,4 @@
 EMACS ?= emacs
-CASK ?= cask
 
 MAKE_PKG := \
 	packages/PG \
@@ -36,7 +35,7 @@ $(MAKE_PKG):
 %.elc: %.el
 	@printf "\n* $@ \n"
 	@printf "==============================================================\n"
-	$(CASK) $(EMACS) -Q --batch -f batch-byte-compile $^
+	$(EMACS) -Q --batch -f batch-byte-compile $^
 
 update:
 	git pull origin master
