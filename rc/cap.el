@@ -739,7 +739,6 @@
   (define-key map (kbd "C-c . RET") 'rtags-rename-symbol))
 
 (declare-function flycheck-add-next-checker "flycheck")
-(flycheck-add-next-checker 'lsp-ui 'c/c++-cppcheck)
 (flycheck-add-next-checker 'rtags 'c/c++-cppcheck)
 (defun my/cc-mode-setup ()
   (c-set-style "linux")
