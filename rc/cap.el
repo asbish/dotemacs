@@ -1367,18 +1367,15 @@
 
 (use-package ess
   :ensure t
-  :functions ess-toggle-underscore
   :config
   (defun my/ess-eval-line-strip (&optional vis)
     (interactive "P")
     (apply 'ess-eval-region
            (append (asbish/line-strip "[^#][^#>\s]+")
                    (list vis "Eval line"))))
-  (define-key ess-mode-map (kbd "C-M-j") nil)
-  (define-key ess-mode-map (kbd "C-c C-n") 'my/ess-eval-line-strip)
   (add-hook 'ess-mode-hook
             (lambda ()
-              (ess-toggle-underscore nil)
+              (local-set-key (kbd "C-c C-n") 'my/ess-eval-line-strip)
               (setq ess-indent-with-fancy-comments nil))))
 
 (use-package gnuplot-mode
