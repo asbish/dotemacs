@@ -1664,26 +1664,12 @@
   :init
   (custom-set-variables '(coffee-tab-width 2))
   :config
-  (use-package tern :ensure t :diminish tern-mode)
-  (use-package company-tern :ensure t)
-  (setq company-tern-meta-as-single-line t)
-  (asbish/rebind-keys tern-mode-keymap
-    '(:from "C-c C-c" :to "C-c C-t" :bind tern-get-type)
-    '(:from "C-c C-r" :to "M-RET" :bind tern-rename-variable)
-    '(:from "C-M-." :to "C-c M-." :bind tern-find-definition-by-name))
   (add-hook 'coffee-mode-hook
             (lambda ()
               (hs-minor-mode 1)
               (setq-local flycheck-coffee-executable
                           (or (asbish/find-in-rec
-                               "node_modules" ".bin/coffee") "coffee"))
-              (setq-local tern-command
-                          (list
-                           (or (asbish/find-in-rec
-                                "node_modules" "tern/bin/tern") "tern")))
-              (setq-local company-backends
-                          (cons 'company-tern my/company-backends))
-              (tern-mode t))))
+                               "node_modules" ".bin/coffee") "coffee")))))
 
 (use-package php-mode
   :ensure t
