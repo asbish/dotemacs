@@ -1,6 +1,6 @@
 My Emacs configuration
 
-`>= 25.2, < 27`
+`>= 25.2, < 28`
 
 ```sh
 git submodule update --init --recursive
