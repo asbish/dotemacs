@@ -160,6 +160,7 @@
   (face-remap-add-relative 'whitespace-trailing '((:background "#585858"))))
 
 (use-package direnv
+  :ensure t
   :init
   (custom-set-variables
    '(direnv-always-show-summary nil))
