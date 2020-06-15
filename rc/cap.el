@@ -381,8 +381,7 @@
           (other-window 1)
           (split-window (selected-window) w 'right))
         (select-window
-         (get-buffer-window (asbish/find-buffer "treemacs"))))))
-  (add-hook 'after-init-hook #'w-split-treemacs))
+         (get-buffer-window (asbish/find-buffer "treemacs")))))))
 
 (require 'hideshow)
 (diminish 'hs-minor-mode)
