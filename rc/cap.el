@@ -1486,7 +1486,7 @@
                           (= (current-indentation) 0)
                           (asbish/empty-line-p)))))
         (while (progn ; backward
-                 (previous-line)
+                 (forward-line -1)
                  (or (< (current-indentation) ind) (asbish/empty-line-p))))
         (move-end-of-line 1))))
 
