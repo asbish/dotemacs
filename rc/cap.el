@@ -1522,11 +1522,10 @@
 
 (defun my/yarn-pnpify-sdk ()
   (let ((tsserver-path
-         (asbish/find-in-rec ".vscode" "pnpify/typescript/bin/tsserver")))
-    (when tsserver-path
-      `(:tsserver ,tsserver-path
-        :eslint ,(asbish/find-in-rec ".vscode" "pnpify/eslint/bin/eslint.js")
-        :prettier ,(asbish/find-in-rec ".vscode" "pnpify/prettier")))))
+         (asbish/find-in-rec ".yarn" "sdks/typescript/bin/tsserver"))
+        (eslint-path
+         (asbish/find-in-rec ".yarn" "sdks/eslint/bin/eslint.js")))
+    `(:tsserver ,tsserver-path :eslint ,eslint-path)))
 
 (use-package tide
   :ensure t
