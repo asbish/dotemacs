@@ -4,7 +4,6 @@
 !.dir-locals.el
 !Makefile
 !README.md
-!Cask
 !init.el
 !rc/
 !rc/base.el
