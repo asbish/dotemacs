@@ -4,6 +4,9 @@
 (add-to-list 'load-path (locate-user-emacs-file "packages/asbish"))
 (require 'asbish)
 
+(add-to-list 'load-path (locate-user-emacs-file "packages/quelpa"))
+(require 'quelpa)
+
 (require 'xref)
 (require 'recentf)
 
@@ -394,6 +397,11 @@
 
 (setq-default tags-revert-without-query 1)
 
+(quelpa '(prettier :fetcher github
+                   :repo "jscheid/prettier-el"
+                   :branch "release"
+                   :files (:defaults "*.js" "*.base64")
+                   :version-regexp "^release-\\(.*\\)"))
 (add-to-list 'safe-local-variable-values '(my/prettier-on . t))
 (defun my/prettier-mode-ignore ()
   (and buffer-file-name

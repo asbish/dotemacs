@@ -25,19 +25,6 @@
         slime-company
         exec-path-from-shell))
 
-(mapc (lambda (x)
-        (let* ((dir (locate-user-emacs-file "packages"))
-               (files (directory-files-recursively dir x))
-               (newest (car (last (sort files 'string-version-lessp)))))
-          (when newest
-            (save-match-data
-              (string-match x newest)
-              (unless (package-installed-p
-                       (intern (match-string 1 newest))
-                       (version-to-list (match-string 2 newest)))
-                (package-install-file newest))))))
-      '("\\(prettier\\)-\\([0-9\\.]+\\)\\.tar"))
-
 (require 'server)
 (unless (server-running-p) (server-start))
 

@@ -43,3 +43,6 @@
 	url = https://github.com/haskell/haskell-mode
 	branch = master
 	ignore = dirty
+[submodule "packages/quelpa"]
+	path = packages/quelpa
+	url = https://github.com/quelpa/quelpa
