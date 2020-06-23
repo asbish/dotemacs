@@ -6,9 +6,10 @@ My Emacs configuration
 git submodule update --init --recursive
 make
 export PATH="$PATH:${HOME}/.emacs.d/packages/rtags/_build/bin"
-emacs
+emacs -nw # I use(test) Emacs in terminal only.
 ```
 
+SKK
 ```
 M-x skk-get
 ```
