@@ -398,7 +398,7 @@
 (setq-default tags-revert-without-query 1)
 
 (quelpa '(prettier :fetcher github
-                   :repo "jscheid/prettier-el"
+                   :repo "jscheid/prettier.el"
                    :branch "release"
                    :files (:defaults "*.js" "*.base64")
                    :version-regexp "^release-\\(.*\\)"))
