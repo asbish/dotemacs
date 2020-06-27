@@ -1533,7 +1533,8 @@
          (asbish/find-in-rec ".yarn" "sdks/typescript/bin/tsserver"))
         (eslint-path
          (asbish/find-in-rec ".yarn" "sdks/eslint/bin/eslint.js")))
-    `(:tsserver ,tsserver-path :eslint ,eslint-path)))
+    (when (or tsserver-path eslint-path)
+      `(:tsserver ,tsserver-path :eslint ,eslint-path))))
 
 (use-package tide
   :ensure t
@@ -1617,9 +1618,8 @@
                   (setq-local company-flow-executable flow-bin)
                   (setq-local flycheck-javascript-flow-executable flow-bin)
                   (cons 'company-flow local-company-backends))
-
                 (setq-default flycheck-disabled-checkers
-                              '(javascript-jshint jsx-tide))
+                              '(javascript-jshint))
                 (setq-local company-backends
                             (append local-company-backends my/company-backends))
                 (hs-minor-mode 1)
