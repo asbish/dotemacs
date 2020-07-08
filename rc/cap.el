@@ -1039,6 +1039,16 @@
   :ensure t
   :defer t)
 
+(use-package solidity-mode
+  :ensure t
+  :config
+  (use-package company-solidity :ensure t)
+  (use-package solidity-flycheck :ensure t)
+  (add-hook 'solidity-mode-hook
+            (lambda ()
+              (setq-local company-backends
+                          (cons 'company-solidity my/company-backends)))))
+
 (define-key emacs-lisp-mode-map (kbd "C-c C-z") 'ielm)
 (add-hook 'emacs-lisp-mode-hook #'hs-minor-mode)
 
