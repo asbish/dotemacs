@@ -8,8 +8,8 @@
 
 (setq package-archive-priorities
       '(("my-elpa" . 30)
-        ("melpa-stable" . 20)
         ("melpa" . 20)
+        ("melpa-stable" . 15)
         ("gnu" . 10)))
 
 (package-initialize)
