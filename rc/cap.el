@@ -397,22 +397,20 @@
 
 (setq-default tags-revert-without-query 1)
 
-(quelpa '(prettier :fetcher github
-                   :repo "jscheid/prettier.el"
-                   :branch "release"
-                   :files (:defaults "*.js" "*.base64")
-                   :version-regexp "^release-\\(.*\\)"))
-(add-to-list 'safe-local-variable-values '(my/prettier-on . t))
-(defun my/prettier-mode-ignore ()
-  (and buffer-file-name
-       (or
-        (string-match
-         "/\\(node_modules/\\|flow-typed/\\|package\\.json\\)"
-         buffer-file-name)
-        (not (local-variable-p 'my/prettier-on)))))
-(custom-set-variables
- '(prettier-mode-ignore-buffer-function #'my/prettier-mode-ignore))
-(add-hook 'after-init-hook #'global-prettier-mode)
+(use-package prettier
+  :ensure t
+  :init
+  (defun my/prettier-mode-ignore ()
+    (and buffer-file-name
+         (or
+          (string-match
+           "/\\(node_modules/\\|flow-typed/\\|package\\.json\\)"
+           buffer-file-name)
+          (not (local-variable-p 'my/prettier-on)))))
+  (custom-set-variables
+   '(prettier-mode-ignore-buffer-function #'my/prettier-mode-ignore))
+  (add-to-list 'safe-local-variable-values '(my/prettier-on . t))
+  (add-hook 'after-init-hook #'global-prettier-mode))
 
 (use-package dumb-jump
   :ensure t
