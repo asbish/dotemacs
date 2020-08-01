@@ -829,10 +829,11 @@
      ((t (:inherit font-lock-preprocessor-face)))))
   :config
   (define-key rustic-mode-map (kbd "C-c A") 'rustic-format-buffer)
+  (setq rustic-lsp-server 'rls)
+  (setq rustic-lsp-client 'eglot)
+  (add-hook 'eglot--managed-mode-hook (lambda () (flymake-mode -1)))
   (push 'rustic-clippy flycheck-checkers)
-  ;; For stable channel
-  (setq rustic-flycheck-clippy-params "--message-format=json")
-  (flycheck-add-next-checker 'lsp 'rustic-clippy))
+  (setq rustic-flycheck-clippy-params "--message-format=json"))
 
 (use-package rust-mode
   :requires rustic
