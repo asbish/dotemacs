@@ -828,7 +828,11 @@
    '(rustic-builtin-formatting-macro-face
      ((t (:inherit font-lock-preprocessor-face)))))
   :config
-  (define-key rustic-mode-map (kbd "C-c A") 'rustic-format-buffer))
+  (define-key rustic-mode-map (kbd "C-c A") 'rustic-format-buffer)
+  (push 'rustic-clippy flycheck-checkers)
+  ;; For stable channel
+  (setq rustic-flycheck-clippy-params "--message-format=json")
+  (flycheck-add-next-checker 'lsp 'rustic-clippy))
 
 (use-package rust-mode
   :requires rustic
