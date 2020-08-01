@@ -831,7 +831,6 @@
   (define-key rustic-mode-map (kbd "C-c A") 'rustic-format-buffer)
   (setq rustic-lsp-server 'rls)
   (setq rustic-lsp-client 'eglot)
-  (add-hook 'eglot--managed-mode-hook (lambda () (flymake-mode -1)))
   (push 'rustic-clippy flycheck-checkers)
   (setq rustic-flycheck-clippy-params "--message-format=json"))
 
