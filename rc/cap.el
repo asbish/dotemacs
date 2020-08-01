@@ -256,9 +256,6 @@
   (add-to-list 'safe-local-variable-values '(my/lsp-off . t))
   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
-(use-package company-lsp
-  :ensure t)
-
 (use-package ccls
   :ensure t)
 
@@ -325,7 +322,6 @@
 (defvar my/company-backends nil)
 (use-package company
   :ensure t
-  :requires company-lsp
   :diminish company-mode
   :bind (("C-c /" . company-complete-common)
          :map company-active-map
@@ -337,17 +333,16 @@
   :config
   (setq company-tooltip-align-annotations t)
   (setq my/company-backends
-        (cons 'company-lsp
-              (cl-set-difference company-backends
-                                 '(company-bbdb
-                                   company-clang
-                                   company-cmake
-                                   company-css
-                                   company-nxml
-                                   company-eclim
-                                   company-semantic
-                                   company-oddmuse
-                                   company-xcode))))
+        (cl-set-difference company-backends
+                           '(company-bbdb
+                             company-clang
+                             company-cmake
+                             company-css
+                             company-nxml
+                             company-eclim
+                             company-semantic
+                             company-oddmuse
+                             company-xcode)))
   (setq company-backends my/company-backends))
 
 (use-package treemacs
