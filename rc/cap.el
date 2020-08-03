@@ -823,7 +823,8 @@
   :init
   (custom-set-variables
    '(rustic-format-on-save nil)
-   '(rustic-display-spinner nil))
+   '(rustic-display-spinner nil)
+   '(rustic-format-trigger 'on-save))
   (custom-set-faces
    '(rustic-builtin-formatting-macro-face
      ((t (:inherit font-lock-preprocessor-face)))))
