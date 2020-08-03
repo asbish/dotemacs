@@ -824,14 +824,14 @@
   (custom-set-variables
    '(rustic-format-on-save nil)
    '(rustic-display-spinner nil)
-   '(rustic-format-trigger 'on-save))
+   '(rustic-format-trigger 'on-save)
+   '(rustic-lsp-client 'eglot)
+   '(rustic-lsp-server 'rust-analyzer))
   (custom-set-faces
    '(rustic-builtin-formatting-macro-face
      ((t (:inherit font-lock-preprocessor-face)))))
   :config
   (define-key rustic-mode-map (kbd "C-c A") 'rustic-format-buffer)
-  (setq rustic-lsp-server 'rls)
-  (setq rustic-lsp-client 'eglot)
   (push 'rustic-clippy flycheck-checkers)
   (setq rustic-flycheck-clippy-params "--message-format=json"))
 
