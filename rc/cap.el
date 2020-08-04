@@ -848,9 +848,8 @@
   :config
   (add-hook 'rust-mode-hook
             (lambda ()
-              (unless (asbish/read-only-mode
-                       "/\\(\\.rustup\\|\\.cargo\\|target\\)/")
-                (rustic-mode)))))
+              (asbish/read-only-mode "/\\(\\.rustup\\|\\.cargo\\|target\\)/")
+              (rustic-mode))))
 
 (use-package flycheck-golangci-lint
   :ensure t
