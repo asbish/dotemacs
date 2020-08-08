@@ -1,7 +1,7 @@
 (require 'package)
 
 (setq package-archives
-      '(("my-elpa" . "~/elpapkgs")
+      '(("my-elpa" . "~/elpapkgs/")
         ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
         ("gnu" . "https://elpa.gnu.org/packages/")))
