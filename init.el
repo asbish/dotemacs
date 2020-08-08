@@ -25,9 +25,6 @@
         slime-company
         exec-path-from-shell))
 
-(require 'server)
-(unless (server-running-p) (server-start))
-
 (require 'exec-path-from-shell)
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
