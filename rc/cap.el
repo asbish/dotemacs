@@ -825,6 +825,7 @@
    '(rustic-format-on-save nil)
    '(rustic-display-spinner nil)
    '(rustic-format-trigger 'on-save)
+   '(rustic-format-display-method 'ignore)
    '(rustic-lsp-client 'eglot)
    '(rustic-lsp-server 'rust-analyzer))
   (custom-set-faces
