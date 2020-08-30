@@ -48,6 +48,7 @@
  '(ediff-make-buffers-readonly-at-startup t)
  '(ediff-merge-split-window-function (quote split-window-vertically))
  '(ediff-split-window-function (quote split-window-horizontally))
+ '(eldoc-echo-area-use-multiline-p 3)
  '(tramp-default-method "ssh"))
 
 (cd "~/")
