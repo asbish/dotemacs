@@ -834,7 +834,8 @@
   :config
   (define-key rustic-mode-map (kbd "C-c A") 'rustic-format-buffer)
   (push 'rustic-clippy flycheck-checkers)
-  (setq rustic-flycheck-clippy-params "--message-format=json"))
+  (setq rustic-flycheck-clippy-params "--message-format=json")
+  (add-hook 'rustic-mode-hook (lambda () (hs-minor-mode 1))))
 
 (use-package rust-mode
   :requires rustic
