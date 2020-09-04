@@ -1024,9 +1024,17 @@
 (add-hook 'python-mode-hook
           (lambda ()
             (hs-minor-mode 1)
+            (asbish/read-only-mode "/\\(\\.venv\\|venv\\)/")
             (setq imenu-create-index-function 'python-imenu-create-index)
-            (setq-default flycheck-disabled-checkers '(python-pylint))
-            (lsp-deferred)))
+            (setq-default flycheck-disabled-checkers '(python-pylint))))
+
+(use-package lsp-python-ms
+  :ensure t
+  :config
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (require 'lsp-python-ms)
+              (lsp-deferred))))
 
 (use-package nim-mode
   :ensure t
