@@ -1,6 +1,7 @@
 (add-to-list 'load-path (locate-user-emacs-file "packages/asbish"))
 (require 'asbish)
 
+(require 'cl-lib)
 (require 'f)
 (require 'dash)
 (require 'levenshtein)
@@ -97,3 +98,17 @@
 (when (display-graphic-p)
   (add-hook 'after-init-hook #'my/frame-read-file)
   (add-hook 'kill-emacs-hook #'my/frame-write-file))
+
+(defun my/emacs-processes ()
+  (interactive)
+  (let ((n -1))
+    (message
+     (cl-reduce
+      (lambda (ps p)
+        (concat ps (format "[%d]%s: %s  %s\n"
+                           (cl-incf n)
+                           (process-name p)
+                           (process-coding-system p)
+                           (process-command p))))
+      (process-list)
+      :initial-value))))
