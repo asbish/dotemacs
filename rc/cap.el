@@ -1549,9 +1549,11 @@
   (let ((tsserver-path
          (asbish/find-in-rec ".yarn" "sdks/typescript/bin/tsserver"))
         (eslint-path
-         (asbish/find-in-rec ".yarn" "sdks/eslint/bin/eslint.js")))
-    (when (or tsserver-path eslint-path)
-      `(:tsserver ,tsserver-path :eslint ,eslint-path))))
+         (asbish/find-in-rec ".yarn" "sdks/eslint/bin/eslint.js"))
+        (stylelint-path
+         (asbish/find-in-rec ".yarn" "sdks/stylelint/bin/stylelint.js")))
+    (when (or tsserver-path eslint-path stylelint-path)
+      `(:tsserver ,tsserver-path :eslint ,eslint-path :stylelint ,stylelint-path))))
 
 (use-package tide
   :ensure t
@@ -1621,16 +1623,16 @@
               (let ((pnpify-sdk (my/yarn-pnpify-sdk))
                     (flow-bin (my/get-flow-bin))
                     (local-company-backends '(company-tide)))
-                (if pnpify-sdk
-                    (progn
-                      (setq-local tide-tsserver-executable
-                                  (plist-get pnpify-sdk :tsserver))
-                      (setq-local flycheck-javascript-eslint-executable
-                                  (plist-get pnpify-sdk :eslint)))
-                  (setq-local flycheck-javascript-eslint-executable
-                              (or (asbish/find-in-rec
-                                   "node_modules" "eslint/bin/eslint.js")
-                                  "eslint")))
+                (setq-local tide-tsserver-executable
+                            (or (and pnpify-sdk
+                                     (plist-get pnpify-sdk :tsserver))
+                                nil))
+                (setq-local flycheck-javascript-eslint-executable
+                            (or (and pnpify-sdk
+                                     (plist-get pnpify-sdk :eslint))
+                                (asbish/find-in-rec
+                                 "node_modules" "eslint/bin/eslint.js")
+                                "eslint"))
                 (when flow-bin
                   (setq-local company-flow-executable flow-bin)
                   (setq-local flycheck-javascript-flow-executable flow-bin)
@@ -1655,21 +1657,19 @@
   (add-hook 'typescript-mode-hook
             (lambda ()
               (let ((pnpify-sdk (my/yarn-pnpify-sdk)))
-                (if pnpify-sdk
-                    (progn
-                      (setq-local tide-tsserver-executable
-                                  (plist-get pnpify-sdk :tsserver))
-                      (setq-local flycheck-javascript-eslint-executable
-                                  (plist-get pnpify-sdk :eslint)))
-                  (setq-local flycheck-javascript-eslint-executable
-                              (or (asbish/find-in-rec
-                                   "node_modules" "eslint/bin/eslint.js")
-                                  "eslint"))
-                  (setq-local flycheck-typescript-tslint-executable
-                              (or (asbish/find-in-rec
-                                   "node_modules" "tslint/bin/tslint")
-                                  "tslint")))
-
+                (setq-local tide-tsserver-executable
+                            (or (and pnpify-sdk
+                                     (plist-get pnpify-sdk :tsserver))
+                                nil))
+                (setq-local flycheck-javascript-eslint-executable
+                            (or (and pnpify-sdk (plist-get pnpify-sdk :eslint))
+                                (asbish/find-in-rec
+                                 "node_modules" "eslint/bin/eslint.js")
+                                "eslint"))
+                (setq-local flycheck-typescript-tslint-executable
+                            (or (asbish/find-in-rec
+                                 "node_modules" "tslint/bin/tslint")
+                                "tslint"))
                 (setq-default flycheck-disabled-checkers
                               '(javascript-jshint jsx-tide))
                 (setq-local company-backends
@@ -1772,10 +1772,14 @@
               (setq-local company-backends
                           (cons 'company-css my/company-backends))
               (setq-default flycheck-disabled-checkers '(css-css-lint))
-              (setq-local flycheck-css-stylelint-executable
-                          (or (asbish/find-in-rec
-                               "node_modules" "stylelint/bin/stylelint.js")
-                              "stylelint")))))
+              (let ((pnpify-sdk (my/yarn-pnpify-sdk)))
+                (setq-local flycheck-css-stylelint-executable
+                            (or (and pnpify-sdk
+                                     (plist-get pnpify-sdk :stylelint))
+                                (asbish/find-in-rec
+                                 "node_modules"
+                                 "stylelint/bin/stylelint.js")
+                                "stylelint"))))))
 
 (use-package scss-mode
   :ensure t
@@ -1788,10 +1792,14 @@
               (setq-local company-backends
                           (cons 'company-css my/company-backends))
               (setq-default flycheck-disabled-checkers '(scss))
-              (setq-local flycheck-scss-stylelint-executable
-                          (or (asbish/find-in-rec
-                               "node_modules" "stylelint/bin/stylelint.js")
-                              "stylelint")))))
+              (let ((pnpify-sdk (my/yarn-pnpify-sdk)))
+                (setq-local flycheck-css-stylelint-executable
+                            (or (and pnpify-sdk
+                                     (plist-get pnpify-sdk :stylelint))
+                                (asbish/find-in-rec
+                                 "node_modules"
+                                 "stylelint/bin/stylelint.js")
+                                "stylelint"))))))
 
 (use-package sass-mode
   :ensure t
@@ -1802,10 +1810,14 @@
               (setq-local company-backends
                           (cons 'company-css my/company-backends))
               (setq-default flycheck-disabled-checkers '(sass))
-              (setq-local flycheck-sass/scss-sass-lint-executable
-                          (or (asbish/find-in-rec
-                               "node_modules" "stylelint/bin/stylelint.js")
-                              "stylelint")))))
+              (let ((pnpify-sdk (my/yarn-pnpify-sdk)))
+                (setq-local flycheck-css-stylelint-executable
+                            (or (and pnpify-sdk
+                                     (plist-get pnpify-sdk :stylelint))
+                                (asbish/find-in-rec
+                                 "node_modules"
+                                 "stylelint/bin/stylelint.js")
+                                "stylelint"))))))
 
 (use-package emms
   :ensure t
