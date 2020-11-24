@@ -392,8 +392,9 @@
 
 (setq-default tags-revert-without-query 1)
 
+(defvar prettier-el-home "~/opt/prettier.el/dist/")
 (use-package prettier
-  :ensure t
+  :load-path prettier-el-home
   :init
   (defun my/prettier-mode-ignore ()
     (and buffer-file-name
