@@ -801,6 +801,8 @@
               (setq-local company-backends
                           (cons 'company-lua my/company-backends)))))
 
+(use-package arduino-mode :ensure t)
+
 (use-package f90
   :defer t
   :init
