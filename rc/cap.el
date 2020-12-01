@@ -392,6 +392,9 @@
 
 (setq-default tags-revert-without-query 1)
 
+(use-package nvm
+  :ensure t)
+
 (defvar prettier-el-home "~/opt/prettier.el/dist/")
 (use-package prettier
   :load-path prettier-el-home
