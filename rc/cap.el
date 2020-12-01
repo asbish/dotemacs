@@ -485,6 +485,7 @@
 (define-key prog-mode-map (kbd "C-M-;") 'comment-or-uncomment-region)
 
 (require 'make-mode)
+(add-to-list 'auto-mode-alist '("\\.incl\\'" . makefile-mode))
 (define-key makefile-mode-map (kbd "C-c C-c") nil)
 (define-key makefile-mode-map (kbd "C-M-;") 'comment-or-uncomment-region)
 (asbish/rebind-keys makefile-mode-map
