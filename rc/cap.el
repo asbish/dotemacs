@@ -1800,7 +1800,7 @@
                           (cons 'company-css my/company-backends))
               (setq-default flycheck-disabled-checkers '(scss))
               (let ((pnpify-sdk (my/yarn-pnpify-sdk)))
-                (setq-local flycheck-css-stylelint-executable
+                (setq-local flycheck-scss-stylelint-executable
                             (or (and pnpify-sdk
                                      (plist-get pnpify-sdk :stylelint))
                                 (asbish/find-in-rec
