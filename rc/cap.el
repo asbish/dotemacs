@@ -768,6 +768,9 @@
 (add-hook 'c++-mode-hook #'my/cc-mode-setup t)
 (add-hook 'objc-mode-hook #'my/cc-mode-setup t)
 
+(use-package cuda-mode :ensure t)
+(add-hook 'cuda-mode-hook #'my/cc-mode-setup t)
+
 (use-package protobuf-mode
   :ensure t)
 
