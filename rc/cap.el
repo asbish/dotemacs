@@ -407,7 +407,8 @@
            buffer-file-name)
           (not (local-variable-p 'my/prettier-on)))))
   (custom-set-variables
-   '(prettier-mode-ignore-buffer-function #'my/prettier-mode-ignore))
+   '(prettier-mode-ignore-buffer-function #'my/prettier-mode-ignore)
+   '(prettier-pre-warm 'some))
   (add-to-list 'safe-local-variable-values '(my/prettier-on . t))
   (add-hook 'after-init-hook #'global-prettier-mode))
 
