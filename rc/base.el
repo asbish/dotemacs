@@ -23,6 +23,7 @@
       delete-old-versions t
       kept-new-versions 2
       kept-old-versions 2
+      enable-remote-dir-locals t
       vc-handled-backends ()
       tab-stop-list (number-sequence 4 120 4)
       read-file-name-completion-ignore-case t
@@ -54,12 +55,11 @@
 (cd "~/")
 (electric-indent-mode 1)
 (column-number-mode 1)
+(save-place-mode 1)
 (show-paren-mode 1)
 (savehist-mode 1)
 (winner-mode 1)
 (cua-mode 1)
-
-(when (fboundp 'save-place-mode) (save-place-mode 1))
 
 (unless (display-graphic-p)
   (define-key input-decode-map "\e[5;0A" [C-return])
