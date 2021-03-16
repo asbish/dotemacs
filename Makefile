@@ -30,7 +30,7 @@ setup:
 $(MAKE_PKG):
 	@printf "\n* $@ \n"
 	@printf "==============================================================\n"
-	cd $@ && $(MAKE) $(MAKE_TARGET)
+	cd $@ && $(MAKE) $(MAKE_TARGET) -j`nproc`
 
 %.elc: %.el
 	@printf "\n* $@ \n"
