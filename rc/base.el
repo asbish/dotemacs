@@ -170,7 +170,7 @@
   (other-window 1)
   (split-window (selected-window) 80 'right))
 
-(defun xsel-naive-copy ()
+(defun my/xsel-naive-copy ()
   (interactive)
   (let* ((buf (buffer-name))
          (region (region-active-p))
@@ -184,7 +184,18 @@
         (call-process-region
          (point-min) (point-max) "xsel" nil 0 nil "-ib")))))
 
-(define-key global-map (kbd "C-c w") 'xsel-naive-copy)
+(define-key global-map (kbd "C-c w") 'my/xsel-naive-copy)
+
+(defun my/toggle-require-final-newline ()
+  (interactive)
+  (if require-final-newline
+      (progn
+        (setq require-final-newline nil)
+        (message "disabled adding a final newline"))
+    (setq require-final-newline t)
+    (message "enabled adding a final newline")))
+
+(global-set-key (kbd "<f7> n") 'my/toggle-require-final-newline)
 
 (global-set-key (kbd "<f5>") 'revert-buffer)
 (define-key mode-specific-map (kbd "C-c") 'compile)
