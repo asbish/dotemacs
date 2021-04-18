@@ -557,13 +557,11 @@
    '(realgud-populate-common-fn-keys-function nil)))
 
 (use-package realgud-lldb :ensure t)
-(use-package realgud-byebug :ensure t)
 
 (defvar my/realgud-alist-mode-preset
   '((sh-mode ((realgud:bashdb . "^\\*bashdb") (realgud:zshdb . "^\\*zshdb")))
     (cperl-mode ((realgud:perldb . "^\\*perldb")))
-    (python-mode ((realgud:pdb . "^\\*pdb")))
-    (ruby-mode ((realgud:byebug . "^\\*byebug")))))
+    (python-mode ((realgud:pdb . "^\\*pdb")))))
 
 (defun my/realgud-start ()
   (interactive)
