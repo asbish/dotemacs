@@ -450,40 +450,6 @@
     '(:from "C-c M-SPC" :to "C-c g SPC" :bind ggtags-save-to-register))
   (set-face-attribute 'ggtags-highlight nil :underline nil))
 
-(require 'semantic)
-(setq semantic-default-submodes
-      '(global-semanticdb-minor-mode
-        global-semantic-idle-scheduler-mode))
-(setq-default semantic-idle-scheduler-idle-time 2)
-(setq semantic-new-buffer-setup-functions
-      (seq-difference semantic-new-buffer-setup-functions
-                      '((scheme-mode . semantic-default-scheme-setup)
-                        (js-mode . wisent-javascript-setup-parser)
-                        (html-mode . semantic-default-html-setup))))
-(when my/gtags
-  (semanticdb-enable-gnu-global-databases 'c-mode)
-  (semanticdb-enable-gnu-global-databases 'c++-mode))
-(defun my/locate-gpath (orig-fun)
-  (let ((exist (and my/gtags
-                    (locate-dominating-file default-directory "GPATH"))))
-    (if exist exist (funcall orig-fun))))
-(advice-add 'semantic-symref-calculate-rootdir :around #'my/locate-gpath)
-(asbish/rebind-keys semantic-mode-map
-  '(:from "C-c , n" :to "C-c , >" :bind senator-next-tag)
-  '(:from "C-c , p" :to "C-c , <" :bind senator-previous-tag)
-  '(:from "C-c , ," :to "C-c , U" :bind semantic-force-refresh)
-  '(:from "C-c , g" :to "C-c , ," :bind semantic-symref-symbol)
-  '(:from "C-c , J" :to "C-c , ." :bind semantic-complete-jump)
-  '(:from "C-c , l" :to "C-c , /" :bind semantic-analyze-possible-completions)
-  '(:from "C-c , SPC" :to "C-c , M-/" :bind semantic-complete-analyze-inline))
-
-(use-package srefactor
-  :ensure t
-  :config
-  (define-key c-mode-map (kbd "C-c , RET") 'srefactor-refactor-at-point)
-  (define-key c++-mode-map (kbd "C-c , RET") 'srefactor-refactor-at-point)
-  (define-key java-mode-map (kbd "C-c , RET") 'srefactor-refactor-at-point))
-
 (require 'prog-mode)
 (define-key prog-mode-map (kbd "C-c C-c") nil)
 (define-key prog-mode-map (kbd "C-M-;") 'comment-or-uncomment-region)
