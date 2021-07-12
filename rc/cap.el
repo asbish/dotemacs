@@ -1005,11 +1005,15 @@
 
 (use-package lsp-python-ms
   :ensure t
-  :config
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (require 'lsp-python-ms)
-              (lsp-deferred))))
+  :init
+  (custom-set-variables
+   '(lsp-python-ms-auto-install-server nil)
+   '(lsp-python-ms-cache "Library"))
+  (setq lsp-python-ms-executable (executable-find "python-language-server"))
+  :hook
+  (python-mode . (lambda ()
+                   (require 'lsp-python-ms)
+                   (lsp-deferred))))
 
 (use-package nim-mode
   :ensure t

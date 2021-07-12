@@ -107,6 +107,7 @@
  '(fringe ((t (:background "#1c1c1c"))))
  '(default ((t (:background "#262626" :foreground "white"))))
  '(highlight ((t (:background "#444444"))))
+ '(header-line ((t (:background "#444444"))))
  '(font-lock-function-name-face ((t (:bold t :foreground "#add8e6"))))
  '(font-lock-variable-name-face ((t (:bold t :foreground "#afd7af"))))
  '(font-lock-keyword-face ((t (:foreground "#d7afd7"))))
