@@ -1010,10 +1010,24 @@
    '(lsp-python-ms-auto-install-server nil)
    '(lsp-python-ms-cache "Library"))
   (setq lsp-python-ms-executable (executable-find "python-language-server"))
-  :hook
-  (python-mode . (lambda ()
-                   (require 'lsp-python-ms)
-                   (lsp-deferred))))
+  :config
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (require 'lsp-python-ms)
+              (lsp-deferred))))
+
+(use-package python-black
+  :ensure t
+  :init
+  (define-key python-mode-map (kbd "C-c A") 'python-black-buffer)
+  :config
+  (add-hook 'python-mode-hook
+            (lambda () (python-black-on-save-mode-enable-dwim))))
+
+(use-package conda
+  :ensure t
+  :config
+  (conda-env-initialize-interactive-shells))
 
 (use-package nim-mode
   :ensure t
