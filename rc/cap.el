@@ -1028,7 +1028,7 @@
   :ensure t
   :init
   (setq-default mode-line-format
-                (const '(:exec conda-env-current-name) mode-line-format))
+                (cons '(:exec conda-env-current-name) mode-line-format))
   :config
   (conda-env-initialize-interactive-shells))
 
